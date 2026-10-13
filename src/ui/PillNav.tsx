@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
+import ThemeToggle from "@/ui/ThemeToggle";
 
 const SPRING_TRANSITION = {
   type: "spring" as const,
@@ -146,6 +147,11 @@ export default function PillNav({
             </a>
           );
         })}
+        <div
+          aria-hidden="true"
+          className="mx-1 h-4 w-[1px] bg-border shrink-0"
+        />
+        <ThemeToggle />
       </motion.div>
     </nav>
   );

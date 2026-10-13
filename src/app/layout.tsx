@@ -32,8 +32,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable} h-full antialiased scroll-pt-20`}
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("theme");if(t==="dark"){document.documentElement.dataset.theme="dark"}}catch(e){}})()`,
+          }}
+        />
+      </head>
       <body className="min-h-full">
         <PillNav
           items={[

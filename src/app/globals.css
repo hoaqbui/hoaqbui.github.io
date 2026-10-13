@@ -17,7 +17,7 @@
   --font-serif: var(--font-instrument-serif), Georgia, serif;
 }
 
-[data-theme="dark"] {
+:root[data-theme="dark"] {
   --color-bg: #111416;
   --color-surface: #181c1f;
   --color-border: #2a3034;

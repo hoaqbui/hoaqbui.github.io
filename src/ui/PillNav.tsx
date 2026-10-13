@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
 import ThemeToggle from "@/ui/ThemeToggle";
@@ -166,8 +167,11 @@ export default function PillNav({
                 : "text-muted hover:text-text";
             }
 
+            const isExternal = item.href.startsWith("http") || item.href.endsWith(".pdf");
+            const LinkComponent = isExternal ? "a" : Link;
+
             return (
-              <a
+              <LinkComponent
                 key={item.id}
                 href={item.href}
                 {...(item.href.startsWith("http") ? { target: "_blank", rel: "noopener" } : {})}
@@ -189,7 +193,7 @@ export default function PillNav({
                   />
                 )}
                 <span className="relative z-10">{item.label}</span>
-              </a>
+              </LinkComponent>
             );
           })}
           <div

@@ -67,7 +67,11 @@ export default function Project({ id }: { id: string }) {
             {project.title}
           </h1>
           {Diagram && (
-            <div className="rounded-3xl bg-surface p-6">
+            <div
+              style={{ viewTransitionName: `card-${project.id}` }}
+              className="rounded-3xl bg-surface p-6 card-morph"
+              data-diagram-card
+            >
               <Diagram />
             </div>
           )}

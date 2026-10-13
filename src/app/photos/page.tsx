@@ -1,3 +1,4 @@
+import { ViewTransition } from "react";
 import type { Metadata } from "next";
 import Photos from "@/sections/Photos";
 
@@ -6,5 +7,9 @@ export const metadata: Metadata = {
 };
 
 export default function PhotosPage() {
-  return <Photos />;
+  return (
+    <ViewTransition>
+      <Photos />
+    </ViewTransition>
+  );
 }

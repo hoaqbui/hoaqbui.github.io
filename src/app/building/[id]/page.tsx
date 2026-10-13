@@ -1,3 +1,4 @@
+import { ViewTransition } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { projects } from "@/content/projects";
@@ -33,5 +34,9 @@ export default async function Page({ params }: Props) {
   if (!project) {
     notFound();
   }
-  return <Project id={id} />;
+  return (
+    <ViewTransition>
+      <Project id={id} />
+    </ViewTransition>
+  );
 }

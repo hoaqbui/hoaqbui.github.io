@@ -14,7 +14,7 @@ export default function Building() {
   const prev = () => setCurrent((c) => (c - 1 + n) % n);
   const next = () => setCurrent((c) => (c + 1) % n);
 
-  const getCardStyle = (d: number) => {
+  const getCardStyle = (d: number, id?: string) => {
     switch (d) {
       case 0:
         return {
@@ -24,6 +24,7 @@ export default function Building() {
           filter: "blur(0px)",
           boxShadow:
             "0 2px 4px rgba(20,24,26,.06), 0 40px 80px rgba(20,24,26,.20)",
+          viewTransitionName: id ? `card-${id}` : undefined,
         };
       case 1:
         return {
@@ -207,8 +208,8 @@ export default function Building() {
                     if (d !== 0) setCurrent(index);
                   }}
                   aria-hidden={d !== 0 ? true : undefined}
-                  style={getCardStyle(d)}
-                  className={`[grid-area:1/1] w-[92%] max-w-[560px] mx-auto rounded-3xl bg-surface p-6 transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none ${
+                  style={getCardStyle(d, project.id)}
+                  className={`[grid-area:1/1] w-[92%] max-w-[560px] mx-auto rounded-3xl bg-surface p-6 transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none card-morph ${
                     d !== 0 ? "cursor-pointer pointer-events-auto" : ""
                   }`}
                 >

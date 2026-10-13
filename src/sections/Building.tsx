@@ -3,6 +3,7 @@
 import { useState, Fragment } from "react";
 import Link from "next/link";
 import { projects } from "@/content/projects";
+import RippleMesh from "@/fx/RippleMesh";
 
 export default function Building() {
   const [current, setCurrent] = useState(0);
@@ -55,8 +56,9 @@ export default function Building() {
   return (
     <section
       id="building"
-      className="mx-auto max-w-[1120px] px-6 py-20 flex flex-wrap gap-12 items-center overflow-hidden"
+      className="mx-auto max-w-[1120px] px-6 py-20"
     >
+      <div className="flex flex-wrap gap-12 items-center overflow-hidden">
       <div className="flex-[1_1_340px] max-w-[420px] min-w-0">
         <p className="font-mono text-[13px] text-muted">Building now</p>
         <h2 className="mt-3 text-[40px] leading-[1.1] tracking-[-0.035em] font-medium">
@@ -204,6 +206,11 @@ export default function Building() {
             </article>
           );
         })}
+      </div>
+      </div>
+
+      <div className="mt-12">
+        <RippleMesh />
       </div>
     </section>
   );

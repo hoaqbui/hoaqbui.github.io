@@ -11,12 +11,12 @@ export default function RippleBackground({ running }: { running: boolean }) {
         <div className={styles.ring} style={{ animationDelay: "0s" }} />
         <div
           className={`${styles.ring} ${styles.amber}`}
-          style={{ animationDelay: "-1.75s" }}
+          style={{ animationDelay: "-3.5s" }}
         />
-        <div className={styles.ring} style={{ animationDelay: "-3.5s" }} />
+        <div className={styles.ring} style={{ animationDelay: "-7s" }} />
         <div
           className={`${styles.ring} ${styles.amber}`}
-          style={{ animationDelay: "-5.25s" }}
+          style={{ animationDelay: "-10.5s" }}
         />
       </div>
       <div className={styles.veil} />

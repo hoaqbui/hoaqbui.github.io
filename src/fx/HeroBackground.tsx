@@ -141,7 +141,8 @@ export default function HeroBackground({ running }: { running: boolean }) {
       const dt = Math.min(0.05, (now - lastTime) / 1000);
       lastTime = now;
       if (effectRef.current) {
-        effectRef.current.step(dt, pointerRef.current);
+        // Half speed: the hero should drift, not busy itself (user, 2026-10-13).
+        effectRef.current.step(dt * 0.5, pointerRef.current);
         effectRef.current.draw();
       }
       rafId = requestAnimationFrame(loop);

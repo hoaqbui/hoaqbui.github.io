@@ -114,10 +114,10 @@ export default function RippleMesh() {
           const dy = y - cy;
           const d = Math.hypot(dx, dy) || 1;
           const wave =
-            Math.sin(d / 38 - t * 2.4) *
+            Math.sin(d / 38 - t * 0.8) *
             Math.max(0, 1 - d / (Math.max(w, h) * 0.75));
-          x += (dx / d) * wave * 7;
-          y += (dy / d) * wave * 7;
+          x += (dx / d) * wave * 5;
+          y += (dy / d) * wave * 5;
           pts.push([x, y, wave]);
         }
       }

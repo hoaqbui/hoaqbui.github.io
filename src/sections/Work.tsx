@@ -49,10 +49,10 @@ export default function Work() {
     >
       <div className="flex flex-wrap items-baseline gap-x-16 gap-y-3">
         <h2 className="flex-[0_0_200px] font-mono text-sm text-muted">
-          Selected work
+          Work
         </h2>
         <p className="max-w-[620px] flex-[1_1_420px] text-2xl leading-[1.4] tracking-[-0.015em]">
-          Three calls I made at Riot, what each one cost, and what it changed.
+          Three calls I made at Riot, what each one traded away, and what it changed.
         </p>
       </div>
 

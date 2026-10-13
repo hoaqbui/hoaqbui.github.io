@@ -3,7 +3,7 @@
 import { useMotion } from "@/fx/useMotion";
 import HeroBackground from "@/fx/HeroBackground";
 import { profile } from "@/content/profile";
-import { proof } from "@/content/proof";
+import { proof, proofLabel } from "@/content/proof";
 
 import Parallax from "@/fx/Parallax";
 import Reveal from "@/fx/Reveal";
@@ -16,7 +16,7 @@ export default function Hero() {
       <section
         id="top"
         ref={ref}
-        className="relative flex flex-col items-center justify-center overflow-hidden min-h-[100svh] md:min-h-[640px]"
+        className="relative flex flex-col items-center justify-center overflow-hidden min-h-0 pt-24 pb-10 md:min-h-[640px] md:pt-0 md:pb-0"
       >
         <HeroBackground running={running} />
         <Parallax className="relative z-10 max-w-3xl px-6 text-center">
@@ -27,6 +27,9 @@ export default function Hero() {
           <h1 className="mt-5 text-[clamp(2rem,6vw,3.5rem)] font-medium leading-[1.08] tracking-[-0.035em]">
             {profile.headline}
           </h1>
+          <p className="mt-4 max-w-xl mx-auto text-[15px] md:text-base text-muted">
+            {profile.subLine}
+          </p>
           <div className="mt-8 flex flex-wrap justify-center gap-6">
             <a
               href={`mailto:${profile.email}`}
@@ -40,7 +43,7 @@ export default function Hero() {
               rel="noopener"
               className="inline-flex min-h-[44px] items-center font-medium text-teal"
             >
-              Résumé →
+              Résumé (PDF) →
             </a>
           </div>
         </Parallax>
@@ -59,16 +62,19 @@ export default function Hero() {
       <Reveal>
         <section
           aria-label="Proof"
-          className="mx-auto max-w-[1120px] border-t border-border px-6 py-16 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-8"
+          className="mx-auto max-w-[1120px] border-t border-border px-6 py-16"
         >
-          {proof.map((item, index) => (
-            <div key={index}>
-              <div className="text-4xl font-medium tracking-[-0.03em]">
-                {item.value}
+          <p className="font-mono text-[12px] text-muted mb-6">{proofLabel}</p>
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-8">
+            {proof.map((item, index) => (
+              <div key={index}>
+                <div className="text-4xl font-medium tracking-[-0.03em]">
+                  {item.value}
+                </div>
+                <div className="mt-1.5 text-sm text-muted">{item.label}</div>
               </div>
-              <div className="mt-1.5 text-sm text-muted">{item.label}</div>
-            </div>
-          ))}
+            ))}
+          </div>
         </section>
       </Reveal>
     </>

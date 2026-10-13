@@ -5,8 +5,8 @@ export type Story = {
   vizLabel: string; bars?: Bar[]; vizNote?: string; reach?: { from: string[]; to: string[] };
 };
 export const stories: Story[] = [
-  { id: "greybox", num: "<1 hr", numNote: "down from weeks", title: "Greybox League in under an hour", years: "2024–26",
-    role: "Sr. TPM, League of Legends tools", team: "[ team size ]",
+  { id: "greybox", num: "<1 hr", numNote: "down from weeks", title: "A League map blocked out in under an hour", years: "2024–26",
+    role: "Sr. TPM, League of Legends tools", team: "4 engineers, a tech lead and an engineering lead",
     context: "Map ideas waited weeks on engineering before anyone could play them.",
     call: "I set a one-hour bar and bet on region boundaries: ground planes designers draw themselves.",
     tradeOff: "[ the greybox alternative I passed on, and why ]",
@@ -16,7 +16,7 @@ export const stories: Story[] = [
     vizLabel: "Time from map idea to playable greybox: weeks before, under one hour after." },
   { id: "cosmetics", num: "−50%", numNote: "cost per asset, at 2× capacity", title: "Half the cost per asset, twice the output", years: "2019–22",
     role: "TPM, PIE Tooling (League content)", team: "tools team 2 → 12 engineers, plus Virtuos Sparx",
-    context: "[ cosmetics context: what was breaking before ]",
+    context: "League's content team shipped all of its content, skins included, on a two-week release cadence.",
     call: "I embedded a tools team with the cosmetics content team and grew it from 2 to 12 engineers, and I vetted, selected and signed Virtuos Sparx as the outsourcing partner.",
     tradeOff: "[ the trade-off of embedding ]",
     result: "Cost per asset fell by half while capacity doubled. Sparx now produces almost all of League’s skins.",
@@ -27,9 +27,9 @@ export const stories: Story[] = [
     ],
     vizNote: "Relative to the starting point.",
     vizLabel: "Cost per asset halved, capacity doubled, tools team grew from 2 to 12 engineers." },
-  { id: "okr", num: "50+", numNote: "artists & engineers led", title: "Fifty people, one direction", years: "2022",
+  { id: "okr", num: "50+", numNote: "artists & engineers led", title: "50+ people, one direction", years: "2022",
     role: "Lead Producer, unannounced project", team: "all of Art, Audio and art-domain engineering",
-    context: "[ OKR story: the ambiguity the team faced ]",
+    context: "The organization's direction was unclear.",
     call: "I ran the team on OKRs to set direction and drive execution, and aligned leadership on data-driven decisions instead of opinions.",
     tradeOff: "[ the trade-off ]",
     result: "[ the result ]",

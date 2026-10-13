@@ -10,7 +10,7 @@ export const projects: Project[] = [
     body: "An early-stage multi-agent orchestration system that runs a research, plan, implement, verify and evaluate loop across a three-node home lab: a Mac Studio, a GB10 workstation and a NAS.",
     status: "early stage", live: false,
     steps: ["Research", "Plan", "Implement", "Verify", "Evaluate"],
-    why: "One person gets a coherent, capable team of AI collaborators without running an agent swarm or coordinating every conversation.",
+    why: "One person gets a coherent, capable team of AI collaborators without managing every agent or every conversation.",
     chips: ["multi-agent", "home lab", "Claude Code"] },
   { id: "himmelcam", title: "HimmelCam", body: "A dog-cam watcher: a PTZ camera, a vision model that finds Himmel, and a pan/tilt/zoom loop that keeps Himmel in view, with clips and alerts to a phone.", status: "[ status ]", live: false, steps: ["Camera stream", "Find Himmel", "Pan · tilt · zoom", "Clips & alerts"], why: "[ why build it ]", chips: ["PTZ camera", "vision model", "tracking loop"] }
 ];

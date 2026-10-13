@@ -32,15 +32,15 @@ export default function Hero() {
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-6">
             <a
-              href={`mailto:${profile.email}`}
-              className="inline-flex min-h-[44px] items-center font-medium text-teal"
-            >
-              Email me →
-            </a>
-            <a
-              href={profile.resumePath}
+              href={profile.linkedin}
               target="_blank"
               rel="noopener"
+              className="inline-flex min-h-[44px] items-center font-medium text-teal"
+            >
+              LinkedIn →
+            </a>
+            <a
+              href={profile.resumeEmailHref}
               className="inline-flex min-h-[44px] items-center font-medium text-teal"
             >
               Résumé →

@@ -8,10 +8,11 @@ test.describe("M1 P0 steps", () => {
     const top = page.locator("#top");
     const who = top.getByText("Hoa Bui").first();
     const role = top.getByText("Senior Technical Product Manager").first();
-    const emailLink = top.locator('a[href="mailto:hoaqbui@gmail.com"]').first();
-    const resumeLink = top.locator('a[href*="1s-OGEpBgFRViEk3mBTeSgL9CHzl-wdsOQKxoBNQtU7s"]').first();
+    const linkedinLink = top.locator('a[href="https://www.linkedin.com/in/hoaqbui/"]').first();
+    // Résumé opens an email draft that links the fresh PDF export of the public Doc.
+    const resumeLink = top.locator('a[href^="mailto:"][href*="1s-OGEpBgFRViEk3mBTeSgL9CHzl-wdsOQKxoBNQtU7s"]').first();
 
-    for (const locator of [who, role, emailLink, resumeLink]) {
+    for (const locator of [who, role, linkedinLink, resumeLink]) {
       await expect(locator).toBeVisible();
       const box = await locator.boundingBox();
       expect(box).not.toBeNull();

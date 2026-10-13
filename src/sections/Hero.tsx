@@ -1,7 +1,7 @@
 "use client";
 
 import { useMotion } from "@/fx/useMotion";
-import RippleBackground from "@/fx/RippleBackground";
+import HeroBackground from "@/fx/HeroBackground";
 import { profile } from "@/content/profile";
 import { proof } from "@/content/proof";
 
@@ -15,7 +15,7 @@ export default function Hero() {
         ref={ref}
         className="relative flex flex-col items-center justify-center overflow-hidden min-h-[100svh] md:min-h-[640px]"
       >
-        <RippleBackground running={running} />
+        <HeroBackground running={running} />
         <div className="relative z-10 max-w-3xl px-6 text-center">
           <p className="text-lg font-semibold">{profile.name}</p>
           <p className="mt-2 font-mono text-[13px] text-muted">

@@ -39,12 +39,28 @@ test.describe("M1 P0 steps", () => {
     await page.goto("/");
     await page.waitForTimeout(500);
     expect(await page.evaluate(() => document.getAnimations().filter(a => a.playState === "running").length)).toBe(0);
+    const still = await page.evaluate(async () => {
+      const c = document.querySelector("[data-hero-bg] canvas") as HTMLCanvasElement | null;
+      if (!c) return true;
+      const before = c.toDataURL();
+      await new Promise((r) => setTimeout(r, 1000));
+      return c.toDataURL() === before;
+    });
+    expect(still).toBe(true);
   });
 
   test("motion runs when allowed", async ({ page }) => {
     await page.goto("/");
-    await page.waitForTimeout(500);
-    expect(await page.evaluate(() => document.getAnimations().filter(a => a.playState === "running").length)).toBeGreaterThan(0);
+    await page.waitForTimeout(600);
+    const moving = await page.evaluate(async () => {
+      if (document.getAnimations().some((a) => a.playState === "running")) return true;
+      const c = document.querySelector("[data-hero-bg] canvas") as HTMLCanvasElement | null;
+      if (!c) return false;
+      const before = c.toDataURL();
+      await new Promise((r) => setTimeout(r, 400));
+      return c.toDataURL() !== before;
+    });
+    expect(moving).toBe(true);
   });
 
   test("no placeholder text ships", async ({ page }) => {

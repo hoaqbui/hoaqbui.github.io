@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { projects } from "@/content/projects";
 import { diagrams } from "@/ui/diagrams";
+import TryIt from "@/ui/TryIt";
 
 export default function Project({ id }: { id: string }) {
   const currentIndex = projects.findIndex((p) => p.id === id);
@@ -104,6 +105,8 @@ export default function Project({ id }: { id: string }) {
               </ol>
             </div>
           )}
+
+          {project.tryUrl && <TryIt href={project.tryUrl} />}
 
           {showWhy && (
             <div>

@@ -149,3 +149,19 @@ test.describe("M2 route transitions", () => {
   });
 });
 
+
+test("Compo: try link and password-on-request mailto on intent-to-video", async ({ page }) => {
+  for (const path of ["/", "/building/intent-to-video/"]) {
+    await page.goto(path);
+    const scope = path === "/" ? page.locator("#building") : page.locator("body");
+    const tryLink = scope.getByRole("link", { name: "Try it in Compo ↗" });
+    await expect(tryLink).toHaveAttribute("href", "https://mac-m4max.eel-terrapin.ts.net/");
+    await expect(tryLink).toHaveAttribute("target", "_blank");
+    await expect(scope.getByRole("link", { name: "Password on request" })).toHaveAttribute(
+      "href",
+      /^mailto:hoaqbui@gmail\.com\?subject=Compo%20password$/,
+    );
+  }
+  await page.goto("/building/parti/");
+  await expect(page.getByRole("link", { name: "Try it in Compo ↗" })).toHaveCount(0);
+});

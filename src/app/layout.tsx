@@ -58,7 +58,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             { id: "work", label: "Work", href: "/#work" },
             { id: "photos", label: "Photos", href: "/photos" },
             { id: "contact", label: "Contact", href: "/#contact" },
-            { id: "resume", label: "Résumé", href: profile.resumePath },
           ]}
         />
         {children}

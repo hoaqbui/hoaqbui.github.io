@@ -1,11 +1,13 @@
-export type Project = { id: string; title: string; body: string; status: string; live: boolean; steps?: string[]; why?: string; chips: string[] };
+export type Project = { id: string; title: string; body: string; status: string; live: boolean; steps?: string[]; why?: string; chips: string[]; tryUrl?: string };
 export const projects: Project[] = [
   { id: "intent-to-video", title: "Intent-to-video pipeline",
     body: "Turns creative intent into images, then video, on ComfyUI and LTX, with character orthos, render profiles and a continuity ledger for shot-to-shot consistency.",
     status: "runs end to end · hardening", live: true,
     steps: ["Intent", "Character orthos · ComfyUI", "Image · render profiles", "Video · LTX", "Continuity ledger"],
     why: "Removing the friction between a creative’s intent and what they make. Building it end to end shows where generative video still breaks.",
-    chips: ["ComfyUI", "LTX", "continuity ledger"] },
+    chips: ["ComfyUI", "LTX", "continuity ledger"],
+    // Compo, password-gated; the password is given on request, never published.
+    tryUrl: "https://mac-m4max.eel-terrapin.ts.net/" },
   { id: "parti", title: "Parti",
     body: "An early-stage multi-agent orchestration system that runs a research, plan, implement, verify and evaluate loop across a three-node home lab: a Mac Studio, a GB10 workstation and a NAS.",
     status: "early stage", live: false,

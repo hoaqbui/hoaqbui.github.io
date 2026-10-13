@@ -5,6 +5,7 @@ import Link from "next/link";
 import { projects } from "@/content/projects";
 import Reveal from "@/fx/Reveal";
 import Tilt from "@/fx/Tilt";
+import TryIt from "@/ui/TryIt";
 
 export default function Building() {
   const [current, setCurrent] = useState(0);
@@ -196,6 +197,7 @@ export default function Building() {
                     Read the project →
                   </Link>
                 )}
+                {d === 0 && project.tryUrl && <TryIt href={project.tryUrl} className="-mt-1" />}
               </>
             );
 

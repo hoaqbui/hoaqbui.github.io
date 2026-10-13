@@ -24,7 +24,7 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "Hoa Bui — Senior Technical Product Manager, AI creative tools",
+  title: "Hoa Bui — Creative and technology leader, Senior Technical PM",
   description: `${profile.headline} ${profile.roleLine}.`,
 };
 

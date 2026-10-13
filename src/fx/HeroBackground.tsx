@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import RippleBackground from "@/fx/RippleBackground";
+import rippleStyles from "./ripple.module.css";
 import {
   constellation,
   reactiveWeb,
@@ -163,13 +164,7 @@ export default function HeroBackground({ running }: { running: boolean }) {
             ref={canvasRef}
             className="absolute inset-0 block h-full w-full pointer-events-none"
           />
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background:
-                "radial-gradient(ellipse 44% 40% at 50% 50%, var(--color-bg) 35%, transparent 100%)",
-            }}
-          />
+          <div className={`${rippleStyles.veil} pointer-events-none`} />
         </>
       )}
     </div>

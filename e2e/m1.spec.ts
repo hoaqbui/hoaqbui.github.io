@@ -22,6 +22,17 @@ test.describe("M1 P0 steps", () => {
     }
   });
 
+  test("first proof number shows above the nav on a 390x664 phone", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 664 });
+    await page.goto("/");
+    const num = page.locator('section[aria-label="Proof"]').getByText("<1 hr").first();
+    const numBox = await num.boundingBox();
+    const navBox = await page.locator('nav[aria-label="Sections"]').boundingBox();
+    expect(numBox).not.toBeNull();
+    expect(navBox).not.toBeNull();
+    if (numBox && navBox) expect(numBox.y + numBox.height).toBeLessThanOrEqual(navBox.y);
+  });
+
   test("no horizontal scroll at 320px", async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 700 });
     await page.goto("/");

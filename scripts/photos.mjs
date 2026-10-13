@@ -36,6 +36,12 @@ for (const name of files) {
     .webp({ quality: 82 })
     .toFile(outPath);
 
+  // Phone size: 800 px wide (quality 76), picked by srcset on small screens
+  await sharp(srcPath)
+    .resize({ width: 800, withoutEnlargement: true })
+    .webp({ quality: 76 })
+    .toFile(path.join(OUTPUT_DIR, `${name}-800.webp`));
+
   // Long edge 320 px (quality 70)
   await sharp(srcPath)
     .resize({

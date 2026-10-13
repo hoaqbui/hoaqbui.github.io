@@ -99,6 +99,8 @@ export default function Cinemascope({ photos }: CinemascopeProps) {
   useEffect(() => {
     if (typeof window === "undefined" || !nextPhoto) return;
     const img = new window.Image();
+    img.sizes = "(min-width: 1152px) 1072px, calc(100vw - 48px)";
+    img.srcset = `${nextPhoto.src.replace(".webp", "-800.webp")} 800w, ${nextPhoto.src} ${nextPhoto.width}w`;
     img.src = nextPhoto.src;
   }, [nextPhoto]);
 
@@ -110,11 +112,6 @@ export default function Cinemascope({ photos }: CinemascopeProps) {
 
   return (
     <div className="w-full">
-      {/* Preload next image tag */}
-      {nextPhoto && (
-        <link rel="preload" as="image" href={nextPhoto.src} />
-      )}
-
       {/* 2.39:1 Letterbox Frame */}
       <div
         ref={frameRef}
@@ -141,6 +138,8 @@ export default function Cinemascope({ photos }: CinemascopeProps) {
             <KenBurns motionOn={effectiveMotion}>
               <img
                 src={currentPhoto.src}
+                srcSet={`${currentPhoto.src.replace(".webp", "-800.webp")} 800w, ${currentPhoto.src} ${currentPhoto.width}w`}
+                sizes="(min-width: 1152px) 1072px, calc(100vw - 48px)"
                 alt={currentPhoto.alt}
                 width={currentPhoto.width}
                 height={currentPhoto.height}

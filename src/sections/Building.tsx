@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, Fragment } from "react";
+import Link from "next/link";
 import { projects } from "@/content/projects";
 
 export default function Building() {
@@ -192,6 +193,14 @@ export default function Building() {
                     </span>
                   ))}
               </div>
+              {d === 0 && (
+                <Link
+                  href={`/building/${project.id}/`}
+                  className="text-teal font-medium min-h-[44px] inline-flex items-center mt-4"
+                >
+                  Read the project →
+                </Link>
+              )}
             </article>
           );
         })}

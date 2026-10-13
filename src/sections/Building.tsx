@@ -59,7 +59,7 @@ export default function Building() {
       <div className="flex-[1_1_340px] max-w-[420px] min-w-0">
         <p className="font-mono text-[13px] text-muted">Building now</p>
         <h2 className="mt-3 text-[40px] leading-[1.1] tracking-[-0.035em] font-medium">
-          Three things I’m building with my own hands.
+          What I’m building with my own hands.
         </h2>
         <p className="mt-4 text-[17px] leading-relaxed text-muted">
           Each one is a bet on how people will make things with AI.
@@ -136,16 +136,18 @@ export default function Building() {
                 d !== 0 ? "cursor-pointer pointer-events-auto" : ""
               }`}
             >
-              <div className="flex items-center">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-well px-2.5 py-1 font-mono text-[11px] text-text">
-                  <span
-                    className={`h-1.5 w-1.5 rounded-full ${
-                      project.live ? "bg-teal" : "bg-amber"
-                    }`}
-                  />
-                  {project.status}
-                </span>
-              </div>
+              {!project.status.startsWith("[") && (
+                <div className="flex items-center">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-well px-2.5 py-1 font-mono text-[11px] text-text">
+                    <span
+                      className={`h-1.5 w-1.5 rounded-full ${
+                        project.live ? "bg-teal" : "bg-amber"
+                      }`}
+                    />
+                    {project.status}
+                  </span>
+                </div>
+              )}
               <h3 className="mt-4 text-2xl font-medium tracking-tight text-text">
                 {project.title}
               </h3>

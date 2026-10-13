@@ -16,4 +16,6 @@ export const projects: Project[] = [
     steps: ["Research", "Plan", "Implement", "Verify", "Evaluate"],
     why: "One person gets a coherent, capable team of AI collaborators without running an agent swarm or coordinating every conversation.",
     chips: ["multi-agent", "home lab", "Claude Code"] },
+  { id: "himmelcam", title: "HimmelCam", body: "A dog-cam watcher: a PTZ camera, a vision model that finds Himmel, and a pan/tilt/zoom loop that keeps Himmel in view, with clips and alerts to a phone.", status: "[ status ]", live: false, steps: ["Camera stream", "Find Himmel", "Pan · tilt · zoom", "Clips & alerts"], why: "[ why build it ]", chips: ["PTZ camera", "vision model", "tracking loop"] },
+  { id: "art-tests", title: "Art tests & source tracking", body: "Automated tests for art assets, and a provenance record of where every shipped asset came from: source file, version, tool or model.", status: "[ status ]", live: false, steps: ["Source art", "Checks", "Build", "In game"], why: "[ why build it ]", chips: ["asset tests", "provenance", "pipeline"] }
 ];

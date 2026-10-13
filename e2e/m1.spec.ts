@@ -68,8 +68,12 @@ test.describe("M1 P0 steps", () => {
       const c = document.querySelector("[data-hero-bg] canvas") as HTMLCanvasElement | null;
       if (!c) return false;
       const before = c.toDataURL();
-      await new Promise((r) => setTimeout(r, 400));
-      return c.toDataURL() !== before;
+      // Backgrounds drift slowly (half speed); poll for up to 2 s.
+      for (let i = 0; i < 10; i++) {
+        await new Promise((r) => setTimeout(r, 200));
+        if (c.toDataURL() !== before) return true;
+      }
+      return false;
     });
     expect(moving).toBe(true);
   });

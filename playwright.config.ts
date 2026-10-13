@@ -12,7 +12,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "python3 -m http.server 4173 --bind 127.0.0.1 --directory out",
+    command: "pnpm exec serve out -l tcp://127.0.0.1:4173 --no-clipboard",
     url: "http://127.0.0.1:4173",
     reuseExistingServer: true,
   },

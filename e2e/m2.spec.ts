@@ -40,4 +40,84 @@ test.describe("M2 route transitions", () => {
     expect(backUrl.pathname).toBe("/");
     expect(["", "#building"]).toContain(backUrl.hash);
   });
+
+  test("project round trip", async ({ page }) => {
+    await page.goto("/");
+    const readLink = page.locator('#building a:has-text("Read the project →")');
+    await readLink.click();
+    await expect(page).toHaveURL(/\/building\/[^/]+\/$/);
+    await expect(page.locator("h1")).toBeVisible();
+    const backLink = page.getByRole("link", { name: "← Building" });
+    await backLink.click();
+    await expect(page).toHaveURL(/#building$/);
+    await expect(page.locator("#building")).toBeInViewport();
+  });
+
+  test("photos shows 8 frames", async ({ page }) => {
+    await page.goto("/photos/");
+    const toggle = page.getByRole("button", { name: /^Thumbnails/ });
+    const text = await toggle.innerText();
+    if (text.includes("off")) {
+      await toggle.click();
+    }
+    const thumbs = page.locator('button[aria-label^="Show "]');
+    await expect(thumbs).toHaveCount(8);
+    const frameImg = page.locator('[aria-label="Photo carousel"] img').first();
+    await expect(frameImg).toBeVisible();
+    const alt = await frameImg.getAttribute("alt");
+    expect(alt).toBeTruthy();
+    expect(alt!.trim().length).toBeGreaterThan(0);
+  });
+
+  test("reduced motion: nothing animates, no canvas repaints", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    for (const path of ["/", "/photos/"]) {
+      await page.goto(path);
+      await page.waitForTimeout(500);
+      const runningCount = await page.evaluate(
+        () => document.getAnimations().filter((a) => a.playState === "running").length
+      );
+      expect(runningCount).toBe(0);
+
+      const canvasStill = await page.evaluate(async () => {
+        const canvases = Array.from(document.querySelectorAll("canvas"));
+        const befores = canvases.map((c) => c.toDataURL());
+        await new Promise((r) => setTimeout(r, 1000));
+        const afters = canvases.map((c) => c.toDataURL());
+        return canvases.map((_, i) => befores[i] === afters[i]);
+      });
+      for (const still of canvasStill) {
+        expect(still).toBe(true);
+      }
+    }
+  });
+
+  test("every auto-advancing loop has a pause control", async ({ page }) => {
+    await page.goto("/");
+    const topPause = page.locator("#top").getByRole("button", { name: /pause motion|play motion/i });
+    await expect(topPause).toBeVisible();
+
+    await page.goto("/photos/");
+    const photosPause = page.getByRole("button", { name: /pause slideshow|play slideshow/i });
+    await expect(photosPause).toBeVisible();
+
+    await page.goto("/");
+    const rippleMesh = page.locator("[data-ripple-mesh]");
+    await expect(rippleMesh).toBeVisible();
+    const ripplePause = rippleMesh.getByRole("button", { name: /pause motion|play motion/i });
+    await expect(ripplePause).toBeVisible();
+  });
+
+  test("theme survives a reload", async ({ page }) => {
+    await page.goto("/");
+    const switchDark = page.getByRole("button", { name: /switch to dark theme/i }).first();
+    await switchDark.click();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    await page.reload();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    const switchLight = page.getByRole("button", { name: /switch to light theme/i }).first();
+    await switchLight.click();
+    await expect(page.locator("html")).not.toHaveAttribute("data-theme", "dark");
+  });
 });
+

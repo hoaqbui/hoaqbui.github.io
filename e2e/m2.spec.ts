@@ -116,5 +116,36 @@ test.describe("M2 route transitions", () => {
     await switchLight.click();
     await expect(page.locator("html")).not.toHaveAttribute("data-theme", "dark");
   });
+
+  test("dark mode recolors the Building chips", async ({ page }) => {
+    await page.goto("/");
+    const chip = page
+      .locator("#building article")
+      .first()
+      .locator("span")
+      .filter({ hasText: /ComfyUI|LTX|multi-agent|PTZ/ })
+      .first();
+    await expect(chip).toBeVisible();
+
+    const lightBg = await chip.evaluate(
+      (el) => window.getComputedStyle(el).backgroundColor
+    );
+
+    const switchDark = page
+      .getByRole("button", { name: /switch to dark theme/i })
+      .first();
+    await switchDark.click();
+
+    const darkBg = await chip.evaluate(
+      (el) => window.getComputedStyle(el).backgroundColor
+    );
+
+    expect(lightBg).not.toBe(darkBg);
+
+    const switchLight = page
+      .getByRole("button", { name: /switch to light theme/i })
+      .first();
+    await switchLight.click();
+  });
 });
 

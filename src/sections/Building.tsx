@@ -182,7 +182,7 @@ export default function Building() {
                     .map((chip, idx) => (
                       <span
                         key={idx}
-                        className="rounded-full bg-[#eef1ee] px-2.5 py-1 font-mono text-[11px] text-[#1f2326]"
+                        className="rounded-full bg-well px-2.5 py-1 font-mono text-[11px] text-text"
                       >
                         {chip}
                       </span>

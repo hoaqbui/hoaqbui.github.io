@@ -25,7 +25,7 @@ export default function Bars({
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2.5">
               <span
-                className={`h-2.5 min-w-[6px] rounded-full bg-[#c9ccc6] ${styles.bar}`}
+                className={`h-2.5 min-w-[6px] rounded-full bg-muted/40 ${styles.bar}`}
                 style={{ width: bar.beforeWidth }}
               />
               <span className="whitespace-nowrap font-mono text-xs text-muted">

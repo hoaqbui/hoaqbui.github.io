@@ -30,7 +30,7 @@ export default function ReachChips({
         {to.map((item, index) => (
           <span
             key={index}
-            className="rounded-full bg-[#e3efec] px-3.5 py-2 font-mono text-[13px] text-teal"
+            className="rounded-full bg-teal/10 px-3.5 py-2 font-mono text-[13px] text-teal"
           >
             {item}
           </span>

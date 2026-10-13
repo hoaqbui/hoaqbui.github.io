@@ -243,7 +243,7 @@ export default function Cinemascope({ photos }: CinemascopeProps) {
                   className={`h-1.5 rounded-full cursor-pointer transition-all duration-300 ${
                     isCurrent
                       ? "w-7 bg-[#3cc9b4]"
-                      : "w-1.5 bg-[#3a4146] hover:bg-[#596064]"
+                      : "w-1.5 bg-[#3a4146] hover:bg-[#a3adab]"
                   }`}
                 />
               );

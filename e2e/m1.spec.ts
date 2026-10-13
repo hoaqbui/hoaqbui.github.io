@@ -80,4 +80,17 @@ test.describe("M1 P0 steps", () => {
     await page.locator("#okr h3 button").click();
     await expect(page.locator('#work button[aria-expanded="true"]')).toHaveCount(1);
   });
+
+  test("nav fits on a 320px phone", async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 700 });
+    await page.goto("/");
+    const nav = page.locator('nav[aria-label="Sections"]');
+    await expect(nav).toBeVisible();
+    const box = await nav.boundingBox();
+    expect(box).not.toBeNull();
+    if (box) {
+      expect(box.x).toBeGreaterThanOrEqual(0);
+      expect(box.x + box.width).toBeLessThanOrEqual(320);
+    }
+  });
 });

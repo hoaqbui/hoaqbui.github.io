@@ -45,10 +45,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full">
         <PillNav
           items={[
-            { id: "top", label: "HB", href: "#top" },
-            { id: "building", label: "Building", href: "#building" },
-            { id: "work", label: "Work", href: "#work" },
-            { id: "contact", label: "Contact", href: "#contact" },
+            { id: "top", label: "HB", href: "/#top" },
+            { id: "building", label: "Building", href: "/#building" },
+            { id: "work", label: "Work", href: "/#work" },
+            { id: "photos", label: "Photos", href: "/photos" },
+            { id: "contact", label: "Contact", href: "/#contact" },
             { id: "resume", label: "Résumé", href: profile.resumePath },
           ]}
         />

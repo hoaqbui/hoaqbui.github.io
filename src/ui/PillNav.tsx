@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
 import ThemeToggle from "@/ui/ThemeToggle";
 
@@ -20,6 +21,10 @@ export default function PillNav({
 }: {
   items: { id: string; label: string; href: string }[];
 }) {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+  const isPhotos = pathname === "/photos";
+
   const [activeId, setActiveId] = useState<string>("");
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
@@ -48,7 +53,13 @@ export default function PillNav({
   }, []);
 
   useEffect(() => {
-    const hashItems = items.filter((item) => item.href.startsWith("#"));
+    if (!isHome) {
+      return;
+    }
+
+    const hashItems = items.filter(
+      (item) => item.href.startsWith("#") || item.href.startsWith("/#")
+    );
     const elements = hashItems
       .map((item) => document.getElementById(item.id))
       .filter((el): el is HTMLElement => el !== null);
@@ -73,14 +84,15 @@ export default function PillNav({
     return () => {
       observer.disconnect();
     };
-  }, [items]);
+  }, [items, isHome]);
 
   const handleClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string,
     id: string
   ) => {
-    if (!href.startsWith("#")) return;
+    const isHash = href.startsWith("#") || href.startsWith("/#");
+    if (!isHome || !isHash) return;
 
     e.preventDefault();
     const target = document.getElementById(id);
@@ -94,7 +106,8 @@ export default function PillNav({
       });
     }
 
-    window.history.replaceState(null, "", href);
+    const hashPart = href.startsWith("/#") ? href.slice(1) : href;
+    window.history.replaceState(null, "", hashPart);
     setActiveId(id);
   };
 
@@ -113,46 +126,82 @@ export default function PillNav({
     : SPRING_TRANSITION;
 
   return (
-    <nav
-      aria-label="Sections"
-      className="fixed z-50 left-1/2 -translate-x-1/2 max-md:bottom-[calc(16px+env(safe-area-inset-bottom))] md:top-4"
-    >
-      <motion.div
-        className="flex items-center rounded-full border border-border bg-surface/85 backdrop-blur p-1"
-        animate={pillAnimate}
-        transition={pillTransition}
+    <>
+      {/* Mobile-only standalone ThemeToggle: top-right fixed button */}
+      <div
+        className="fixed z-50 md:hidden right-3 top-[calc(12px+env(safe-area-inset-top))] flex items-center justify-center rounded-full border border-border bg-surface/85 backdrop-blur shadow-sm"
       >
-        {items.map((item, index) => {
-          const isHash = item.href.startsWith("#");
-          const isActive = isHash && activeId === item.id;
-
-          return (
-            <a
-              key={item.id}
-              href={item.href}
-              onClick={(e) => handleClick(e, item.href, item.id)}
-              aria-current={isActive ? "true" : undefined}
-              className={`relative inline-flex min-h-[44px] items-center px-3.5 text-sm transition-colors duration-300 ease-in-out motion-reduce:transition-none ${
-                index === 0 ? "font-semibold" : ""
-              } ${isActive ? "text-surface" : "text-muted hover:text-text"}`}
-            >
-              {isActive && (
-                <motion.span
-                  layoutId="pill-active-highlight"
-                  className="absolute inset-0 rounded-full bg-text"
-                  transition={highlightTransition}
-                />
-              )}
-              <span className="relative z-10">{item.label}</span>
-            </a>
-          );
-        })}
-        <div
-          aria-hidden="true"
-          className="mx-1 h-4 w-[1px] bg-border shrink-0"
-        />
         <ThemeToggle />
-      </motion.div>
-    </nav>
+      </div>
+
+      <nav
+        aria-label="Sections"
+        className="fixed z-50 left-1/2 -translate-x-1/2 max-md:bottom-[calc(16px+env(safe-area-inset-bottom))] md:top-4"
+      >
+        <motion.div
+          className={`flex items-center rounded-full p-1 transition-colors duration-300 ${
+            isPhotos
+              ? "bg-[rgba(13,15,16,0.72)] border border-[rgba(255,255,255,0.08)] backdrop-blur"
+              : "border border-border bg-surface/85 backdrop-blur"
+          }`}
+          animate={pillAnimate}
+          transition={pillTransition}
+        >
+          {items.map((item, index) => {
+            const isHash = item.href.startsWith("#") || item.href.startsWith("/#");
+            const isActive = isHome
+              ? isHash && activeId === item.id
+              : item.href === pathname;
+
+            const isResume = item.id === "resume";
+
+            let textColor = "";
+            if (isPhotos) {
+              textColor = isActive
+                ? "text-[#0d0f10]"
+                : "text-[#c9d0d3] hover:text-white";
+            } else {
+              textColor = isActive
+                ? "text-surface"
+                : "text-muted hover:text-text";
+            }
+
+            return (
+              <a
+                key={item.id}
+                href={item.href}
+                onClick={(e) => handleClick(e, item.href, item.id)}
+                aria-current={isActive ? (isHome ? "true" : "page") : undefined}
+                className={`relative ${
+                  isResume ? "hidden md:inline-flex" : "inline-flex"
+                } min-h-[44px] items-center px-2.5 md:px-3.5 text-[13px] md:text-sm transition-colors duration-300 ease-in-out motion-reduce:transition-none ${
+                  index === 0 ? "font-semibold" : ""
+                } ${textColor}`}
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="pill-active-highlight"
+                    className={`absolute inset-0 rounded-full ${
+                      isPhotos ? "bg-[#3cc9b4]" : "bg-text"
+                    }`}
+                    transition={highlightTransition}
+                  />
+                )}
+                <span className="relative z-10">{item.label}</span>
+              </a>
+            );
+          })}
+          <div
+            aria-hidden="true"
+            className={`hidden md:block mx-1 h-4 w-[1px] shrink-0 ${
+              isPhotos ? "bg-[rgba(255,255,255,0.15)]" : "bg-border"
+            }`}
+          />
+          <div className="hidden md:block">
+            <ThemeToggle />
+          </div>
+        </motion.div>
+      </nav>
+    </>
   );
 }

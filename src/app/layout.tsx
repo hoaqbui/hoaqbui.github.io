@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import PillNav from "@/ui/PillNav";
+import { profile } from "@/content/profile";
 import "./globals.css";
 
 const geist = Geist({
@@ -22,17 +24,28 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "Hoa Bui",
-  description: "Senior Technical Product Manager · AI creative tools · Los Angeles",
+  title: "Hoa Bui — Senior Technical Product Manager, AI creative tools",
+  description: `${profile.headline} ${profile.roleLine}.`,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable} h-full antialiased`}
+      className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable} h-full antialiased scroll-pt-20`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full">
+        <PillNav
+          items={[
+            { id: "top", label: "HB", href: "#top" },
+            { id: "building", label: "Building", href: "#building" },
+            { id: "work", label: "Work", href: "#work" },
+            { id: "contact", label: "Contact", href: "#contact" },
+            { id: "resume", label: "Résumé", href: profile.resumePath },
+          ]}
+        />
+        {children}
+      </body>
     </html>
   );
 }

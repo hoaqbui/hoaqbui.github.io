@@ -24,6 +24,7 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://hoa.flamme.us"),
   title: "Hoa Bui — Creative and technology leader, Senior Technical PM",
   description: `${profile.headline} ${profile.roleLine}.`,
 };

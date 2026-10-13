@@ -5,6 +5,9 @@ import HeroBackground from "@/fx/HeroBackground";
 import { profile } from "@/content/profile";
 import { proof } from "@/content/proof";
 
+import Parallax from "@/fx/Parallax";
+import Reveal from "@/fx/Reveal";
+
 export default function Hero() {
   const { ref, allowed, paused, running, toggle } = useMotion<HTMLElement>();
 
@@ -16,7 +19,7 @@ export default function Hero() {
         className="relative flex flex-col items-center justify-center overflow-hidden min-h-[100svh] md:min-h-[640px]"
       >
         <HeroBackground running={running} />
-        <div className="relative z-10 max-w-3xl px-6 text-center">
+        <Parallax className="relative z-10 max-w-3xl px-6 text-center">
           <p className="text-lg font-semibold">{profile.name}</p>
           <p className="mt-2 font-mono text-[13px] text-muted">
             {profile.roleLine}
@@ -40,7 +43,7 @@ export default function Hero() {
               Résumé →
             </a>
           </div>
-        </div>
+        </Parallax>
         {allowed && (
           <button
             type="button"
@@ -53,19 +56,21 @@ export default function Hero() {
         )}
       </section>
 
-      <section
-        aria-label="Proof"
-        className="mx-auto max-w-[1120px] border-t border-border px-6 py-16 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-8"
-      >
-        {proof.map((item, index) => (
-          <div key={index}>
-            <div className="text-4xl font-medium tracking-[-0.03em]">
-              {item.value}
+      <Reveal>
+        <section
+          aria-label="Proof"
+          className="mx-auto max-w-[1120px] border-t border-border px-6 py-16 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-8"
+        >
+          {proof.map((item, index) => (
+            <div key={index}>
+              <div className="text-4xl font-medium tracking-[-0.03em]">
+                {item.value}
+              </div>
+              <div className="mt-1.5 text-sm text-muted">{item.label}</div>
             </div>
-            <div className="mt-1.5 text-sm text-muted">{item.label}</div>
-          </div>
-        ))}
-      </section>
+          ))}
+        </section>
+      </Reveal>
     </>
   );
 }

@@ -25,8 +25,15 @@ const instrumentSerif = Instrument_Serif({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hoa.flamme.us"),
-  title: "Hoa Bui — Creative and technology leader, Senior Technical PM",
+  title: "Hoa Bui — Senior Technical Product Manager, AI creative tools",
   description: `${profile.headline} ${profile.roleLine}.`,
+  openGraph: {
+    type: "website",
+    url: "https://hoa.flamme.us",
+    siteName: "Hoa Bui",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Hoa Bui — AI and creative tools that put more in people’s hands." }],
+  },
+  twitter: { card: "summary_large_image", images: ["/og.png"] },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

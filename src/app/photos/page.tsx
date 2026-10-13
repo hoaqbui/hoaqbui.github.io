@@ -4,6 +4,7 @@ import Photos from "@/sections/Photos";
 
 export const metadata: Metadata = {
   title: "Photographs — Hoa Bui",
+  openGraph: { url: "/photos/" },
 };
 
 export default function PhotosPage() {

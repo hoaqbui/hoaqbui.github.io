@@ -1,8 +1,8 @@
 export type Profile = { name: string; roleLine: string; headline: string; subLine: string; email: string; linkedin: string; resumePath: string; vcardPath: string; openTo: string; quote: { text: string; by: string } };
 export const profile: Profile = {
   name: "Hoa Bui",
-  roleLine: "Creative and technology leader · Senior Technical PM · Los Angeles",
-  headline: "I build the tools artists use. Now with AI.",
+  roleLine: "Senior Technical Product Manager · AI creative tools · Los Angeles",
+  headline: "AI and creative tools that put more in people’s hands.",
   subLine: "19 years of pipelines and tools at Lucasfilm, Pixar and Riot Games.",
   email: "hoaqbui@gmail.com",
   linkedin: "https://www.linkedin.com/in/hoaqbui/",

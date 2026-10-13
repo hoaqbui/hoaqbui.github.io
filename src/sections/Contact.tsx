@@ -37,7 +37,7 @@ export default function Contact() {
             rel="noopener"
             className="inline-flex min-h-[44px] items-center font-medium text-teal"
           >
-            Résumé (PDF)
+            Résumé
           </a>
         </div>
       </section>

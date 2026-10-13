@@ -6,7 +6,7 @@ export const profile: Profile = {
   subLine: "19 years building the tools artists use: Lucasfilm, Pixar, Riot Games, and now AI.",
   email: "hoaqbui@gmail.com",
   linkedin: "https://www.linkedin.com/in/hoaqbui/",
-  resumePath: "/hoa-bui-resume.pdf",
+  resumePath: "https://docs.google.com/document/d/1s-OGEpBgFRViEk3mBTeSgL9CHzl-wdsOQKxoBNQtU7s/view",
   vcardPath: "/hoa-bui.vcf",
   openTo: "Open to Senior Product Manager and Senior Technical Product Manager roles in AI creative tools. Los Angeles.",
   quote: { text: "You didn’t just make us faster, you changed everything.", by: "Principal game designer, Riot" },

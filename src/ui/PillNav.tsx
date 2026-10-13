@@ -170,6 +170,7 @@ export default function PillNav({
               <a
                 key={item.id}
                 href={item.href}
+                {...(item.href.startsWith("http") ? { target: "_blank", rel: "noopener" } : {})}
                 onClick={(e) => handleClick(e, item.href, item.id)}
                 aria-current={isActive ? (isHome ? "true" : "page") : undefined}
                 className={`relative ${

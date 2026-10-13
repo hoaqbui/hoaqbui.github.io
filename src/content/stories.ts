@@ -28,7 +28,7 @@ export const stories: Story[] = [
     vizNote: "Relative to the starting point.",
     vizLabel: "Cost per asset halved, capacity doubled, tools team grew from 2 to 12 engineers." },
   { id: "okr", num: "50+", numNote: "artists & engineers led", title: "50+ people, one direction", years: "2022",
-    role: "Lead Producer, unannounced project", team: "all of Art, Audio and art-domain engineering",
+    role: "Lead Producer, unannounced project", team: "all of art, audio and art-domain engineering",
     context: "The organization's direction was unclear.",
     call: "I ran the team on OKRs to set direction and drive execution, and aligned leadership on data-driven decisions instead of opinions.",
     tradeOff: "[ the trade-off ]",

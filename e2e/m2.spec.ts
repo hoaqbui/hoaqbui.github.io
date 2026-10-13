@@ -102,10 +102,7 @@ test.describe("M2 route transitions", () => {
     await expect(photosPause).toBeVisible();
 
     await page.goto("/");
-    const rippleMesh = page.locator("[data-ripple-mesh]");
-    await expect(rippleMesh).toBeVisible();
-    const ripplePause = rippleMesh.getByRole("button", { name: /pause motion|play motion/i });
-    await expect(ripplePause).toBeVisible();
+    await expect(page.locator("[data-ripple-mesh]")).toHaveCount(0);
   });
 
   test("theme survives a reload", async ({ page }) => {

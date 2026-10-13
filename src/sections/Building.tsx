@@ -3,7 +3,6 @@
 import { useState, Fragment } from "react";
 import Link from "next/link";
 import { projects } from "@/content/projects";
-import RippleMesh from "@/fx/RippleMesh";
 import Reveal from "@/fx/Reveal";
 import Tilt from "@/fx/Tilt";
 
@@ -237,10 +236,6 @@ export default function Building() {
         </div>
         </div>
       </Reveal>
-
-      <div className="mt-12">
-        <RippleMesh />
-      </div>
     </section>
   );
 }

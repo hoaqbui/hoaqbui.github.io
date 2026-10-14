@@ -37,8 +37,12 @@ export default function Dusk({ children }: { children: ReactNode }) {
   useEffect(() => {
     update();
     window.addEventListener("resize", update);
+    // the page grows when the band's carousel mounts; recompute without waiting for a scroll
+    const grow = new ResizeObserver(update);
+    grow.observe(document.body);
     return () => {
       window.removeEventListener("resize", update);
+      grow.disconnect();
       document.documentElement.style.removeProperty("--dusk");
     };
   }, [update]);

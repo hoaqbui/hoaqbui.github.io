@@ -199,16 +199,20 @@ test.describe("Photos on home (card 65)", () => {
 
   test("home band images never load at high priority", async ({ page }) => {
     await page.goto("/");
+    await page.locator("#photos").scrollIntoViewIfNeeded();
+    await expect(page.locator("#photos img").first()).toBeAttached();
     await expect(page.locator('#photos img[fetchpriority="high"]')).toHaveCount(0);
     await expect(page.locator("#photos img").first()).toHaveAttribute("loading", "lazy");
   });
 
-  test("slides hold still while the band is off-screen", async ({ page }) => {
+  test("carousel loads only when the band is near, then plays", async ({ page }) => {
     await page.goto("/");
+    await expect(page.locator("#photos [aria-label='Photo carousel']")).toHaveCount(0);
+    await page.locator("#photos").scrollIntoViewIfNeeded();
     const caption = page.locator("#photos [aria-label='Photo carousel'] h2").first();
-    const before = await caption.textContent();
-    await page.waitForTimeout(7000);
-    expect(await caption.textContent()).toBe(before);
+    await expect(caption).toBeVisible();
+    const first = await caption.textContent();
+    await expect.poll(() => caption.textContent(), { timeout: 9000 }).not.toBe(first);
   });
 });
 

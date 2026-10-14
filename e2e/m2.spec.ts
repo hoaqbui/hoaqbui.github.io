@@ -429,11 +429,14 @@ test.describe("Draggable thumbnail strip", () => {
     await page.mouse.down();
     await page.mouse.move(box.x + box.width / 2 - pitch * 1.5, box.y + box.height / 2, { steps: 10 });
     // halfway between thumbnails 1 and 2: both photos showing, the top one partly
-    const top = page.locator("[data-scrub] img").nth(1);
-    await expect(top).toBeAttached();
-    const op = Number(await top.evaluate((el) => getComputedStyle(el).opacity));
-    expect(op).toBeGreaterThan(0.2);
-    expect(op).toBeLessThan(0.8);
+    await expect(page.locator("[data-scrub] img").first()).toBeAttached();
+    const ops = await page.locator("[data-scrub] img").evaluateAll((els) => els.map((el) => Number(getComputedStyle(el).opacity)));
+    // one layer fully shown, one part-way over it, the rest hidden
+    expect(ops.filter((o) => o === 1)).toHaveLength(1);
+    const partial = ops.filter((o) => o > 0 && o < 1);
+    expect(partial).toHaveLength(1);
+    expect(partial[0]).toBeGreaterThan(0.2);
+    expect(partial[0]).toBeLessThan(0.8);
     expect(Math.abs((await frameX()) - x0)).toBeLessThan(1);
     await page.mouse.up();
     // eases into the nearest thumbnail and lands on one photo
@@ -447,6 +450,25 @@ test.describe("Draggable thumbnail strip", () => {
     const frame = (await page.locator("[aria-label='Photo carousel']").boundingBox())!;
     const cap = (await caption(page).boundingBox())!;
     expect(cap.y).toBeGreaterThan(frame.y + frame.height);
+  });
+
+  test("a drag released outside the window still ends, and autoplay resumes", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("/photos/");
+    const strip = page.locator('button[aria-label^="Show "]').first().locator("xpath=..");
+    await strip.scrollIntoViewIfNeeded();
+    const box = (await strip.boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width / 2 - 300, box.y + box.height / 2, { steps: 10 });
+    // no pointerup reaches the page: the next move arrives with no button held
+    await page.evaluate(() =>
+      window.dispatchEvent(new PointerEvent("pointermove", { clientX: 10, clientY: 10, buttons: 0, pointerType: "mouse" })),
+    );
+    await expect(page.locator("[data-scrub]")).toHaveCount(0, { timeout: 3000 });
+    const landed = await caption(page).textContent();
+    await expect.poll(() => caption(page).textContent(), { timeout: 9000 }).not.toBe(landed);
+    await page.mouse.up();
   });
 
   test("tapping a thumbnail shows it", async ({ page }) => {

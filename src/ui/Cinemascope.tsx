@@ -7,6 +7,7 @@ import {
   useMotionValue,
   useReducedMotion,
   useTransform,
+  type MotionValue,
 } from "motion/react";
 import type { Photo } from "@/content/photos";
 import KenBurns from "@/fx/KenBurns";
@@ -31,6 +32,26 @@ function Caption({ photo }: { photo: Photo }) {
 }
 
 const focus = (p: Photo) => ({ objectPosition: `50% ${p.focusY ?? 50}%` });
+
+// One layer per photo near the strip's middle, its opacity set by the strip's position:
+// the photo at the whole number below is fully shown, the next one fades in over it.
+// Layers keep their element as the strip moves, so nothing reloads mid-dissolve.
+function ScrubLayer({ photo, index, pos }: { photo: Photo; index: number; pos: MotionValue<number> }) {
+  const opacity = useTransform(pos, (v) => {
+    const f = Math.floor(v);
+    return index === f ? 1 : index === f + 1 ? v - f : 0;
+  });
+  return (
+    <motion.img
+      src={photo.src}
+      srcSet={srcSet(photo)}
+      sizes={SIZES}
+      alt=""
+      style={{ opacity, zIndex: index, ...focus(photo) }}
+      className="absolute inset-0 w-full h-full object-cover"
+    />
+  );
+}
 
 export default function Cinemascope({ photos, eager = true }: CinemascopeProps) {
   const n = photos.length;
@@ -71,10 +92,11 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
   // the photo crossfades with the strip's position: halfway between two thumbnails, half
   // of each. Let go and it eases into the nearest thumbnail, which becomes the photo.
   const scrollPos = useMotionValue(0); // thumbnails from the start, fractional
-  const blend = useTransform(scrollPos, (v) => v - Math.floor(v));
   const [scrub, setScrub] = useState<{ a: number; b: number; near: number } | null>(null);
   // the swap at the end of a scrub shows the photo already on screen, so it doesn't fade
   const [instant, setInstant] = useState(false);
+  const [endingScrub, setEndingScrub] = useState(false);
+  const mainImg = useRef<HTMLImageElement>(null);
   const userScrolling = useRef(false);
   const settleTimer = useRef<number | undefined>(undefined);
   const drag = useRef<{ x: number; left: number; moved: boolean } | null>(null);
@@ -101,6 +123,18 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
   const handlePrev = () => goTo(currentIndex - 1);
   const handleNext = () => goTo(currentIndex + 1);
   const handleTogglePlay = () => setPaused((prev) => !prev);
+
+  // End of a scrub: drop the blended layers only when the committed photo can paint, so
+  // the hand-off never shows a blank frame.
+  useEffect(() => {
+    if (!endingScrub) return;
+    const done = () => {
+      setScrub(null);
+      setEndingScrub(false);
+    };
+    const img = mainImg.current;
+    (img?.decode ? img.decode() : Promise.resolve()).then(done, done);
+  }, [endingScrub, currentIndex]);
 
   // Autoplay, taps and arrow keys move the strip to centre the current thumbnail.
   useEffect(() => {
@@ -145,7 +179,7 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
       fromStrip.current = true;
       setInstant(true);
       setCurrentIndex(nearest);
-      setScrub(null);
+      setEndingScrub(true); // the scrub layers go once the committed photo is decoded
     }, 120);
   };
 
@@ -156,6 +190,9 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
     drag.current = { x: e.clientX, left: strip.scrollLeft, moved: false };
     const move = (ev: PointerEvent) => {
       if (!drag.current) return;
+      // released outside the window: the browser never sent pointerup, and the pointer
+      // comes back with no button held
+      if (ev.buttons === 0) return up();
       const dx = ev.clientX - drag.current.x;
       if (Math.abs(dx) > 4 && !drag.current.moved) {
         drag.current.moved = true;
@@ -166,6 +203,8 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
     const up = () => {
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", up);
+      window.removeEventListener("blur", up);
       const moved = drag.current?.moved;
       // keep the record until the click that follows a drag has been swallowed
       window.setTimeout(() => {
@@ -176,6 +215,9 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
     };
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", up);
+    // the window losing focus mid-drag (released over another app, or a system gesture)
+    window.addEventListener("pointercancel", up);
+    window.addEventListener("blur", up);
   };
 
   // Keyboard navigation on focused frame region only (no global listener)
@@ -242,6 +284,7 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
             <KenBurns motionOn={isPlaying && !scrub}>
               {near && (
                 <img
+                  ref={mainImg}
                   src={currentPhoto.src}
                   srcSet={srcSet(currentPhoto)}
                   sizes={SIZES}
@@ -262,16 +305,11 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
         {scrub && (
           <>
             <div className="absolute inset-0 z-[5]" data-scrub>
-              <img src={photos[scrub.a].src} srcSet={srcSet(photos[scrub.a])} sizes={SIZES} alt="" className="absolute inset-0 w-full h-full object-cover" style={focus(photos[scrub.a])} />
-              {scrub.b !== scrub.a && (
-                <motion.img
-                  src={photos[scrub.b].src}
-                  srcSet={srcSet(photos[scrub.b])}
-                  sizes={SIZES}
-                  alt=""
-                  style={{ opacity: blend, ...focus(photos[scrub.b]) }}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
+              {/* the two either side of the middle, plus two ahead each way, already loading */}
+              {photos.map((photo, i) =>
+                Math.abs(i - scrub.near) <= 2 ? (
+                  <ScrubLayer key={photo.id} photo={photo} index={i} pos={scrollPos} />
+                ) : null
               )}
             </div>
           </>

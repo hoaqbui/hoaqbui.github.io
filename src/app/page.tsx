@@ -9,7 +9,9 @@ import Contact from "@/sections/Contact";
 export default function Home() {
   return (
     <ViewTransition>
-      <main>
+      {/* clip, not hidden: no sideways scroll from the tilted Building cards, and shadows are
+          only cut at the screen edge (a wrapper that clipped them showed a hard grey box) */}
+      <main className="overflow-x-clip">
         <Hero />
         <Building />
         <Work />

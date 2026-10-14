@@ -105,13 +105,15 @@ export default function PillNav({
     ).matches;
 
     if (target) {
+      // let sections and the page fade know this is a jump, not a read-through
+      window.dispatchEvent(new CustomEvent("nav-jump", { detail: id }));
       target.scrollIntoView({
         behavior: prefersReducedMotion ? "auto" : "smooth",
       });
     }
 
-    const hashPart = href.startsWith("/#") ? href.slice(1) : href;
-    window.history.replaceState(null, "", hashPart);
+    // No history.replaceState for the hash: Next.js treats it as a navigation, which ran
+    // the page-transition crossfade over the smooth scroll (doubled text, blank frames).
     setActiveId(id);
   };
 

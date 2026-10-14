@@ -13,8 +13,22 @@ export default function Dusk({ children }: { children: ReactNode }) {
   const last = useRef(-1);
   const { scrollY } = useScroll();
 
+  // During a nav jump that isn't to Photos, the page doesn't fade as it flies past the band.
+  const jumping = useRef(false);
+  const jumpTimer = useRef<number | undefined>(undefined);
+  const updateRef = useRef<() => void>(() => {});
+
   const update = useCallback(() => {
     if (!band.current) return;
+    if (jumping.current) {
+      // the jump is over once scrolling has been still for 150 ms
+      window.clearTimeout(jumpTimer.current);
+      jumpTimer.current = window.setTimeout(() => {
+        jumping.current = false;
+        updateRef.current();
+      }, 150);
+      return;
+    }
     const H = window.innerHeight;
     const b = band.current.getBoundingClientRect();
     // Dark while the band covers the middle of the screen, fading over 15% of a screen on
@@ -31,7 +45,20 @@ export default function Dusk({ children }: { children: ReactNode }) {
     else root.setProperty("--dusk", String(dusk));
   }, []);
 
+  useEffect(() => {
+    updateRef.current = update;
+  }, [update]);
   useMotionValueEvent(scrollY, "change", update);
+  useEffect(() => {
+    const onJump = (e: Event) => {
+      if ((e as CustomEvent<string>).detail === "photos") return;
+      jumping.current = true;
+      last.current = 0;
+      document.documentElement.style.removeProperty("--dusk");
+    };
+    window.addEventListener("nav-jump", onJump);
+    return () => window.removeEventListener("nav-jump", onJump);
+  }, []);
   useEffect(() => {
     update();
     window.addEventListener("resize", update);

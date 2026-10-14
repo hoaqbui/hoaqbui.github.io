@@ -408,3 +408,22 @@ test.describe("Draggable thumbnail strip", () => {
     await expect(page.getByRole("button", { name: "Pause slideshow" })).toBeVisible();
   });
 });
+
+test("a nav click scrolls without starting a page transition", async ({ page }) => {
+  await page.addInitScript(() => {
+    const original = Document.prototype.startViewTransition;
+    (window as unknown as { __vt: number }).__vt = 0;
+    if (original)
+      Document.prototype.startViewTransition = function (...args: Parameters<typeof original>) {
+        (window as unknown as { __vt: number }).__vt++;
+        return original.apply(this, args);
+      };
+  });
+  await page.goto("/");
+  await page.waitForTimeout(500);
+  for (const name of ["Contact", "Building", "Photos", "HB"]) {
+    await page.getByRole("navigation", { name: "Sections" }).getByRole("link", { name }).click();
+    await page.waitForTimeout(400);
+  }
+  expect(await page.evaluate(() => (window as unknown as { __vt: number }).__vt)).toBe(0);
+});

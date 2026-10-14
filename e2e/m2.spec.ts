@@ -218,3 +218,39 @@ test("pill marks Photos and goes dark on the /photos page", async ({ page }) => 
   await expect(nav.locator("a[aria-current]")).toHaveText("Photos");
   await expect(nav.locator(":scope > div")).toHaveCSS("background-color", "rgba(13, 15, 16, 0.72)");
 });
+
+test.describe("Letterbox seam (card 66)", () => {
+  test("bars close above the band and open below it", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/");
+    const barHeight = (edge: string) =>
+      page.locator(`[data-letterbox="${edge}"] > div`).first().evaluate((el) => el.getBoundingClientRect().height);
+    const seamIn = page.locator('[data-letterbox="in"]');
+    // seam just entering from the bottom: open
+    await seamIn.evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - innerHeight + 2));
+    await expect.poll(() => barHeight("in")).toBeLessThan(5);
+    // band arriving: shut
+    await seamIn.evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().bottom + window.scrollY - innerHeight));
+    const h = await seamIn.evaluate((el) => el.getBoundingClientRect().height);
+    await expect.poll(() => barHeight("in")).toBeGreaterThan(h / 2 - 2);
+    // below: shut at first, open once it has left through the top
+    const seamOut = page.locator('[data-letterbox="out"]');
+    await seamOut.evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 10));
+    await expect.poll(() => barHeight("out")).toBeGreaterThan(h / 2 - 8);
+  });
+
+  test("reduced motion gets still gradients", async ({ browser }) => {
+    const ctx = await browser.newContext({ reducedMotion: "reduce" });
+    const page = await ctx.newPage();
+    await page.goto("/");
+    await expect(page.locator("[data-letterbox]")).toHaveCount(2);
+    await expect(page.locator("[data-letterbox] > div")).toHaveCount(0);
+    await ctx.close();
+  });
+
+  test("thumbnail strip hides its scrollbar", async ({ page }) => {
+    await page.goto("/photos/");
+    const strip = page.locator('button[aria-label^="Show "]').first().locator("xpath=..");
+    await expect(strip).toHaveCSS("scrollbar-width", "none");
+  });
+});

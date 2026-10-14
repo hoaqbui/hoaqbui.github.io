@@ -3,6 +3,7 @@ import Hero from "@/sections/Hero";
 import Building from "@/sections/Building";
 import Work from "@/sections/Work";
 import Photos from "@/sections/Photos";
+import Letterbox from "@/fx/Letterbox";
 import Contact from "@/sections/Contact";
 
 export default function Home() {
@@ -12,7 +13,9 @@ export default function Home() {
         <Hero />
         <Building />
         <Work />
-        <Photos band />
+        <Letterbox>
+          <Photos band />
+        </Letterbox>
         <Contact />
       </main>
     </ViewTransition>

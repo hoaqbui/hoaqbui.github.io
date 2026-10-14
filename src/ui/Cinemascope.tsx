@@ -210,7 +210,7 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
       {/* Thumbnails strip or 0...N line indicator */}
       {thumbsOn ? (
         <div className="relative mt-6 overflow-hidden">
-          <div className="flex gap-3 justify-center items-center overflow-x-auto py-2 px-1">
+          <div className="flex gap-3 justify-center items-center overflow-x-auto py-2 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {photos.map((photo, i) => {
               const isCurrent = i === currentIndex;
               return (

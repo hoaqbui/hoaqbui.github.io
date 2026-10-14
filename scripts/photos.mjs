@@ -15,6 +15,12 @@ const files = [
   'cz-58',
   'jp-40',
   'br-ipanema-sunset',
+  'tw-temple-roofs-coast',
+  'ie-rain-road',
+  'vn-pavilion-after-rain',
+  'tw-cat-mist-mountain',
+  'br-museum-window',
+  'cz-prague-weir',
 ];
 
 await fs.mkdir(OUTPUT_DIR, { recursive: true });

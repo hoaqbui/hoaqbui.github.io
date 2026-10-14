@@ -53,10 +53,10 @@ test.describe("M2 route transitions", () => {
     await expect(page.locator("#building")).toBeInViewport();
   });
 
-  test("photos shows 9 frames", async ({ page }) => {
+  test("photos shows 15 frames", async ({ page }) => {
     await page.goto("/photos/");
     const thumbs = page.locator('button[aria-label^="Show "]');
-    await expect(thumbs).toHaveCount(9);
+    await expect(thumbs).toHaveCount(15);
     const frameImg = page.locator('[aria-label="Photo carousel"] img').first();
     await expect(frameImg).toBeVisible();
     const alt = await frameImg.getAttribute("alt");

@@ -18,7 +18,7 @@ export default function Photos({ band = false }: { band?: boolean }) {
               Photographs
             </Heading>
             <p className="mt-2 text-base text-muted">
-              A quiet selection of frames from travels in Japan, Czechia and Brazil.
+              A quiet selection of frames from travels in Japan, Czechia, Taiwan, Ireland, Vietnam and Brazil.
             </p>
           </div>
           <a

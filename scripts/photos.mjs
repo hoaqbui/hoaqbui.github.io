@@ -14,6 +14,7 @@ const files = [
   'jp-28',
   'cz-58',
   'jp-40',
+  'br-ipanema-sunset',
 ];
 
 await fs.mkdir(OUTPUT_DIR, { recursive: true });

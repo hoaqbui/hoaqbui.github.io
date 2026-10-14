@@ -14,7 +14,7 @@ export default function Photos() {
               Photographs
             </h1>
             <p className="mt-2 text-base text-[#a3adab]">
-              A quiet selection of frames from travels in Japan and Czechia.
+              A quiet selection of frames from travels in Japan, Czechia and Brazil.
             </p>
           </div>
           <a

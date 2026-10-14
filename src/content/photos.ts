@@ -90,4 +90,14 @@ export const photos: Photo[] = [
     title: "A seat in the garden",
     alt: "A person sits in a pavilion facing a green garden",
   },
+  {
+    id: "br-ipanema-sunset",
+    src: "/photos/br-ipanema-sunset.webp",
+    thumb: "/photos/br-ipanema-sunset-thumb.webp",
+    width: 1280,
+    height: 720,
+    place: "BRAZIL · 2024",
+    title: "Ipanema, last light",
+    alt: "Ipanema beach at sunset, beachgoers in silhouette below the twin peaks of Dois Irmãos",
+  },
 ];

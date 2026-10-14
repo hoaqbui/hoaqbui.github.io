@@ -75,6 +75,9 @@ export default function Hero() {
               </div>
             ))}
           </div>
+          <p data-industries className="mt-8 md:mt-10 font-mono text-[12px] text-muted">
+            {profile.industries.join(" · ")}
+          </p>
         </section>
       </Reveal>
     </>

@@ -23,11 +23,28 @@ const instrumentSerif = Instrument_Serif({
   style: "italic",
 });
 
+const DESCRIPTION =
+  "Senior Technical Product Manager in Los Angeles for AI creative tools: generative video and agentic AI, after 19 years of film, animation and game pipelines at Lucasfilm, Pixar and Riot Games.";
+
+// schema.org Person for search engines; nothing on screen
+const PERSON = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: profile.name,
+  jobTitle: "Senior Technical Product Manager",
+  url: "https://hoa.flamme.us",
+  sameAs: [profile.linkedin],
+  address: { "@type": "PostalAddress", addressLocality: "Los Angeles", addressRegion: "CA", addressCountry: "US" },
+  knowsAbout: profile.searchTerms,
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://hoa.flamme.us"),
   title: "Hoa Bui — Senior Technical Product Manager, AI creative tools",
-  description: `${profile.headline} ${profile.roleLine}.`,
+  description: DESCRIPTION,
+  keywords: profile.searchTerms,
   openGraph: {
+    description: DESCRIPTION,
     type: "website",
     url: "https://hoa.flamme.us",
     siteName: "Hoa Bui",
@@ -51,6 +68,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
       </head>
       <body className="min-h-full">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(PERSON) }} />
         <PillNav
           items={[
             { id: "top", label: "HB", href: "/#top" },

@@ -125,3 +125,16 @@ test("the headline painted with the HTML is the one that stays (no remount after
   });
   expect(same).toBe(true);
 });
+
+test("industries, story tags and search data are on the page", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("[data-industries]")).toHaveText(
+    "Film & VFX · Animation · Live-service games · Generative AI · Creative software",
+  );
+  await expect(page.locator("#work [data-story-tags]").first()).toContainText("Workflow automation");
+  await expect(page.locator("#building").getByText("Generative video", { exact: true }).first()).toBeAttached();
+  const person = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent())!);
+  expect(person["@type"]).toBe("Person");
+  expect(person.knowsAbout).toContain("Agentic AI");
+  await expect(page.locator('meta[name="keywords"]')).toHaveAttribute("content", /Generative video/);
+});

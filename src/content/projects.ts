@@ -5,7 +5,7 @@ export const projects: Project[] = [
     status: "runs end to end · hardening", live: true,
     steps: ["Intent", "Character orthos · ComfyUI", "Image · render profiles", "Video · LTX", "Continuity ledger"],
     why: "Removing the friction between a creative’s intent and what they make. Building it end to end shows where generative video still breaks.",
-    chips: ["ComfyUI", "LTX", "continuity ledger"],
+    chips: ["Generative video", "Diffusion", "Human-in-the-loop", "ComfyUI", "LTX"],
     // Compo, password-gated; the password is given on request, never published.
     tryUrl: "https://mac-m4max.eel-terrapin.ts.net/" },
   { id: "parti", title: "Parti",
@@ -13,6 +13,6 @@ export const projects: Project[] = [
     status: "early stage", live: false,
     steps: ["Research", "Plan", "Implement", "Verify", "Evaluate"],
     why: "One person gets a coherent, capable team of AI collaborators without managing every agent or every conversation.",
-    chips: ["multi-agent", "home lab", "Claude Code"] },
-  { id: "himmelcam", title: "HimmelCam", body: "A dog-cam watcher. A PTZ camera and a vision model find Himmel, and a pan/tilt/zoom loop keeps Himmel in view, with clips and alerts to a phone.", status: "[ status ]", live: false, steps: ["Camera stream", "Find Himmel", "Pan · tilt · zoom", "Clips & alerts"], why: "[ why build it ]", chips: ["PTZ camera", "vision model", "tracking loop"] }
+    chips: ["Agentic AI", "Multi-agent orchestration", "Model evaluation", "Content provenance", "Local-first AI"] },
+  { id: "himmelcam", title: "HimmelCam", body: "A dog-cam watcher. A PTZ camera and a vision model find Himmel, and a pan/tilt/zoom loop keeps Himmel in view, with clips and alerts to a phone.", status: "[ status ]", live: false, steps: ["Camera stream", "Find Himmel", "Pan · tilt · zoom", "Clips & alerts"], why: "[ why build it ]", chips: ["Computer vision", "Edge AI", "PTZ control loop"] }
 ];

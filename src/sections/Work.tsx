@@ -109,6 +109,13 @@ export default function Work() {
                       <span className="font-mono text-[13px] text-muted">
                         Riot · {story.years}
                       </span>
+                      <span className="mt-1 flex flex-wrap gap-1.5" data-story-tags>
+                        {story.tags.map((tag) => (
+                          <span key={tag} className="rounded-full bg-well px-2.5 py-1 font-mono text-[11px] text-text">
+                            {tag}
+                          </span>
+                        ))}
+                      </span>
                     </div>
                     <span
                       aria-hidden="true"

@@ -1,6 +1,5 @@
 import { photos } from "@/content/photos";
 import Cinemascope from "@/ui/Cinemascope";
-import LazyCinemascope from "@/ui/LazyCinemascope";
 
 // band: the home-scroll version (h2, lazy, no full-screen height); default is the /photos page.
 export default function Photos({ band = false }: { band?: boolean }) {
@@ -32,11 +31,7 @@ export default function Photos({ band = false }: { band?: boolean }) {
           </a>
         </header>
 
-        {band ? (
-          <LazyCinemascope photos={photos} eager={false} />
-        ) : (
-          <Cinemascope photos={photos} />
-        )}
+        <Cinemascope photos={photos} eager={!band} />
       </div>
     </section>
   );

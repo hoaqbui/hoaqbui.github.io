@@ -205,14 +205,32 @@ test.describe("Photos on home (card 65)", () => {
     await expect(page.locator("#photos img").first()).toHaveAttribute("loading", "lazy");
   });
 
-  test("carousel loads only when the band is near, then plays", async ({ page }) => {
+  test("slides hold still while the band is off-screen, play once it's in view", async ({ page }) => {
     await page.goto("/");
-    await expect(page.locator("#photos [aria-label='Photo carousel']")).toHaveCount(0);
-    await page.locator("#photos").scrollIntoViewIfNeeded();
     const caption = page.locator("#photos [aria-label='Photo carousel'] h2").first();
-    await expect(caption).toBeVisible();
     const first = await caption.textContent();
+    await page.waitForTimeout(7000);
+    expect(await caption.textContent()).toBe(first);
+    await page.locator("#photos").scrollIntoViewIfNeeded();
     await expect.poll(() => caption.textContent(), { timeout: 9000 }).not.toBe(first);
+  });
+
+  test("jumping to Contact doesn't shift the page", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/");
+    await page.getByRole("navigation", { name: "Sections" }).getByRole("link", { name: "Contact" }).click();
+    // wait for the smooth scroll to finish
+    let last = -1;
+    await expect.poll(async () => {
+      const y = await page.evaluate(() => scrollY);
+      const settled = y === last;
+      last = y;
+      return settled;
+    }, { intervals: [250] }).toBe(true);
+    const top1 = await page.locator("#contact").evaluate((el) => el.getBoundingClientRect().top);
+    await page.waitForTimeout(1500);
+    const top2 = await page.locator("#contact").evaluate((el) => el.getBoundingClientRect().top);
+    expect(Math.abs(top2 - top1)).toBeLessThan(2);
   });
 });
 

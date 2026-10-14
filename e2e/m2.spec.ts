@@ -154,7 +154,7 @@ test("Compo: try link and password-on-request mailto on intent-to-video", async 
   for (const path of ["/", "/building/intent-to-video/"]) {
     await page.goto(path);
     const scope = path === "/" ? page.locator("#building") : page.locator("body");
-    const tryLink = scope.getByRole("link", { name: "Try it in Compo ↗" });
+    const tryLink = scope.getByRole("link", { name: "Try Compo ↗" });
     await expect(tryLink).toHaveAttribute("href", "https://mac-m4max.eel-terrapin.ts.net/");
     await expect(tryLink).toHaveAttribute("target", "_blank");
     await expect(scope.getByRole("link", { name: "Password on request" })).toHaveAttribute(
@@ -163,5 +163,14 @@ test("Compo: try link and password-on-request mailto on intent-to-video", async 
     );
   }
   await page.goto("/building/parti/");
-  await expect(page.getByRole("link", { name: "Try it in Compo ↗" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Try Compo ↗" })).toHaveCount(0);
+});
+
+test("Compo: both links share one line on a 360px phone card", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.goto("/");
+  const card = page.locator("#building");
+  const a = await card.getByRole("link", { name: "Try Compo ↗" }).boundingBox();
+  const b = await card.getByRole("link", { name: "Password on request" }).boundingBox();
+  expect(a && b && Math.abs(a.y - b.y)).toBeLessThan(2);
 });

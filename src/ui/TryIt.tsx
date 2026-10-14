@@ -11,7 +11,7 @@ export default function TryIt({ href, className = "" }: { href: string; classNam
         rel="noopener noreferrer"
         className="inline-flex min-h-[44px] items-center font-medium text-teal"
       >
-        Try it in Compo ↗
+        Try Compo ↗
       </a>
       <a
         href={passwordHref}

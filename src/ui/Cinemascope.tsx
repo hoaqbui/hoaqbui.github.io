@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+} from "motion/react";
 import type { Photo } from "@/content/photos";
 import KenBurns from "@/fx/KenBurns";
 
@@ -11,7 +17,25 @@ export interface CinemascopeProps {
   eager?: boolean;
 }
 
+const SIZES = "(min-width: 1152px) 1072px, calc(100vw - 48px)";
+const srcSet = (p: Photo) => `${p.src.replace(".webp", "-800.webp")} 800w, ${p.src} ${p.width}w`;
+const CAPTION_SHADOW = "0 2px 8px rgba(0,0,0,0.85), 0 1px 2px rgba(0,0,0,0.95)";
+
+function Caption({ photo }: { photo: Photo }) {
+  return (
+    <div className="pointer-events-none absolute bottom-5 md:bottom-8 left-0 right-0 z-20 px-6 text-center">
+      <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-[#f2b544]" style={{ textShadow: CAPTION_SHADOW }}>
+        {photo.place}
+      </p>
+      <h2 className="mt-1 font-serif italic text-[22px] md:text-[24px] text-[#f3f1ec]" style={{ textShadow: CAPTION_SHADOW }}>
+        {photo.title}
+      </h2>
+    </div>
+  );
+}
+
 export default function Cinemascope({ photos, eager = true }: CinemascopeProps) {
+  const n = photos.length;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [onScreen, setOnScreen] = useState(eager);
@@ -31,9 +55,7 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
   useEffect(() => {
     const el = frameRef.current;
     if (!el) return;
-    const observer = new IntersectionObserver(([entry]) =>
-      setOnScreen(entry.isIntersecting)
-    );
+    const observer = new IntersectionObserver(([entry]) => setOnScreen(entry.isIntersecting));
     observer.observe(el);
     const nearObserver = new IntersectionObserver(
       ([entry]) => entry.isIntersecting && setNear(true),
@@ -46,65 +68,88 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
     };
   }, []);
 
-  const goTo = useCallback(
-    (idx: number) => {
-      const n = photos.length;
-      if (n === 0) return;
-      setCurrentIndex((idx + n) % n);
-    },
-    [photos.length]
-  );
-
-  const handlePrev = useCallback(() => {
-    goTo(currentIndex - 1);
-  }, [currentIndex, goTo]);
-
-  const handleNext = useCallback(() => {
-    goTo(currentIndex + 1);
-  }, [currentIndex, goTo]);
-
-  const handleTogglePlay = () => setPaused((prev) => !prev);
-
-  // Thumbnail strip: drag or swipe it; when it comes to rest, the thumbnail nearest the
-  // middle becomes the photo shown (and the slideshow pauses). Autoplay, taps and arrow
-  // keys move the strip to centre the current thumbnail.
+  // --- Thumbnail strip ----------------------------------------------------------------
+  // The strip scrolls under a fixed frame in its middle. While it is dragged or swiped,
+  // the photo crossfades with the strip's position: halfway between two thumbnails, half
+  // of each. Let go and it eases into the nearest thumbnail, which becomes the photo.
+  const scrollPos = useMotionValue(0); // thumbnails from the start, fractional
+  const blend = useTransform(scrollPos, (v) => v - Math.floor(v));
+  const [scrub, setScrub] = useState<{ a: number; b: number; near: number } | null>(null);
+  // the swap at the end of a scrub shows the photo already on screen, so it doesn't fade
+  const [instant, setInstant] = useState(false);
   const userScrolling = useRef(false);
   const settleTimer = useRef<number | undefined>(undefined);
   const drag = useRef<{ x: number; left: number; moved: boolean } | null>(null);
   const [dragging, setDragging] = useState(false);
+  // the strip picked the photo itself, so don't re-centre it
+  const fromStrip = useRef(false);
   const centredOnce = useRef(false);
 
+  const pitch = (strip: HTMLDivElement) => {
+    const [a, b] = strip.children as unknown as HTMLElement[];
+    return a && b ? b.offsetLeft - a.offsetLeft : 1;
+  };
+  const position = (strip: HTMLDivElement) =>
+    Math.min(n - 1, Math.max(0, strip.scrollLeft / pitch(strip)));
+
+  const goTo = useCallback(
+    (idx: number) => {
+      if (n === 0) return;
+      setInstant(false);
+      setCurrentIndex((idx + n) % n);
+    },
+    [n]
+  );
+  const handlePrev = () => goTo(currentIndex - 1);
+  const handleNext = () => goTo(currentIndex + 1);
+  const handleTogglePlay = () => setPaused((prev) => !prev);
+
+  // Autoplay, taps and arrow keys move the strip to centre the current thumbnail.
   useEffect(() => {
+    if (fromStrip.current) {
+      fromStrip.current = false;
+      return;
+    }
     const strip = stripRef.current;
-    const thumb = strip?.children[currentIndex] as HTMLElement | undefined;
-    if (!strip || !thumb) return;
-    const left = thumb.offsetLeft - (strip.clientWidth - thumb.clientWidth) / 2;
+    if (!strip) return;
+    const left = currentIndex * pitch(strip);
     if (Math.abs(strip.scrollLeft - left) < 2) return;
-    const instant = reducedMotion || !centredOnce.current;
+    const smooth = !reducedMotion && centredOnce.current;
     centredOnce.current = true;
-    strip.scrollTo({ left, behavior: instant ? "auto" : "smooth" });
+    strip.scrollTo({ left, behavior: smooth ? "smooth" : "auto" });
   }, [currentIndex, reducedMotion]);
 
   const handleStripScroll = () => {
+    const strip = stripRef.current;
+    if (!strip) return;
+    const pos = position(strip);
+    scrollPos.set(pos);
+    if (userScrolling.current) {
+      const a = Math.floor(pos);
+      const b = Math.min(a + 1, n - 1);
+      const nearest = Math.round(pos);
+      setScrub((prev) =>
+        prev && prev.a === a && prev.b === b && prev.near === nearest ? prev : { a, b, near: nearest }
+      );
+      setPaused(true);
+    }
     window.clearTimeout(settleTimer.current);
     settleTimer.current = window.setTimeout(() => {
-      const strip = stripRef.current;
-      if (!strip || !userScrolling.current || drag.current) return;
+      if (!userScrolling.current || drag.current) return;
+      const nearest = Math.round(position(strip));
+      const target = nearest * pitch(strip);
+      if (Math.abs(strip.scrollLeft - target) > 1) {
+        // ease into the nearest thumbnail; this settles again when it arrives
+        strip.scrollTo({ left: target, behavior: reducedMotion ? "auto" : "smooth" });
+        return;
+      }
       userScrolling.current = false;
-      const middle = strip.scrollLeft + strip.clientWidth / 2;
-      let nearest = 0;
-      let best = Infinity;
-      Array.from(strip.children).forEach((el, i) => {
-        const t = el as HTMLElement;
-        const d = Math.abs(t.offsetLeft + t.clientWidth / 2 - middle);
-        if (d < best) {
-          best = d;
-          nearest = i;
-        }
-      });
+      setDragging(false);
+      fromStrip.current = true;
+      setInstant(true);
       setCurrentIndex(nearest);
-      setPaused(true);
-    }, 140);
+      setScrub(null);
+    }, 120);
   };
 
   const handleStripPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -117,7 +162,7 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
       const dx = ev.clientX - drag.current.x;
       if (Math.abs(dx) > 4 && !drag.current.moved) {
         drag.current.moved = true;
-        setDragging(true);
+        setDragging(true); // snapping off while dragging and easing in
       }
       if (drag.current.moved) strip.scrollLeft = drag.current.left - dx;
     };
@@ -125,11 +170,11 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", up);
       const moved = drag.current?.moved;
-      setDragging(false);
       // keep the record until the click that follows a drag has been swallowed
       window.setTimeout(() => {
         drag.current = null;
         if (moved) handleStripScroll();
+        else userScrolling.current = false;
       }, 0);
     };
     window.addEventListener("pointermove", move);
@@ -149,32 +194,29 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
 
   // Autoplay advances every 6s while playing
   useEffect(() => {
-    if (!isPlaying || photos.length <= 1) return;
-
+    if (!isPlaying || n <= 1) return;
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % photos.length);
+      setInstant(false);
+      setCurrentIndex((prev) => (prev + 1) % n);
     }, 6000);
-
     return () => clearInterval(timer);
-  }, [isPlaying, photos.length, currentIndex]);
+  }, [isPlaying, n, currentIndex]);
 
   // Preload the next image
-  const nextIndex = (currentIndex + 1) % photos.length;
-  const nextPhoto = photos[nextIndex];
-
+  const nextPhoto = photos[(currentIndex + 1) % n];
   useEffect(() => {
     if (typeof window === "undefined" || !nextPhoto || !onScreen) return;
     const img = new window.Image();
-    img.sizes = "(min-width: 1152px) 1072px, calc(100vw - 48px)";
-    img.srcset = `${nextPhoto.src.replace(".webp", "-800.webp")} 800w, ${nextPhoto.src} ${nextPhoto.width}w`;
+    img.sizes = SIZES;
+    img.srcset = srcSet(nextPhoto);
     img.src = nextPhoto.src;
   }, [nextPhoto, onScreen]);
 
-  if (!photos || photos.length === 0) {
-    return null;
-  }
+  if (n === 0) return null;
 
   const currentPhoto = photos[currentIndex];
+  const fade = effectiveMotion && !instant;
+  const highlighted = scrub ? scrub.near : currentIndex;
 
   return (
     <div className="w-full">
@@ -192,52 +234,50 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
         <AnimatePresence initial={false} mode="sync">
           <motion.div
             key={currentPhoto.id}
-            initial={effectiveMotion ? { opacity: 0 } : false}
+            initial={fade ? { opacity: 0 } : false}
             animate={{ opacity: 1 }}
-            exit={effectiveMotion ? { opacity: 0 } : undefined}
-            transition={{
-              duration: effectiveMotion ? 0.8 : 0,
-              ease: "easeInOut",
-            }}
+            exit={fade ? { opacity: 0 } : undefined}
+            transition={{ duration: fade ? 0.8 : 0, ease: "easeInOut" }}
             className="absolute inset-0 w-full h-full overflow-hidden"
           >
-            <KenBurns motionOn={effectiveMotion && onScreen}>
-              {near && <img
-                src={currentPhoto.src}
-                srcSet={`${currentPhoto.src.replace(".webp", "-800.webp")} 800w, ${currentPhoto.src} ${currentPhoto.width}w`}
-                sizes="(min-width: 1152px) 1072px, calc(100vw - 48px)"
-                alt={currentPhoto.alt}
-                width={currentPhoto.width}
-                height={currentPhoto.height}
-                fetchPriority={eager && currentIndex === 0 ? "high" : "auto"}
-                loading={eager && currentIndex === 0 ? "eager" : "lazy"}
-                className="w-full h-full object-cover"
-              />}
+            <KenBurns motionOn={isPlaying && !scrub}>
+              {near && (
+                <img
+                  src={currentPhoto.src}
+                  srcSet={srcSet(currentPhoto)}
+                  sizes={SIZES}
+                  alt={currentPhoto.alt}
+                  width={currentPhoto.width}
+                  height={currentPhoto.height}
+                  fetchPriority={eager && currentIndex === 0 ? "high" : "auto"}
+                  loading={eager && currentIndex === 0 ? "eager" : "lazy"}
+                  className="w-full h-full object-cover"
+                />
+              )}
             </KenBurns>
-
-            {/* Subtitle-style caption centered low in the frame */}
-            <div className="pointer-events-none absolute bottom-5 md:bottom-8 left-0 right-0 z-20 px-6 text-center">
-              <p
-                className="font-mono text-[11px] tracking-[0.18em] uppercase text-[#f2b544]"
-                style={{
-                  textShadow:
-                    "0 2px 8px rgba(0,0,0,0.85), 0 1px 2px rgba(0,0,0,0.95)",
-                }}
-              >
-                {currentPhoto.place}
-              </p>
-              <h2
-                className="mt-1 font-serif italic text-[22px] md:text-[24px] text-[#f3f1ec]"
-                style={{
-                  textShadow:
-                    "0 2px 8px rgba(0,0,0,0.85), 0 1px 2px rgba(0,0,0,0.95)",
-                }}
-              >
-                {currentPhoto.title}
-              </h2>
-            </div>
+            {!scrub && <Caption photo={currentPhoto} />}
           </motion.div>
         </AnimatePresence>
+
+        {/* While scrubbing: the two photos either side of the strip's middle, blended */}
+        {scrub && (
+          <>
+            <div className="absolute inset-0 z-[5]" data-scrub>
+              <img src={photos[scrub.a].src} srcSet={srcSet(photos[scrub.a])} sizes={SIZES} alt="" className="absolute inset-0 w-full h-full object-cover" />
+              {scrub.b !== scrub.a && (
+                <motion.img
+                  src={photos[scrub.b].src}
+                  srcSet={srcSet(photos[scrub.b])}
+                  sizes={SIZES}
+                  alt=""
+                  style={{ opacity: blend }}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              )}
+            </div>
+            <Caption photo={photos[scrub.near]} />
+          </>
+        )}
 
         {/* Soft radial vignette */}
         <div
@@ -250,7 +290,7 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
           <button
             type="button"
             onClick={handleTogglePlay}
-            aria-label={isPlaying || (!paused && !onScreen) ? "Pause slideshow" : "Play slideshow"}
+            aria-label={paused ? "Play slideshow" : "Pause slideshow"}
             aria-pressed={paused}
             title={paused ? "Play slideshow" : "Pause slideshow"}
             className="absolute right-3 top-3 z-30 flex h-11 w-11 items-center justify-center rounded-full bg-black/45 text-[#f3f1ec] backdrop-blur-sm transition-colors hover:bg-black/65 cursor-pointer"
@@ -271,7 +311,7 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
 
       {/* Progress hairline indicator */}
       <div className="h-[2px] w-full bg-border overflow-hidden">
-        {isPlaying && (
+        {isPlaying && !scrub && (
           <motion.div
             key={currentIndex}
             initial={{ width: "0%" }}
@@ -282,25 +322,25 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
         )}
       </div>
 
-      {/* Draggable thumbnail strip; padding lets the first and last thumbnails reach the middle */}
-      <div
-        ref={stripRef}
-        onScroll={handleStripScroll}
-        onPointerDown={handleStripPointerDown}
-        onWheel={() => (userScrolling.current = true)}
-        onClickCapture={(e) => {
-          if (drag.current?.moved) {
-            e.preventDefault();
-            e.stopPropagation();
-          }
-        }}
-        className={`relative mt-6 flex gap-3 items-center overflow-x-auto py-3 [--tw:6rem] sm:[--tw:7rem] px-[calc(50%-var(--tw)/2)] select-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
-          dragging ? "cursor-grabbing snap-none" : "cursor-grab snap-x snap-mandatory"
-        }`}
-      >
-        {photos.map((photo, i) => {
-          const isCurrent = i === currentIndex;
-          return (
+      {/* Thumbnail strip under a fixed frame; the padding lets the first and last thumbnails
+          reach the middle */}
+      <div className="relative mt-6 [--tw:6rem] sm:[--tw:7rem]">
+        <div
+          ref={stripRef}
+          onScroll={handleStripScroll}
+          onPointerDown={handleStripPointerDown}
+          onWheel={() => (userScrolling.current = true)}
+          onClickCapture={(e) => {
+            if (drag.current?.moved) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+          }}
+          className={`flex gap-3 items-center overflow-x-auto py-3 px-[calc(50%-var(--tw)/2)] select-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
+            dragging ? "cursor-grabbing snap-none" : "cursor-grab snap-x snap-mandatory"
+          }`}
+        >
+          {photos.map((photo, i) => (
             <button
               key={photo.id}
               type="button"
@@ -310,12 +350,10 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
                 goTo(i);
               }}
               aria-label={`Show ${photo.title}`}
-              aria-current={isCurrent ? "true" : undefined}
+              aria-current={i === currentIndex ? "true" : undefined}
               title={photo.title}
-              className={`relative h-14 w-[var(--tw)] shrink-0 snap-center rounded-md overflow-hidden transition-[opacity,transform] duration-300 ${
-                isCurrent
-                  ? "ring-2 ring-teal ring-offset-2 ring-offset-bg opacity-100 scale-105"
-                  : "opacity-45 hover:opacity-80 scale-100"
+              className={`relative h-14 w-[var(--tw)] shrink-0 snap-center rounded-md overflow-hidden transition-opacity duration-200 ${
+                i === highlighted ? "opacity-100" : "opacity-45 hover:opacity-80"
               }`}
             >
               <img
@@ -328,8 +366,14 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
                 className="pointer-events-none w-full h-full object-cover"
               />
             </button>
-          );
-        })}
+          ))}
+        </div>
+        {/* the floating frame: it stays put while the thumbnails slide under it */}
+        <div
+          aria-hidden="true"
+          data-strip-frame
+          className="pointer-events-none absolute left-1/2 top-1/2 h-[3.75rem] w-[calc(var(--tw)+0.25rem)] -translate-x-1/2 -translate-y-1/2 rounded-lg ring-2 ring-teal ring-offset-2 ring-offset-bg"
+        />
       </div>
     </div>
   );

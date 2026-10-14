@@ -169,9 +169,14 @@ test("Compo: both links share one line on a 360px phone card", async ({ page }) 
   const pwLink = card.getByRole("link", { name: "Password on request" });
   await expect(tryLink).toBeVisible();
   await expect(pwLink).toBeVisible();
-  const a = await tryLink.boundingBox();
-  const b = await pwLink.boundingBox();
-  expect(a && b && Math.abs(a.y - b.y)).toBeLessThan(2);
+  // measured with the web font: before it loads, the slightly wider fallback can wrap them
+  await expect
+    .poll(async () => {
+      const a = await tryLink.boundingBox();
+      const b = await pwLink.boundingBox();
+      return a && b ? Math.abs(a.y - b.y) : 99;
+    })
+    .toBeLessThan(2);
 });
 
 test.describe("Photos on home (card 65)", () => {
@@ -392,12 +397,44 @@ test.describe("Draggable thumbnail strip", () => {
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
     await page.mouse.down();
     await page.mouse.move(box.x + box.width / 2 - 260, box.y + box.height / 2, { steps: 12 });
+    // the photo follows the strip before the drag ends
+    await expect.poll(() => caption(page).textContent()).not.toBe(before);
     await page.mouse.up();
+    // eases into the nearest thumbnail, then commits it
+    await expect(page.locator("[data-scrub]")).toHaveCount(0, { timeout: 3000 });
     await expect.poll(() => caption(page).textContent()).not.toBe(before);
     await expect(page.getByRole("button", { name: "Play slideshow" })).toBeVisible();
     // the shown photo is the thumbnail now marked current
     const current = await page.locator('button[aria-current="true"][aria-label^="Show "]').getAttribute("aria-label");
     expect(current).toBe(`Show ${await caption(page).textContent()}`);
+  });
+
+  test("mid-drag the photo is a blend of its neighbours, under a fixed frame", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("/photos/");
+    const thumbs = page.locator('button[aria-label^="Show "]');
+    const strip = thumbs.first().locator("xpath=..");
+    await expect(caption(page)).toBeVisible();
+    const pitch = await thumbs.nth(1).evaluate((b, a) => b.getBoundingClientRect().left - (a as Element).getBoundingClientRect().left, await thumbs.nth(0).elementHandle());
+    const frame = page.locator("[data-strip-frame]");
+    const frameX = async () => { const b = (await frame.boundingBox())!; return b.x + b.width / 2; };
+    const x0 = await frameX();
+    const box = (await strip.boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width / 2 - pitch * 1.5, box.y + box.height / 2, { steps: 10 });
+    // halfway between thumbnails 1 and 2: both photos showing, the top one partly
+    const top = page.locator("[data-scrub] img").nth(1);
+    await expect(top).toBeAttached();
+    const op = Number(await top.evaluate((el) => getComputedStyle(el).opacity));
+    expect(op).toBeGreaterThan(0.2);
+    expect(op).toBeLessThan(0.8);
+    expect(Math.abs((await frameX()) - x0)).toBeLessThan(1);
+    await page.mouse.up();
+    // eases into the nearest thumbnail and lands on one photo
+    await expect(page.locator("[data-scrub]")).toHaveCount(0, { timeout: 3000 });
+    const sl = await strip.evaluate((el) => el.scrollLeft);
+    expect(Math.abs(sl / pitch - Math.round(sl / pitch))).toBeLessThan(0.02);
   });
 
   test("tapping a thumbnail shows it", async ({ page }) => {

@@ -14,19 +14,18 @@ export interface CinemascopeProps {
 export default function Cinemascope({ photos, eager = true }: CinemascopeProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-  const [motionOn, setMotionOn] = useState(true);
-  const [thumbsOn, setThumbsOn] = useState(true);
   const [onScreen, setOnScreen] = useState(eager);
   // Below the fold, the photo isn't requested until the frame is near (lazy loading alone
   // still fetches it at page load on slow connections).
   const [near, setNear] = useState(eager);
 
   const frameRef = useRef<HTMLDivElement>(null);
+  const stripRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
 
-  // If user prefers reduced motion or motion toggle is off, effective motion is false
-  const effectiveMotion = motionOn && !reducedMotion;
-  // Slides and the push only run while the frame is on screen.
+  // Crossfades follow the reduced-motion setting; slides and the slow push also stop when
+  // paused and while the frame is off screen.
+  const effectiveMotion = !reducedMotion;
   const isPlaying = effectiveMotion && !paused && onScreen;
 
   useEffect(() => {
@@ -47,13 +46,6 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
     };
   }, []);
 
-  // On client mount with prefers-reduced-motion, default to paused
-  useEffect(() => {
-    if (reducedMotion) {
-      setPaused(true);
-    }
-  }, [reducedMotion]);
-
   const goTo = useCallback(
     (idx: number) => {
       const n = photos.length;
@@ -71,28 +63,77 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
     goTo(currentIndex + 1);
   }, [currentIndex, goTo]);
 
-  const handleTogglePlay = () => {
-    if (!motionOn) {
-      // If motion was off and user plays, enable motion and unpause
-      setMotionOn(true);
-      setPaused(false);
-    } else {
-      setPaused((prev) => !prev);
-    }
+  const handleTogglePlay = () => setPaused((prev) => !prev);
+
+  // Thumbnail strip: drag or swipe it; when it comes to rest, the thumbnail nearest the
+  // middle becomes the photo shown (and the slideshow pauses). Autoplay, taps and arrow
+  // keys move the strip to centre the current thumbnail.
+  const userScrolling = useRef(false);
+  const settleTimer = useRef<number | undefined>(undefined);
+  const drag = useRef<{ x: number; left: number; moved: boolean } | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const centredOnce = useRef(false);
+
+  useEffect(() => {
+    const strip = stripRef.current;
+    const thumb = strip?.children[currentIndex] as HTMLElement | undefined;
+    if (!strip || !thumb) return;
+    const left = thumb.offsetLeft - (strip.clientWidth - thumb.clientWidth) / 2;
+    if (Math.abs(strip.scrollLeft - left) < 2) return;
+    const instant = reducedMotion || !centredOnce.current;
+    centredOnce.current = true;
+    strip.scrollTo({ left, behavior: instant ? "auto" : "smooth" });
+  }, [currentIndex, reducedMotion]);
+
+  const handleStripScroll = () => {
+    window.clearTimeout(settleTimer.current);
+    settleTimer.current = window.setTimeout(() => {
+      const strip = stripRef.current;
+      if (!strip || !userScrolling.current || drag.current) return;
+      userScrolling.current = false;
+      const middle = strip.scrollLeft + strip.clientWidth / 2;
+      let nearest = 0;
+      let best = Infinity;
+      Array.from(strip.children).forEach((el, i) => {
+        const t = el as HTMLElement;
+        const d = Math.abs(t.offsetLeft + t.clientWidth / 2 - middle);
+        if (d < best) {
+          best = d;
+          nearest = i;
+        }
+      });
+      setCurrentIndex(nearest);
+      setPaused(true);
+    }, 140);
   };
 
-  const toggleMotion = () => {
-    setMotionOn((prev) => {
-      const next = !prev;
-      if (!next) {
-        setPaused(true);
+  const handleStripPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    userScrolling.current = true;
+    const strip = stripRef.current;
+    if (e.pointerType !== "mouse" || !strip) return; // touch and pen scroll natively
+    drag.current = { x: e.clientX, left: strip.scrollLeft, moved: false };
+    const move = (ev: PointerEvent) => {
+      if (!drag.current) return;
+      const dx = ev.clientX - drag.current.x;
+      if (Math.abs(dx) > 4 && !drag.current.moved) {
+        drag.current.moved = true;
+        setDragging(true);
       }
-      return next;
-    });
-  };
-
-  const toggleThumbs = () => {
-    setThumbsOn((prev) => !prev);
+      if (drag.current.moved) strip.scrollLeft = drag.current.left - dx;
+    };
+    const up = () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      const moved = drag.current?.moved;
+      setDragging(false);
+      // keep the record until the click that follows a drag has been swallowed
+      window.setTimeout(() => {
+        drag.current = null;
+        if (moved) handleStripScroll();
+      }, 0);
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
   };
 
   // Keyboard navigation on focused frame region only (no global listener)
@@ -203,6 +244,29 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_center,transparent_55%,rgba(0,0,0,0.45))]"
         />
+
+        {/* The one control: pause (WCAG 2.2.2 — the slideshow moves for longer than 5 s) */}
+        {!reducedMotion && (
+          <button
+            type="button"
+            onClick={handleTogglePlay}
+            aria-label={isPlaying || (!paused && !onScreen) ? "Pause slideshow" : "Play slideshow"}
+            aria-pressed={paused}
+            title={paused ? "Play slideshow" : "Pause slideshow"}
+            className="absolute right-3 top-3 z-30 flex h-11 w-11 items-center justify-center rounded-full bg-black/45 text-[#f3f1ec] backdrop-blur-sm transition-colors hover:bg-black/65 cursor-pointer"
+          >
+            {paused ? (
+              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            ) : (
+              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="6" y="5" width="4" height="14" rx="1" />
+                <rect x="14" y="5" width="4" height="14" rx="1" />
+              </svg>
+            )}
+          </button>
+        )}
       </div>
 
       {/* Progress hairline indicator */}
@@ -218,172 +282,54 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
         )}
       </div>
 
-      {/* Thumbnails strip or 0...N line indicator */}
-      {thumbsOn ? (
-        <div className="relative mt-6 overflow-hidden">
-          <div className="flex gap-3 justify-center items-center overflow-x-auto py-2 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {photos.map((photo, i) => {
-              const isCurrent = i === currentIndex;
-              return (
-                <button
-                  key={photo.id}
-                  type="button"
-                  onClick={() => goTo(i)}
-                  aria-label={`Show ${photo.title}`}
-                  aria-current={isCurrent ? "true" : undefined}
-                  title={photo.title}
-                  className={`relative h-14 w-24 sm:w-28 shrink-0 rounded-md overflow-hidden cursor-pointer transition-all duration-300 ${
-                    isCurrent
-                      ? "ring-2 ring-teal ring-offset-2 ring-offset-bg opacity-100 scale-105"
-                      : "opacity-45 hover:opacity-80 scale-100"
-                  }`}
-                >
-                  <img
-                    src={photo.thumb}
-                    alt=""
-                    width={photo.width}
-                    height={photo.height}
-                    loading="lazy"
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      ) : (
-        <div className="mt-6 flex items-center justify-center gap-3 font-mono text-xs text-muted">
-          <span>0</span>
-          <div className="flex items-center gap-1.5">
-            {photos.map((photo, i) => {
-              const isCurrent = i === currentIndex;
-              return (
-                <button
-                  key={photo.id}
-                  type="button"
-                  onClick={() => goTo(i)}
-                  aria-label={`Show ${photo.title}`}
-                  aria-current={isCurrent ? "true" : undefined}
-                  title={photo.title}
-                  className={`h-1.5 rounded-full cursor-pointer transition-all duration-300 ${
-                    isCurrent
-                      ? "w-7 bg-teal"
-                      : "w-1.5 bg-border hover:bg-muted"
-                  }`}
-                />
-              );
-            })}
-          </div>
-          <span>{photos.length}</span>
-        </div>
-      )}
-
-      {/* Centered Controls and Quiet Toggles */}
-      <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 items-center gap-4">
-        {/* Left: counter */}
-        <div className="hidden sm:flex items-center font-mono text-xs text-muted">
-          <span>
-            {String(currentIndex + 1).padStart(2, "0")} /{" "}
-            {String(photos.length).padStart(2, "0")}
-          </span>
-        </div>
-
-        {/* Center: Previous · Play/Pause · Next */}
-        <div className="flex items-center justify-center gap-3">
-          <button
-            type="button"
-            onClick={handlePrev}
-            aria-label="Previous photo"
-            title="Previous photo"
-            className="flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-text hover:bg-text/10 transition-colors cursor-pointer"
-          >
-            <svg
-              aria-hidden="true"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+      {/* Draggable thumbnail strip; padding lets the first and last thumbnails reach the middle */}
+      <div
+        ref={stripRef}
+        onScroll={handleStripScroll}
+        onPointerDown={handleStripPointerDown}
+        onWheel={() => (userScrolling.current = true)}
+        onClickCapture={(e) => {
+          if (drag.current?.moved) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }}
+        className={`relative mt-6 flex gap-3 items-center overflow-x-auto py-3 [--tw:6rem] sm:[--tw:7rem] px-[calc(50%-var(--tw)/2)] select-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
+          dragging ? "cursor-grabbing snap-none" : "cursor-grab snap-x snap-mandatory"
+        }`}
+      >
+        {photos.map((photo, i) => {
+          const isCurrent = i === currentIndex;
+          return (
+            <button
+              key={photo.id}
+              type="button"
+              onClick={() => {
+                // a tap selects without pausing; only a drag pauses
+                userScrolling.current = false;
+                goTo(i);
+              }}
+              aria-label={`Show ${photo.title}`}
+              aria-current={isCurrent ? "true" : undefined}
+              title={photo.title}
+              className={`relative h-14 w-[var(--tw)] shrink-0 snap-center rounded-md overflow-hidden transition-[opacity,transform] duration-300 ${
+                isCurrent
+                  ? "ring-2 ring-teal ring-offset-2 ring-offset-bg opacity-100 scale-105"
+                  : "opacity-45 hover:opacity-80 scale-100"
+              }`}
             >
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-          </button>
-          <button
-            type="button"
-            onClick={handleTogglePlay}
-            aria-label={isPlaying ? "Pause slideshow" : "Play slideshow"}
-            aria-pressed={!isPlaying}
-            title={isPlaying ? "Pause slideshow" : "Play slideshow"}
-            className="flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-border text-text hover:bg-text/10 transition-colors cursor-pointer"
-          >
-            {isPlaying ? (
-              <svg
-                aria-hidden="true"
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <rect x="6" y="5" width="4" height="14" rx="1" />
-                <rect x="14" y="5" width="4" height="14" rx="1" />
-              </svg>
-            ) : (
-              <svg
-                aria-hidden="true"
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            )}
-          </button>
-          <button
-            type="button"
-            onClick={handleNext}
-            aria-label="Next photo"
-            title="Next photo"
-            className="flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-text hover:bg-text/10 transition-colors cursor-pointer"
-          >
-            <svg
-              aria-hidden="true"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M9 18l6-6-6-6" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Right: quiet toggles */}
-        <div className="flex items-center justify-center sm:justify-end gap-2">
-          <button
-            type="button"
-            aria-pressed={motionOn}
-            onClick={toggleMotion}
-            className="inline-flex min-h-[44px] items-center rounded-full border border-border px-3 font-mono text-[11px] text-muted hover:text-text transition-colors cursor-pointer"
-          >
-            Motion {motionOn ? "on" : "off"}
-          </button>
-          <button
-            type="button"
-            aria-pressed={thumbsOn}
-            onClick={toggleThumbs}
-            className="inline-flex min-h-[44px] items-center rounded-full border border-border px-3 font-mono text-[11px] text-muted hover:text-text transition-colors cursor-pointer"
-          >
-            Thumbnails {thumbsOn ? "on" : "off"}
-          </button>
-        </div>
+              <img
+                src={photo.thumb}
+                alt=""
+                width={photo.width}
+                height={photo.height}
+                loading="lazy"
+                draggable={false}
+                className="pointer-events-none w-full h-full object-cover"
+              />
+            </button>
+          );
+        })}
       </div>
     </div>
   );

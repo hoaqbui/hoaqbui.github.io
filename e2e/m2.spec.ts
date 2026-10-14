@@ -55,11 +55,6 @@ test.describe("M2 route transitions", () => {
 
   test("photos shows 9 frames", async ({ page }) => {
     await page.goto("/photos/");
-    const toggle = page.getByRole("button", { name: /^Thumbnails/ });
-    const text = await toggle.innerText();
-    if (text.includes("off")) {
-      await toggle.click();
-    }
     const thumbs = page.locator('button[aria-label^="Show "]');
     await expect(thumbs).toHaveCount(9);
     const frameImg = page.locator('[aria-label="Photo carousel"] img').first();
@@ -370,4 +365,46 @@ test("project diagrams read at normal size on a phone", async ({ page }) => {
   await page.goto("/building/parti/");
   await expect(page.locator("[data-diagram-portrait]")).toBeHidden();
   await expect(page.locator("[data-diagram-card] svg").first()).toBeVisible();
+});
+
+test.describe("Draggable thumbnail strip", () => {
+  const caption = (page: import("@playwright/test").Page) =>
+    page.locator("[aria-label='Photo carousel'] h2").first();
+
+  test("only a pause control remains", async ({ page }) => {
+    await page.goto("/photos/");
+    for (const name of [/^Thumbnails/, /^Motion/, "Previous photo", "Next photo"]) {
+      await expect(page.getByRole("button", { name })).toHaveCount(0);
+    }
+    const pause = page.getByRole("button", { name: "Pause slideshow" });
+    await expect(pause).toBeVisible();
+    await pause.click();
+    await expect(page.getByRole("button", { name: "Play slideshow" })).toBeVisible();
+  });
+
+  test("dragging the strip picks the photo in the middle and pauses", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("/photos/");
+    const strip = page.locator('button[aria-label^="Show "]').first().locator("xpath=..");
+    await expect(caption(page)).toBeVisible();
+    const before = await caption(page).textContent();
+    const box = (await strip.boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width / 2 - 260, box.y + box.height / 2, { steps: 12 });
+    await page.mouse.up();
+    await expect.poll(() => caption(page).textContent()).not.toBe(before);
+    await expect(page.getByRole("button", { name: "Play slideshow" })).toBeVisible();
+    // the shown photo is the thumbnail now marked current
+    const current = await page.locator('button[aria-current="true"][aria-label^="Show "]').getAttribute("aria-label");
+    expect(current).toBe(`Show ${await caption(page).textContent()}`);
+  });
+
+  test("tapping a thumbnail shows it", async ({ page }) => {
+    await page.goto("/photos/");
+    await page.getByRole("button", { name: "Show Ipanema, last light" }).click();
+    await expect(caption(page)).toHaveText("Ipanema, last light");
+    await page.waitForTimeout(600);
+    await expect(page.getByRole("button", { name: "Pause slideshow" })).toBeVisible();
+  });
 });

@@ -110,3 +110,18 @@ test.describe("M1 P0 steps", () => {
     }
   });
 });
+
+test("the headline painted with the HTML is the one that stays (no remount after load)", async ({ page }) => {
+  await page.addInitScript(() => {
+    document.addEventListener("DOMContentLoaded", () => {
+      (window as unknown as { __h1: Element | null }).__h1 = document.querySelector("h1");
+    });
+  });
+  await page.goto("/", { waitUntil: "networkidle" });
+  await page.waitForTimeout(500);
+  const same = await page.evaluate(() => {
+    const first = (window as unknown as { __h1: Element | null }).__h1;
+    return !!first && first.isConnected && first === document.querySelector("h1");
+  });
+  expect(same).toBe(true);
+});

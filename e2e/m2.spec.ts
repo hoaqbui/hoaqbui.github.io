@@ -498,3 +498,40 @@ test("a nav click scrolls without starting a page transition", async ({ page }) 
   }
   expect(await page.evaluate(() => (window as unknown as { __vt: number }).__vt)).toBe(0);
 });
+
+test.describe("Parti screenshots (card 69)", () => {
+  test("the Parti card leads with a screenshot", async ({ page }) => {
+    await page.goto("/");
+    await page.locator("#building").getByText("Parti", { exact: true }).first().click();
+    const img = page.locator("#building [data-shot].shot-light img").first();
+    await expect(img).toBeVisible();
+    await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(0);
+  });
+
+  test("the Parti page shows the workspace and five steps, each image loaded", async ({ page }) => {
+    await page.goto("/building/parti/");
+    await expect(page.locator("[data-hero-shot] .shot-light img")).toBeVisible();
+    const steps = page.locator("[data-shot-steps] > li");
+    await expect(steps).toHaveCount(5);
+    for (let i = 0; i < 5; i++) {
+      const img = steps.nth(i).locator(".shot-light img");
+      await img.scrollIntoViewIfNeeded();
+      await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(0);
+    }
+    // tapping a shot opens it full size
+    await expect(steps.first().locator("a.shot-light")).toHaveAttribute("href", "/projects/parti/step-1-light.webp");
+  });
+
+  test("dark theme swaps to the dark screenshots", async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem("theme", "dark"));
+    await page.goto("/building/parti/");
+    await expect(page.locator("[data-hero-shot] .shot-dark img")).toBeVisible();
+    await expect(page.locator("[data-hero-shot] .shot-light img")).toBeHidden();
+  });
+
+  test("other projects keep their text-and-diagram page", async ({ page }) => {
+    await page.goto("/building/himmelcam/");
+    await expect(page.locator("[data-shot]")).toHaveCount(0);
+    await expect(page.locator("[data-diagram-card]")).toBeVisible();
+  });
+});

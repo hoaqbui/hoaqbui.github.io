@@ -119,3 +119,8 @@ nav[aria-label="Sections"] {
   }
 }
 
+
+/* Screenshots come in light and dark; show the one that matches the site's theme. */
+.shot-dark { display: none; }
+:root[data-theme="dark"] .shot-light { display: none; }
+:root[data-theme="dark"] .shot-dark { display: block; }

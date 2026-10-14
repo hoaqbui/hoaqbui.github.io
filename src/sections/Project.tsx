@@ -2,6 +2,7 @@ import Link from "next/link";
 import { projects } from "@/content/projects";
 import { diagrams, portraits, Portrait } from "@/ui/diagrams";
 import TryIt from "@/ui/TryIt";
+import Shot from "@/ui/Shot";
 
 export default function Project({ id }: { id: string }) {
   const currentIndex = projects.findIndex((p) => p.id === id);
@@ -49,6 +50,23 @@ export default function Project({ id }: { id: string }) {
         </div>
       </div>
 
+      {project.shots ? (
+        <ShotsLayout project={project} showStatus={Boolean(showStatus)} showWhy={showWhy} chips={validChips}>
+          {Diagram && (
+            <div className="rounded-3xl bg-surface p-4 sm:p-6" data-diagram-card>
+              <div className={portrait ? "hidden sm:block" : undefined}>
+                <Diagram />
+              </div>
+              {portrait && (
+                <div className="sm:hidden" data-diagram-portrait>
+                  <Portrait spec={portrait} />
+                </div>
+              )}
+            </div>
+          )}
+        </ShotsLayout>
+      ) : (
+        <>
       {/* Two columns */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
         {/* Left column */}
@@ -140,6 +158,84 @@ export default function Project({ id }: { id: string }) {
           )}
         </div>
       </div>
+        </>
+      )}
     </section>
+  );
+}
+
+// A project with screenshots of the running app: the workspace first, then one task
+// start to finish, then the machines it runs on.
+function ShotsLayout({
+  project,
+  showStatus,
+  showWhy,
+  chips,
+  children,
+}: {
+  project: (typeof projects)[number];
+  showStatus: boolean;
+  showWhy: boolean;
+  chips: string[];
+  children: React.ReactNode;
+}) {
+  const shots = project.shots!;
+  return (
+    <div className="flex flex-col gap-14">
+      <div className="flex flex-col gap-5">
+        {showStatus && (
+          <div className="flex items-center">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-well px-2.5 py-1 font-mono text-[11px] text-text">
+              <span className={`h-1.5 w-1.5 rounded-full ${project.live ? "bg-teal" : "bg-amber"}`} />
+              {project.status}
+            </span>
+          </div>
+        )}
+        <h1 className="text-[40px] leading-[1.1] tracking-tight font-medium text-text">{project.title}</h1>
+        <p className="max-w-[720px] text-[17px] leading-relaxed text-text">{project.body}</p>
+        <div style={{ viewTransitionName: `card-${project.id}` }} className="card-morph" data-hero-shot>
+          <Shot shot={shots.hero} sizes="(min-width: 1168px) 1072px, calc(100vw - 48px)" link />
+        </div>
+      </div>
+
+      <div>
+        <h2 className="font-mono text-sm text-muted">One task, start to finish</h2>
+        <ol className="mt-6 flex list-none flex-col gap-12 p-0" data-shot-steps>
+          {shots.steps.map((step, i) => (
+            <li key={step.shot.src} className="flex flex-col gap-4">
+              <p className="flex gap-3 text-[17px] leading-relaxed text-text">
+                <span className="font-mono text-[13px] leading-[1.9] text-teal">0{i + 1}</span>
+                <span>{step.caption}</span>
+              </p>
+              <Shot shot={step.shot} sizes="(min-width: 1168px) 1072px, calc(100vw - 48px)" link />
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <div className="grid grid-cols-1 items-start gap-12 md:grid-cols-2">
+        <div>
+          <h2 className="font-mono text-sm text-muted">How it runs</h2>
+          <div className="mt-3">{children}</div>
+        </div>
+        <div className="flex flex-col gap-8">
+          {showWhy && (
+            <div>
+              <h2 className="font-mono text-sm text-muted">Why build it</h2>
+              <p className="mt-2.5 text-[17px] leading-relaxed text-text">{project.why}</p>
+            </div>
+          )}
+          {chips.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {chips.map((chip) => (
+                <span key={chip} className="rounded-full bg-well px-2.5 py-1 font-mono text-[11px] text-text">
+                  {chip}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

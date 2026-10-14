@@ -6,6 +6,7 @@ import { projects } from "@/content/projects";
 import Reveal from "@/fx/Reveal";
 import Tilt from "@/fx/Tilt";
 import TryIt from "@/ui/TryIt";
+import Shot from "@/ui/Shot";
 
 export default function Building() {
   const [current, setCurrent] = useState(0);
@@ -133,6 +134,11 @@ export default function Building() {
             const d = (index - current + n) % n;
             const cardContent = (
               <>
+                {project.shots && (
+                  <div className="mb-5">
+                    <Shot shot={project.shots.card} sizes="(min-width: 768px) 512px, 85vw" />
+                  </div>
+                )}
                 {!project.status.startsWith("[") && (
                   <div className="flex items-center">
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-well px-2.5 py-1 font-mono text-[11px] text-text">
@@ -151,7 +157,7 @@ export default function Building() {
                 <p className="mt-2 text-[15px] leading-relaxed text-muted">
                   {project.body}
                 </p>
-                {project.steps && project.steps.length > 0 && (
+                {!project.shots && project.steps && project.steps.length > 0 && (
                   <div
                     role="img"
                     aria-label={`${project.title} stages: ${project.steps.join(", ")}`}

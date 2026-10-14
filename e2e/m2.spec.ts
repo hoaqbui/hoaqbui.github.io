@@ -220,31 +220,43 @@ test("pill marks Photos and goes dark on the /photos page", async ({ page }) => 
 });
 
 test.describe("Letterbox seam (card 66)", () => {
-  test("bars close above the band and open below it", async ({ page }) => {
+  test("film bars frame the way into and out of the band", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
-    const barHeight = (edge: string) =>
-      page.locator(`[data-letterbox="${edge}"] > div`).first().evaluate((el) => el.getBoundingClientRect().height);
-    const seamIn = page.locator('[data-letterbox="in"]');
-    // seam just entering from the bottom: open
-    await seamIn.evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - innerHeight + 2));
-    await expect.poll(() => barHeight("in")).toBeLessThan(5);
-    // band arriving: shut
-    await seamIn.evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().bottom + window.scrollY - innerHeight));
-    const h = await seamIn.evaluate((el) => el.getBoundingClientRect().height);
-    await expect.poll(() => barHeight("in")).toBeGreaterThan(h / 2 - 2);
-    // below: shut at first, open once it has left through the top
-    const seamOut = page.locator('[data-letterbox="out"]');
-    await seamOut.evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - 10));
-    await expect.poll(() => barHeight("out")).toBeGreaterThan(h / 2 - 8);
+    const bar = (edge: string) =>
+      page.locator(`[data-letterbox-bar="${edge}"]`).evaluate((el) => el.getBoundingClientRect().height);
+    const scrollTo = (expr: string) => page.evaluate((e) => window.scrollTo(0, eval(e)), expr);
+    const M = Math.min(0.12 * 844, 120);
+    // far above: no bars
+    await scrollTo("0");
+    await expect.poll(() => bar("top")).toBe(0);
+    // band's top half the grow distance below the screen: both bars half grown
+    await scrollTo("document.getElementById('photos').getBoundingClientRect().top + scrollY - innerHeight * 1.15");
+    await expect.poll(() => bar("top")).toBeGreaterThan(M / 2 - 3);
+    await expect.poll(() => bar("bottom")).toBeGreaterThan(M / 2 - 3);
+    // inside the band: no bar covers the photos (the bottom bar may extend the dark below a short band)
+    await scrollTo("document.getElementById('photos').getBoundingClientRect().top + scrollY + 20");
+    await expect.poll(() => bar("top")).toBe(0);
+    const bandBottom = await page.locator("#photos").evaluate((el) => el.getBoundingClientRect().bottom);
+    await expect.poll(async () => 844 - (await bar("bottom"))).toBeGreaterThanOrEqual(bandBottom - 1);
+    // band's bottom at the bar line: the bottom bar meets it, full height
+    await scrollTo(`document.getElementById('photos').getBoundingClientRect().bottom + scrollY - innerHeight + ${M}`);
+    await expect.poll(() => bar("bottom")).toBeGreaterThan(M - 3);
+    // a short band can still show its top: the top bar only ever reaches the band's top edge
+    const bandTop = await page.locator("#photos").evaluate((el) => el.getBoundingClientRect().top);
+    await expect.poll(() => bar("top")).toBeLessThanOrEqual(Math.max(0, bandTop) + 1);
+    // end of the page: no bars over Contact
+    await scrollTo("document.documentElement.scrollHeight");
+    await expect.poll(() => bar("top")).toBe(0);
+    await expect.poll(() => bar("bottom")).toBe(0);
   });
 
-  test("reduced motion gets still gradients", async ({ browser }) => {
+  test("reduced motion gets still gradients, no bars", async ({ browser }) => {
     const ctx = await browser.newContext({ reducedMotion: "reduce" });
     const page = await ctx.newPage();
     await page.goto("/");
     await expect(page.locator("[data-letterbox]")).toHaveCount(2);
-    await expect(page.locator("[data-letterbox] > div")).toHaveCount(0);
+    await expect(page.locator("[data-letterbox-bar]")).toHaveCount(0);
     await ctx.close();
   });
 

@@ -22,11 +22,14 @@ export default function PillNav({
 }: {
   items: { id: string; label: string; href: string }[];
 }) {
-  const pathname = usePathname();
+  // trailingSlash: true serves "/photos/"; compare without the slash.
+  const pathname = usePathname().replace(/(.)\/$/, "$1");
   const isHome = pathname === "/";
-  const isPhotos = pathname === "/photos";
+  const onPhotosPage = pathname === "/photos";
 
   const [activeId, setActiveId] = useState<string>("");
+  // Dark pill over the photo band (home) or on the /photos page.
+  const isPhotos = onPhotosPage || (isHome && activeId === "photos");
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
   const shouldReduceMotion = useReducedMotion();
@@ -152,7 +155,7 @@ export default function PillNav({
             const isHash = item.href.startsWith("#") || item.href.startsWith("/#");
             const isActive = isHome
               ? isHash && activeId === item.id
-              : item.href === pathname;
+              : item.href === pathname || (onPhotosPage && item.id === "photos");
 
             const isResume = item.id === "resume";
 

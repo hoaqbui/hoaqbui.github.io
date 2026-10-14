@@ -170,7 +170,51 @@ test("Compo: both links share one line on a 360px phone card", async ({ page }) 
   await page.setViewportSize({ width: 360, height: 800 });
   await page.goto("/");
   const card = page.locator("#building");
-  const a = await card.getByRole("link", { name: "Try Compo ↗" }).boundingBox();
-  const b = await card.getByRole("link", { name: "Password on request" }).boundingBox();
+  const tryLink = card.getByRole("link", { name: "Try Compo ↗" });
+  const pwLink = card.getByRole("link", { name: "Password on request" });
+  await expect(tryLink).toBeVisible();
+  await expect(pwLink).toBeVisible();
+  const a = await tryLink.boundingBox();
+  const b = await pwLink.boundingBox();
   expect(a && b && Math.abs(a.y - b.y)).toBeLessThan(2);
+});
+
+test.describe("Photos on home (card 65)", () => {
+  test("band sits between Work and Contact", async ({ page }) => {
+    await page.goto("/");
+    const ids = await page.locator("main > section[id], main section#photos, main #contact, main #work").evaluateAll((els) =>
+      els.map((e) => e.id).filter((id) => ["work", "photos", "contact"].includes(id)),
+    );
+    expect([...new Set(ids)]).toEqual(["work", "photos", "contact"]);
+    await expect(page.locator("#photos").getByRole("heading", { level: 2, name: "Photographs" })).toHaveCount(1);
+  });
+
+  test("pill Photos scrolls home to the band", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/");
+    await page.getByRole("navigation", { name: "Sections" }).getByRole("link", { name: "Photos" }).click();
+    await expect(page.locator("#photos")).toBeInViewport();
+    expect(new URL(page.url()).pathname).toBe("/");
+  });
+
+  test("home band images never load at high priority", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator('#photos img[fetchpriority="high"]')).toHaveCount(0);
+    await expect(page.locator("#photos img").first()).toHaveAttribute("loading", "lazy");
+  });
+
+  test("slides hold still while the band is off-screen", async ({ page }) => {
+    await page.goto("/");
+    const caption = page.locator("#photos [aria-label='Photo carousel'] h2").first();
+    const before = await caption.textContent();
+    await page.waitForTimeout(7000);
+    expect(await caption.textContent()).toBe(before);
+  });
+});
+
+test("pill marks Photos and goes dark on the /photos page", async ({ page }) => {
+  await page.goto("/photos/");
+  const nav = page.getByRole("navigation", { name: "Sections" });
+  await expect(nav.locator("a[aria-current]")).toHaveText("Photos");
+  await expect(nav.locator(":scope > div")).toHaveCSS("background-color", "rgba(13, 15, 16, 0.72)");
 });

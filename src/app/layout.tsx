@@ -56,7 +56,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             { id: "top", label: "HB", href: "/#top" },
             { id: "building", label: "Building", href: "/#building" },
             { id: "work", label: "Work", href: "/#work" },
-            { id: "photos", label: "Photos", href: "/photos" },
+            { id: "photos", label: "Photos", href: "/#photos" },
             { id: "contact", label: "Contact", href: "/#contact" },
           ]}
         />

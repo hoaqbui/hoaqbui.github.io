@@ -7,20 +7,34 @@ import KenBurns from "@/fx/KenBurns";
 
 export interface CinemascopeProps {
   photos: Photo[];
+  // false when the carousel sits below the fold (home): frame 1 loads lazily.
+  eager?: boolean;
 }
 
-export default function Cinemascope({ photos }: CinemascopeProps) {
+export default function Cinemascope({ photos, eager = true }: CinemascopeProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [motionOn, setMotionOn] = useState(true);
   const [thumbsOn, setThumbsOn] = useState(true);
+  const [onScreen, setOnScreen] = useState(eager);
 
   const frameRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
 
   // If user prefers reduced motion or motion toggle is off, effective motion is false
   const effectiveMotion = motionOn && !reducedMotion;
-  const isPlaying = effectiveMotion && !paused;
+  // Slides and the push only run while the frame is on screen.
+  const isPlaying = effectiveMotion && !paused && onScreen;
+
+  useEffect(() => {
+    const el = frameRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) =>
+      setOnScreen(entry.isIntersecting)
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   // On client mount with prefers-reduced-motion, default to paused
   useEffect(() => {
@@ -97,12 +111,12 @@ export default function Cinemascope({ photos }: CinemascopeProps) {
   const nextPhoto = photos[nextIndex];
 
   useEffect(() => {
-    if (typeof window === "undefined" || !nextPhoto) return;
+    if (typeof window === "undefined" || !nextPhoto || !onScreen) return;
     const img = new window.Image();
     img.sizes = "(min-width: 1152px) 1072px, calc(100vw - 48px)";
     img.srcset = `${nextPhoto.src.replace(".webp", "-800.webp")} 800w, ${nextPhoto.src} ${nextPhoto.width}w`;
     img.src = nextPhoto.src;
-  }, [nextPhoto]);
+  }, [nextPhoto, onScreen]);
 
   if (!photos || photos.length === 0) {
     return null;
@@ -135,7 +149,7 @@ export default function Cinemascope({ photos }: CinemascopeProps) {
             }}
             className="absolute inset-0 w-full h-full overflow-hidden"
           >
-            <KenBurns motionOn={effectiveMotion}>
+            <KenBurns motionOn={effectiveMotion && onScreen}>
               <img
                 src={currentPhoto.src}
                 srcSet={`${currentPhoto.src.replace(".webp", "-800.webp")} 800w, ${currentPhoto.src} ${currentPhoto.width}w`}
@@ -143,8 +157,8 @@ export default function Cinemascope({ photos }: CinemascopeProps) {
                 alt={currentPhoto.alt}
                 width={currentPhoto.width}
                 height={currentPhoto.height}
-                fetchPriority={currentIndex === 0 ? "high" : "auto"}
-                loading={currentIndex === 0 ? "eager" : "lazy"}
+                fetchPriority={eager && currentIndex === 0 ? "high" : "auto"}
+                loading={eager && currentIndex === 0 ? "eager" : "lazy"}
                 className="w-full h-full object-cover"
               />
             </KenBurns>

@@ -21,8 +21,9 @@ test.describe("M2 route transitions", () => {
     const id = cardTransitionName.replace(/^card-/, "");
     await page.waitForURL(`**/building/${id}/`);
 
-    // assert the project page's diagram card has the same view-transition-name
-    const diagramCard = page.locator("[data-diagram-card]").first();
+    // the project page's lead element (the diagram card, or the screenshot/clips hero on a
+    // page that has them) carries the same view-transition-name
+    const diagramCard = page.locator("[data-clips], [data-hero-shot], [data-diagram-card]").first();
     await expect(diagramCard).toBeVisible();
 
     const diagramTransitionName = await diagramCard.evaluate(
@@ -533,5 +534,31 @@ test.describe("Parti screenshots (card 69)", () => {
     await page.goto("/building/himmelcam/");
     await expect(page.locator("[data-shot]")).toHaveCount(0);
     await expect(page.locator("[data-diagram-card]")).toBeVisible();
+  });
+});
+
+test.describe("Intent-to-video screenshots and clips", () => {
+  test("the page plays two muted looping clips and shows four steps", async ({ page }) => {
+    await page.goto("/building/intent-to-video/");
+    const clips = page.locator("[data-clips] video");
+    await expect(clips).toHaveCount(2);
+    for (const v of await clips.all()) {
+      expect(await v.evaluate((el: HTMLVideoElement) => el.muted && el.loop && el.autoplay)).toBe(true);
+    }
+    await expect.poll(() => clips.first().evaluate((el: HTMLVideoElement) => el.readyState)).toBeGreaterThanOrEqual(2);
+    const steps = page.locator("[data-shot-steps] > li");
+    await expect(steps).toHaveCount(4);
+    for (let i = 0; i < 4; i++) {
+      const img = steps.nth(i).locator("img");
+      await img.scrollIntoViewIfNeeded();
+      await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(0);
+    }
+  });
+
+  test("the card leads with the Library screenshot", async ({ page }) => {
+    await page.goto("/");
+    const img = page.locator("#building [data-shot] img").first();
+    await expect(img).toBeVisible();
+    await expect(img).toHaveAttribute("src", "/projects/intent-to-video/card.webp");
   });
 });

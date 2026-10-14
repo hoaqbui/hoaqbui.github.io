@@ -1,7 +1,8 @@
 import type { Shot as ShotData } from "@/content/projects";
 
-// A screenshot in the site's current theme. With `link`, tapping it opens the full-size
-// image, which is how a phone reader gets to read a wide desktop screenshot.
+// A screenshot in the site's current theme (or one image, for an app with no dark theme).
+// With `link`, tapping it opens the full-size image, which is how a phone reader gets to
+// read a wide desktop screenshot.
 export default function Shot({
   shot,
   sizes,
@@ -13,10 +14,10 @@ export default function Shot({
   link?: boolean;
   className?: string;
 }) {
+  const variants = shot.themed === false ? ([[null, `${shot.src}.webp`]] as const) : (["light", "dark"] as const).map((t) => [t, `${shot.src}-${t}.webp`] as const);
   return (
     <>
-      {(["light", "dark"] as const).map((theme) => {
-        const src = `${shot.src}-${theme}.webp`;
+      {variants.map(([theme, src]) => {
         const img = (
           <img
             src={src}
@@ -26,17 +27,18 @@ export default function Shot({
             alt={shot.alt}
             loading="lazy"
             decoding="async"
-            // 2x captures: never shown larger than the app drew them, so every shot reads at one scale
-            style={{ maxWidth: shot.width / 2 }}
+            // never shown larger than the app drew it, so every shot reads at one scale
+            style={{ maxWidth: shot.width / (shot.scale ?? 2) }}
             className={`block h-auto w-full rounded-xl border border-border ${className}`}
           />
         );
+        const cls = theme ? `shot-${theme}` : undefined;
         return link ? (
-          <a key={theme} href={src} target="_blank" rel="noopener" className={`shot-${theme}`} data-shot>
+          <a key={src} href={src} target="_blank" rel="noopener" className={cls} data-shot>
             {img}
           </a>
         ) : (
-          <div key={theme} className={`shot-${theme}`} data-shot>
+          <div key={src} className={cls} data-shot>
             {img}
           </div>
         );

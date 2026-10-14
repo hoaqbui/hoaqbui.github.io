@@ -193,17 +193,49 @@ function ShotsLayout({
         )}
         <h1 className="text-[40px] leading-[1.1] tracking-tight font-medium text-text">{project.title}</h1>
         <p className="max-w-[720px] text-[17px] leading-relaxed text-text">{project.body}</p>
-        <div style={{ viewTransitionName: `card-${project.id}` }} className="card-morph" data-hero-shot>
-          <Shot shot={shots.hero} sizes="(min-width: 1168px) 1072px, calc(100vw - 48px)" link />
-        </div>
+        {project.tryUrl && <TryIt href={project.tryUrl} />}
+        {shots.hero && (
+          <div style={{ viewTransitionName: `card-${project.id}` }} className="card-morph" data-hero-shot>
+            <Shot shot={shots.hero} sizes="(min-width: 1168px) 1072px, calc(100vw - 48px)" link />
+          </div>
+        )}
+        {shots.clips && (
+          <div style={{ viewTransitionName: `card-${project.id}` }} className="card-morph grid grid-cols-1 gap-4 sm:grid-cols-2" data-clips>
+            {shots.clips.map((clip) => (
+              <figure key={clip.src} className="m-0">
+                {/* muted, looping, inline: plays on its own like a still would, never with sound */}
+                <video
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  poster={clip.poster}
+                  width={clip.width}
+                  height={clip.height}
+                  className="block h-auto w-full rounded-xl bg-black"
+                  aria-label={`A take made by the pipeline: ${clip.caption}`}
+                >
+                  <source src={`${clip.src}.webm`} type="video/webm" />
+                  <source src={`${clip.src}.mp4`} type="video/mp4" />
+                </video>
+                <figcaption className="mt-2 font-mono text-[12px] text-muted">{clip.caption}</figcaption>
+              </figure>
+            ))}
+          </div>
+        )}
       </div>
 
       <div>
-        <h2 className="font-mono text-sm text-muted">One task, start to finish</h2>
+        <h2 className="font-mono text-sm text-muted">{shots.stepsTitle ?? "One task, start to finish"}</h2>
         <ol className="mt-6 flex list-none flex-col gap-12 p-0" data-shot-steps>
           {shots.steps.map((step, i) => (
-            <li key={step.shot.src} className="flex flex-col gap-4">
-              <p className="flex gap-3 text-[17px] leading-relaxed text-text">
+            <li
+              key={step.shot.src}
+              // phone captures sit beside their caption on wide screens instead of filling the row
+              className={`flex flex-col gap-4 ${(step.shot.scale ?? 2) >= 3 ? "md:flex-row md:items-start md:gap-10" : ""}`}
+            >
+              <p className={`flex gap-3 text-[17px] leading-relaxed text-text ${(step.shot.scale ?? 2) >= 3 ? "md:w-[320px] md:shrink-0 md:pt-4" : ""}`}>
                 <span className="font-mono text-[13px] leading-[1.9] text-teal">0{i + 1}</span>
                 <span>{step.caption}</span>
               </p>

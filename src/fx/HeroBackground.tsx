@@ -27,10 +27,29 @@ export default function HeroBackground({ running }: { running: boolean }) {
   const runningRef = useRef(running);
   runningRef.current = running;
 
+  const rootRef = useRef<HTMLDivElement | null>(null);
+
   // Hydration-safe initial render matches SSR ("ripple"), then picks randomly after mount.
   useEffect(() => {
     const picked = POOL[Math.floor(Math.random() * POOL.length)];
     setChoice(picked);
+  }, []);
+
+  // Clicking empty hero space swaps in a different random background (user, 2026-10-13).
+  // Links, buttons and text selections are left alone.
+  useEffect(() => {
+    const hero = rootRef.current?.parentElement;
+    if (!hero) return;
+    const handleClick = (e: MouseEvent) => {
+      if ((e.target as Element).closest("a, button")) return;
+      if (window.getSelection()?.toString()) return;
+      setChoice((current) => {
+        const others = POOL.filter((c) => c !== current);
+        return others[Math.floor(Math.random() * others.length)];
+      });
+    };
+    hero.addEventListener("click", handleClick);
+    return () => hero.removeEventListener("click", handleClick);
   }, []);
 
   // Setup canvas, resize observer, and pointer tracking for active network background.
@@ -156,7 +175,7 @@ export default function HeroBackground({ running }: { running: boolean }) {
   }, [choice, running]);
 
   return (
-    <div aria-hidden="true" data-hero-bg={choice} className="absolute inset-0">
+    <div ref={rootRef} aria-hidden="true" data-hero-bg={choice} className="absolute inset-0">
       {choice === "ripple" ? (
         <RippleBackground running={running} />
       ) : (

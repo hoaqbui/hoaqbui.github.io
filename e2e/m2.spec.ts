@@ -314,3 +314,24 @@ test.describe("Page fades to black around Photos (card 66)", () => {
     await expect(strip).toHaveCSS("scrollbar-width", "none");
   });
 });
+
+test("clicking empty hero space swaps the background; links don't", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("/");
+  const bg = page.locator("[data-hero-bg]");
+  await expect(bg).toBeAttached();
+  await page.waitForTimeout(300);
+  for (let i = 0; i < 3; i++) {
+    const before = await bg.getAttribute("data-hero-bg");
+    const box = (await page.locator("#top").boundingBox())!;
+    await page.mouse.click(box.x + 30, box.y + box.height - 30);
+    await expect(bg).not.toHaveAttribute("data-hero-bg", before!);
+  }
+  const before = await bg.getAttribute("data-hero-bg");
+  const [popup] = await Promise.all([
+    page.waitForEvent("popup").catch(() => null),
+    page.locator("#top").getByRole("link", { name: /LinkedIn/ }).click(),
+  ]);
+  await popup?.close();
+  await expect(bg).toHaveAttribute("data-hero-bg", before!);
+});

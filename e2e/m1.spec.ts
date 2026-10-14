@@ -138,3 +138,15 @@ test("industries, story tags and search data are on the page", async ({ page }) 
   expect(person.knowsAbout).toContain("Agentic AI");
   await expect(page.locator('meta[name="keywords"]')).toHaveAttribute("content", /Generative video/);
 });
+
+test("the nav pill is opaque, so page text never shows through it", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  const alpha = await page.getByRole("navigation", { name: "Sections" }).locator(":scope > div").evaluate((el) => {
+    const c = document.createElement("canvas").getContext("2d")!;
+    c.fillStyle = getComputedStyle(el).backgroundColor;
+    c.fillRect(0, 0, 1, 1);
+    return c.getImageData(0, 0, 1, 1).data[3];
+  });
+  expect(alpha).toBe(255);
+});

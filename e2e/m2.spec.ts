@@ -238,7 +238,7 @@ test("pill marks Photos and goes dark on the /photos page", async ({ page }) => 
   await page.goto("/photos/");
   const nav = page.getByRole("navigation", { name: "Sections" });
   await expect(nav.locator("a[aria-current]")).toHaveText("Photos");
-  await expect(nav.locator(":scope > div")).toHaveCSS("background-color", "rgba(13, 15, 16, 0.72)");
+  await expect(nav.locator(":scope > div")).toHaveCSS("background-color", "rgb(13, 15, 16)");
 });
 
 test.describe("Page fades to black around Photos (card 66)", () => {

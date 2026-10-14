@@ -135,7 +135,7 @@ export default function PillNav({
     <>
       {/* Mobile-only standalone ThemeToggle: top-right fixed button */}
       <div
-        className="fixed z-50 md:hidden right-3 top-[calc(12px+env(safe-area-inset-top))] flex items-center justify-center rounded-full border border-border bg-surface/85 backdrop-blur shadow-sm"
+        className="fixed z-50 md:hidden right-3 top-[calc(12px+env(safe-area-inset-top))] flex items-center justify-center rounded-full border border-border bg-surface shadow-sm"
       >
         <ThemeToggle />
       </div>
@@ -147,8 +147,8 @@ export default function PillNav({
         <motion.div
           className={`flex items-center rounded-full p-1 transition-colors duration-300 ${
             isPhotos
-              ? "bg-[rgba(13,15,16,0.72)] border border-[rgba(255,255,255,0.08)] backdrop-blur"
-              : "border border-border bg-surface/85 backdrop-blur"
+              ? "bg-photo border border-[rgba(255,255,255,0.08)]"
+              : "border border-border bg-surface"
           }`}
           animate={pillAnimate}
           transition={pillTransition}

@@ -241,13 +241,32 @@ test.describe("Page fades to black around Photos (card 66)", () => {
     // band's top 30% down the screen: fully dark
     await at("document.getElementById('photos').getBoundingClientRect().top + scrollY - innerHeight * 0.3");
     await expect.poll(lum).toBeLessThan(20);
-    // band's top at the screen's bottom edge: partway
-    await at("document.getElementById('photos').getBoundingClientRect().top + scrollY - innerHeight");
+    // band's top just below the middle of the screen: partway
+    await at("document.getElementById('photos').getBoundingClientRect().top + scrollY - innerHeight * 0.58");
     await expect.poll(lum).toBeGreaterThan(40);
     await expect.poll(lum).toBeLessThan(220);
     // end of the page: light again
     await at("document.documentElement.scrollHeight");
     await expect.poll(lum).toBeGreaterThan(240);
+  });
+
+  test("on a tall screen the band stays dark while centered and the page ends light", async ({ page }) => {
+    await page.setViewportSize({ width: 783, height: 1323 });
+    await page.goto("/");
+    const red = () =>
+      page.evaluate(() => {
+        const c = document.createElement("canvas").getContext("2d")!;
+        c.fillStyle = getComputedStyle(document.body).backgroundColor;
+        c.fillRect(0, 0, 1, 1);
+        return c.getImageData(0, 0, 1, 1).data[0];
+      });
+    await page.evaluate(() => {
+      const r = document.getElementById("photos")!.getBoundingClientRect();
+      window.scrollTo(0, r.top + scrollY + r.height / 2 - innerHeight / 2);
+    });
+    await expect.poll(red).toBeLessThan(20);
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await expect.poll(red).toBeGreaterThan(240);
   });
 
   test("/photos loads at full dark", async ({ page }) => {

@@ -6,7 +6,7 @@ export default function Contact() {
     <Reveal>
       <section
         id="contact"
-        className="mx-auto max-w-[1120px] border-t border-border px-6 pt-24 pb-32 md:pb-24"
+        className="mx-auto min-h-[70svh] max-w-[1120px] border-t border-border px-6 pt-24 pb-32 md:pb-24"
       >
         <p className="font-mono text-sm text-muted">{profile.openTo}</p>
         <a

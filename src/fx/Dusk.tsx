@@ -17,15 +17,13 @@ export default function Dusk({ children }: { children: ReactNode }) {
     if (!band.current) return;
     const H = window.innerHeight;
     const b = band.current.getBoundingClientRect();
-    // in: from the band's top 20% below the screen until it is 40% down from the top
-    const into = clamp((1.2 * H - b.top) / (0.8 * H));
-    // out: from the band's bottom at the screen's bottom edge until where it will sit when
-    // the page can scroll no further (short pages end before the band clears the top)
-    const maxScroll = document.documentElement.scrollHeight - H;
-    const bottomAtEnd = b.bottom - (maxScroll - window.scrollY);
-    const outEnd = Math.max(bottomAtEnd + 0.05 * H, -0.2 * H);
-    const outOf = clamp((b.bottom - outEnd) / Math.max(H - outEnd, 1));
-    const dusk = Math.round(Math.min(into, outOf) * 1000) / 1000;
+    // Dark while the band covers the middle of the screen, fading over 15% of a screen on
+    // either side of each edge: how far the middle line sits inside the band, in fades.
+    const mid = 0.5 * H;
+    const fade = 0.15 * H;
+    const inside = Math.min(mid - b.top, b.bottom - mid);
+    const level = clamp(0.5 + inside / (2 * fade));
+    const dusk = Math.round(level * 1000) / 1000;
     if (dusk === last.current) return;
     last.current = dusk;
     const root = document.documentElement.style;

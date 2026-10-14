@@ -437,6 +437,15 @@ test.describe("Draggable thumbnail strip", () => {
     expect(Math.abs(sl / pitch - Math.round(sl / pitch))).toBeLessThan(0.02);
   });
 
+  test("a photo can carry its caption at the top", async ({ page }) => {
+    await page.goto("/photos/");
+    await page.getByRole("button", { name: "Show Watcher in the mist" }).click();
+    await expect(caption(page)).toHaveText("Watcher in the mist");
+    const frame = (await page.locator("[aria-label='Photo carousel']").boundingBox())!;
+    const cap = (await caption(page).boundingBox())!;
+    expect(cap.y - frame.y).toBeLessThan(frame.height / 3);
+  });
+
   test("tapping a thumbnail shows it", async ({ page }) => {
     await page.goto("/photos/");
     await page.getByRole("button", { name: "Show Ipanema, last light" }).click();

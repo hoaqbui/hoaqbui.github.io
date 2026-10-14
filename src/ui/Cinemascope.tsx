@@ -23,7 +23,11 @@ const CAPTION_SHADOW = "0 2px 8px rgba(0,0,0,0.85), 0 1px 2px rgba(0,0,0,0.95)";
 
 function Caption({ photo }: { photo: Photo }) {
   return (
-    <div className="pointer-events-none absolute bottom-5 md:bottom-8 left-0 right-0 z-20 px-6 text-center">
+    <div
+      className={`pointer-events-none absolute left-0 right-0 z-20 px-16 text-center ${
+        photo.captionTop ? "top-5 md:top-8" : "bottom-5 md:bottom-8"
+      }`}
+    >
       <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-[#f2b544]" style={{ textShadow: CAPTION_SHADOW }}>
         {photo.place}
       </p>

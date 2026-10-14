@@ -7,6 +7,8 @@ export type Photo = {
   place: string;
   title: string;
   alt: string;
+  // caption at the top of the frame when the subject sits where it would go
+  captionTop?: boolean;
 };
 
 export const photos: Photo[] = [
@@ -138,6 +140,7 @@ export const photos: Photo[] = [
     height: 1200,
     place: "TAIWAN · 2023",
     title: "Watcher in the mist",
+    captionTop: true,
     alt: "A black cat peeks over a rooftop edge beneath a mist-covered mountain",
   },
   {

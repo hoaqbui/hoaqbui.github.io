@@ -19,24 +19,18 @@ export interface CinemascopeProps {
 
 const SIZES = "(min-width: 1152px) 1072px, calc(100vw - 48px)";
 const srcSet = (p: Photo) => `${p.src.replace(".webp", "-800.webp")} 800w, ${p.src} ${p.width}w`;
-const CAPTION_SHADOW = "0 2px 8px rgba(0,0,0,0.85), 0 1px 2px rgba(0,0,0,0.95)";
 
+// Under the photo, in the page's own colours (it follows the dark fade on home)
 function Caption({ photo }: { photo: Photo }) {
   return (
-    <div
-      className={`pointer-events-none absolute left-0 right-0 z-20 px-16 text-center ${
-        photo.captionTop ? "top-5 md:top-8" : "bottom-5 md:bottom-8"
-      }`}
-    >
-      <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-[#f2b544]" style={{ textShadow: CAPTION_SHADOW }}>
-        {photo.place}
-      </p>
-      <h2 className="mt-1 font-serif italic text-[22px] md:text-[24px] text-[#f3f1ec]" style={{ textShadow: CAPTION_SHADOW }}>
-        {photo.title}
-      </h2>
+    <div data-photo-caption className="mt-4 text-center">
+      <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-amber-text">{photo.place}</p>
+      <h2 className="mt-1 font-serif italic text-[22px] md:text-[24px] text-text">{photo.title}</h2>
     </div>
   );
 }
+
+const focus = (p: Photo) => ({ objectPosition: `50% ${p.focusY ?? 50}%` });
 
 export default function Cinemascope({ photos, eager = true }: CinemascopeProps) {
   const n = photos.length;
@@ -135,7 +129,6 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
       setScrub((prev) =>
         prev && prev.a === a && prev.b === b && prev.near === nearest ? prev : { a, b, near: nearest }
       );
-      setPaused(true);
     }
     window.clearTimeout(settleTimer.current);
     settleTimer.current = window.setTimeout(() => {
@@ -197,14 +190,16 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
   };
 
   // Autoplay advances every 6s while playing
+  // A drag holds the slideshow only while it lasts; letting go resumes it (unless the
+  // pause button is on), counting a fresh 6 s from the photo it landed on.
   useEffect(() => {
-    if (!isPlaying || n <= 1) return;
+    if (!isPlaying || scrub || n <= 1) return;
     const timer = setInterval(() => {
       setInstant(false);
       setCurrentIndex((prev) => (prev + 1) % n);
     }, 6000);
     return () => clearInterval(timer);
-  }, [isPlaying, n, currentIndex]);
+  }, [isPlaying, scrub, n, currentIndex]);
 
   // Preload the next image
   const nextPhoto = photos[(currentIndex + 1) % n];
@@ -256,10 +251,10 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
                   fetchPriority={eager && currentIndex === 0 ? "high" : "auto"}
                   loading={eager && currentIndex === 0 ? "eager" : "lazy"}
                   className="w-full h-full object-cover"
+                  style={focus(currentPhoto)}
                 />
               )}
             </KenBurns>
-            {!scrub && <Caption photo={currentPhoto} />}
           </motion.div>
         </AnimatePresence>
 
@@ -267,19 +262,18 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
         {scrub && (
           <>
             <div className="absolute inset-0 z-[5]" data-scrub>
-              <img src={photos[scrub.a].src} srcSet={srcSet(photos[scrub.a])} sizes={SIZES} alt="" className="absolute inset-0 w-full h-full object-cover" />
+              <img src={photos[scrub.a].src} srcSet={srcSet(photos[scrub.a])} sizes={SIZES} alt="" className="absolute inset-0 w-full h-full object-cover" style={focus(photos[scrub.a])} />
               {scrub.b !== scrub.a && (
                 <motion.img
                   src={photos[scrub.b].src}
                   srcSet={srcSet(photos[scrub.b])}
                   sizes={SIZES}
                   alt=""
-                  style={{ opacity: blend }}
+                  style={{ opacity: blend, ...focus(photos[scrub.b]) }}
                   className="absolute inset-0 w-full h-full object-cover"
                 />
               )}
             </div>
-            <Caption photo={photos[scrub.near]} />
           </>
         )}
 
@@ -325,6 +319,8 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
           />
         )}
       </div>
+
+      <Caption photo={scrub ? photos[scrub.near] : currentPhoto} />
 
       {/* Thumbnail strip under a fixed frame; the padding lets the first and last thumbnails
           reach the middle */}

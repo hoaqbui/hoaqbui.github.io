@@ -207,7 +207,7 @@ test.describe("Photos on home (card 65)", () => {
 
   test("slides hold still while the band is off-screen, play once it's in view", async ({ page }) => {
     await page.goto("/");
-    const caption = page.locator("#photos [aria-label='Photo carousel'] h2").first();
+    const caption = page.locator("#photos [data-photo-caption] h2");
     const first = await caption.textContent();
     await page.waitForTimeout(7000);
     expect(await caption.textContent()).toBe(first);
@@ -374,7 +374,7 @@ test("project diagrams read at normal size on a phone", async ({ page }) => {
 
 test.describe("Draggable thumbnail strip", () => {
   const caption = (page: import("@playwright/test").Page) =>
-    page.locator("[aria-label='Photo carousel'] h2").first();
+    page.locator("[data-photo-caption] h2");
 
   test("only a pause control remains", async ({ page }) => {
     await page.goto("/photos/");
@@ -387,12 +387,13 @@ test.describe("Draggable thumbnail strip", () => {
     await expect(page.getByRole("button", { name: "Play slideshow" })).toBeVisible();
   });
 
-  test("dragging the strip picks the photo in the middle and pauses", async ({ page }) => {
+  test("dragging the strip picks the photo in the middle, then autoplay resumes", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto("/photos/");
     const strip = page.locator('button[aria-label^="Show "]').first().locator("xpath=..");
     await expect(caption(page)).toBeVisible();
     const before = await caption(page).textContent();
+    await strip.scrollIntoViewIfNeeded();
     const box = (await strip.boundingBox())!;
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
     await page.mouse.down();
@@ -403,7 +404,10 @@ test.describe("Draggable thumbnail strip", () => {
     // eases into the nearest thumbnail, then commits it
     await expect(page.locator("[data-scrub]")).toHaveCount(0, { timeout: 3000 });
     await expect.poll(() => caption(page).textContent()).not.toBe(before);
-    await expect(page.getByRole("button", { name: "Play slideshow" })).toBeVisible();
+    // letting go resumes the slideshow
+    await expect(page.getByRole("button", { name: "Pause slideshow" })).toBeVisible();
+    const landed = await caption(page).textContent();
+    await expect.poll(() => caption(page).textContent(), { timeout: 9000 }).not.toBe(landed);
     // the shown photo is the thumbnail now marked current
     const current = await page.locator('button[aria-current="true"][aria-label^="Show "]').getAttribute("aria-label");
     expect(current).toBe(`Show ${await caption(page).textContent()}`);
@@ -419,6 +423,7 @@ test.describe("Draggable thumbnail strip", () => {
     const frame = page.locator("[data-strip-frame]");
     const frameX = async () => { const b = (await frame.boundingBox())!; return b.x + b.width / 2; };
     const x0 = await frameX();
+    await strip.scrollIntoViewIfNeeded();
     const box = (await strip.boundingBox())!;
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
     await page.mouse.down();
@@ -437,13 +442,11 @@ test.describe("Draggable thumbnail strip", () => {
     expect(Math.abs(sl / pitch - Math.round(sl / pitch))).toBeLessThan(0.02);
   });
 
-  test("a photo can carry its caption at the top", async ({ page }) => {
+  test("the caption sits under the photo", async ({ page }) => {
     await page.goto("/photos/");
-    await page.getByRole("button", { name: "Show Watcher in the mist" }).click();
-    await expect(caption(page)).toHaveText("Watcher in the mist");
     const frame = (await page.locator("[aria-label='Photo carousel']").boundingBox())!;
     const cap = (await caption(page).boundingBox())!;
-    expect(cap.y - frame.y).toBeLessThan(frame.height / 3);
+    expect(cap.y).toBeGreaterThan(frame.y + frame.height);
   });
 
   test("tapping a thumbnail shows it", async ({ page }) => {

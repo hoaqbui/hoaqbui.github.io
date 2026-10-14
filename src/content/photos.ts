@@ -7,8 +7,8 @@ export type Photo = {
   place: string;
   title: string;
   alt: string;
-  // caption at the top of the frame when the subject sits where it would go
-  captionTop?: boolean;
+  // vertical crop position in the 2.39:1 frame, percent (default 50, centred)
+  focusY?: number;
 };
 
 export const photos: Photo[] = [
@@ -20,6 +20,7 @@ export const photos: Photo[] = [
     height: 800,
     place: "JAPAN · 2023",
     title: "Looking out from the pavilion",
+    focusY: 70,
     alt: "View out of a dark wooden pavilion to green hills",
   },
   {
@@ -140,7 +141,6 @@ export const photos: Photo[] = [
     height: 1200,
     place: "TAIWAN · 2023",
     title: "Watcher in the mist",
-    captionTop: true,
     alt: "A black cat peeks over a rooftop edge beneath a mist-covered mountain",
   },
   {

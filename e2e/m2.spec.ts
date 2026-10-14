@@ -353,3 +353,21 @@ test("clicking empty hero space swaps the background; links don't", async ({ pag
   await popup?.close();
   await expect(bg).toHaveAttribute("data-hero-bg", before!);
 });
+
+test("project diagrams read at normal size on a phone", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  for (const id of ["intent-to-video", "parti", "himmelcam"]) {
+    await page.goto(`/building/${id}/`);
+    const portrait = page.locator("[data-diagram-portrait] svg");
+    await expect(portrait).toBeVisible();
+    // smallest label rendered at ≥ 10px on screen
+    const smallest = await portrait.evaluate((svg) =>
+      Math.min(...[...svg.querySelectorAll("text, tspan")].map((t) => t.getBoundingClientRect().height).filter((h) => h > 0)),
+    );
+    expect(smallest).toBeGreaterThanOrEqual(10);
+  }
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("/building/parti/");
+  await expect(page.locator("[data-diagram-portrait]")).toBeHidden();
+  await expect(page.locator("[data-diagram-card] svg").first()).toBeVisible();
+});

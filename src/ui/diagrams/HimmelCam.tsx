@@ -1,3 +1,5 @@
+import type { PortraitSpec } from "./Portrait";
+
 export default function HimmelCam() {
   return (
     <svg
@@ -129,3 +131,15 @@ export default function HimmelCam() {
     </svg>
   );
 }
+
+export const portrait: PortraitSpec = {
+  id: "himmel",
+  aria: "Camera stream flows to Find Himmel vision model, drives Pan tilt zoom control, sending clips and alerts to phone with feedback back to camera",
+  steps: [
+    { label: "Camera stream" },
+    { label: "Find Himmel", sub: "vision model" },
+    { label: "Pan · tilt · zoom", sub: "control loop" },
+    { label: "Clips & alerts", sub: "phone push" },
+  ],
+  loop: { from: 2, to: 0, label: "PTZ actuation feedback loop" },
+};

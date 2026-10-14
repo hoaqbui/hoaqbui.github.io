@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { projects } from "@/content/projects";
-import { diagrams } from "@/ui/diagrams";
+import { diagrams, portraits, Portrait } from "@/ui/diagrams";
 import TryIt from "@/ui/TryIt";
 
 export default function Project({ id }: { id: string }) {
@@ -15,6 +15,7 @@ export default function Project({ id }: { id: string }) {
   const nextProject = projects[(currentIndex + 1) % n];
 
   const Diagram = diagrams[project.id];
+  const portrait = portraits[project.id];
   const showStatus = project.status && !project.status.startsWith("[");
   const showWhy = Boolean(project.why && !project.why.startsWith("["));
   const validSteps = (project.steps ?? []).filter((s) => !s.startsWith("["));
@@ -70,10 +71,18 @@ export default function Project({ id }: { id: string }) {
           {Diagram && (
             <div
               style={{ viewTransitionName: `card-${project.id}` }}
-              className="rounded-3xl bg-surface p-6 card-morph"
+              className="rounded-3xl bg-surface p-4 sm:p-6 card-morph"
               data-diagram-card
             >
-              <Diagram />
+              {/* phones get the top-to-bottom drawing; the wide one shrinks its labels to ~6px there */}
+              <div className={portrait ? "hidden sm:block" : undefined}>
+                <Diagram />
+              </div>
+              {portrait && (
+                <div className="sm:hidden" data-diagram-portrait>
+                  <Portrait spec={portrait} />
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -1,3 +1,5 @@
+import type { PortraitSpec } from "./Portrait";
+
 export default function IntentToVideo() {
   return (
     <svg
@@ -126,3 +128,15 @@ export default function IntentToVideo() {
     </svg>
   );
 }
+
+export const portrait: PortraitSpec = {
+  id: "i2v",
+  aria: "Creative intent becomes character orthos in ComfyUI, then an image with render profiles, then video in LTX, kept consistent by a continuity ledger",
+  steps: [
+    { label: "Intent" },
+    { label: "Character orthos", sub: "ComfyUI" },
+    { label: "Image", sub: "render profiles" },
+    { label: "Video", sub: "LTX" },
+  ],
+  loop: { from: 3, to: 1, label: "continuity ledger loop" },
+};

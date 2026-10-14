@@ -1,3 +1,5 @@
+import type { PortraitSpec } from "./Portrait";
+
 export default function Parti() {
   return (
     <svg
@@ -191,3 +193,21 @@ export default function Parti() {
     </svg>
   );
 }
+
+export const portrait: PortraitSpec = {
+  id: "parti",
+  aria: "Multi-agent orchestration running a Research, Plan, Implement, Verify, Evaluate loop spanning Mac Studio, GB10 workstation, and NAS",
+  steps: [
+    { label: "Research" },
+    { label: "Plan" },
+    { label: "Implement", strong: true },
+    { label: "Verify" },
+    { label: "Evaluate" },
+  ],
+  groups: [
+    { label: "Mac Studio · Orchestrator", from: 0, to: 1 },
+    { label: "GB10 · Compute & Harness", from: 2, to: 4 },
+  ],
+  base: ["NAS · Shared Workspace,", "Checkpoints & Provenance"],
+  loop: { from: 4, to: 0, label: "feedback & iteration loop" },
+};

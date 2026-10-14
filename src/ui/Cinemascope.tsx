@@ -17,6 +17,9 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
   const [motionOn, setMotionOn] = useState(true);
   const [thumbsOn, setThumbsOn] = useState(true);
   const [onScreen, setOnScreen] = useState(eager);
+  // Below the fold, the photo isn't requested until the frame is near (lazy loading alone
+  // still fetches it at page load on slow connections).
+  const [near, setNear] = useState(eager);
 
   const frameRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
@@ -33,7 +36,15 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
       setOnScreen(entry.isIntersecting)
     );
     observer.observe(el);
-    return () => observer.disconnect();
+    const nearObserver = new IntersectionObserver(
+      ([entry]) => entry.isIntersecting && setNear(true),
+      { rootMargin: "800px 0px" }
+    );
+    nearObserver.observe(el);
+    return () => {
+      observer.disconnect();
+      nearObserver.disconnect();
+    };
   }, []);
 
   // On client mount with prefers-reduced-motion, default to paused
@@ -150,7 +161,7 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
             className="absolute inset-0 w-full h-full overflow-hidden"
           >
             <KenBurns motionOn={effectiveMotion && onScreen}>
-              <img
+              {near && <img
                 src={currentPhoto.src}
                 srcSet={`${currentPhoto.src.replace(".webp", "-800.webp")} 800w, ${currentPhoto.src} ${currentPhoto.width}w`}
                 sizes="(min-width: 1152px) 1072px, calc(100vw - 48px)"
@@ -160,7 +171,7 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
                 fetchPriority={eager && currentIndex === 0 ? "high" : "auto"}
                 loading={eager && currentIndex === 0 ? "eager" : "lazy"}
                 className="w-full h-full object-cover"
-              />
+              />}
             </KenBurns>
 
             {/* Subtitle-style caption centered low in the frame */}
@@ -195,7 +206,7 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
       </div>
 
       {/* Progress hairline indicator */}
-      <div className="h-[2px] w-full bg-[#22272a] overflow-hidden">
+      <div className="h-[2px] w-full bg-border overflow-hidden">
         {isPlaying && (
           <motion.div
             key={currentIndex}
@@ -223,7 +234,7 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
                   title={photo.title}
                   className={`relative h-14 w-24 sm:w-28 shrink-0 rounded-md overflow-hidden cursor-pointer transition-all duration-300 ${
                     isCurrent
-                      ? "ring-2 ring-[#3cc9b4] ring-offset-2 ring-offset-photo opacity-100 scale-105"
+                      ? "ring-2 ring-teal ring-offset-2 ring-offset-bg opacity-100 scale-105"
                       : "opacity-45 hover:opacity-80 scale-100"
                   }`}
                 >
@@ -241,7 +252,7 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
           </div>
         </div>
       ) : (
-        <div className="mt-6 flex items-center justify-center gap-3 font-mono text-xs text-[#9aa4a8]">
+        <div className="mt-6 flex items-center justify-center gap-3 font-mono text-xs text-muted">
           <span>0</span>
           <div className="flex items-center gap-1.5">
             {photos.map((photo, i) => {
@@ -256,8 +267,8 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
                   title={photo.title}
                   className={`h-1.5 rounded-full cursor-pointer transition-all duration-300 ${
                     isCurrent
-                      ? "w-7 bg-[#3cc9b4]"
-                      : "w-1.5 bg-[#3a4146] hover:bg-[#a3adab]"
+                      ? "w-7 bg-teal"
+                      : "w-1.5 bg-border hover:bg-muted"
                   }`}
                 />
               );
@@ -270,7 +281,7 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
       {/* Centered Controls and Quiet Toggles */}
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 items-center gap-4">
         {/* Left: counter */}
-        <div className="hidden sm:flex items-center font-mono text-xs text-[#9aa4a8]">
+        <div className="hidden sm:flex items-center font-mono text-xs text-muted">
           <span>
             {String(currentIndex + 1).padStart(2, "0")} /{" "}
             {String(photos.length).padStart(2, "0")}
@@ -284,7 +295,7 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
             onClick={handlePrev}
             aria-label="Previous photo"
             title="Previous photo"
-            className="flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-[#ecefee] hover:bg-white/10 transition-colors cursor-pointer"
+            className="flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-text hover:bg-text/10 transition-colors cursor-pointer"
           >
             <svg
               aria-hidden="true"
@@ -306,7 +317,7 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
             aria-label={isPlaying ? "Pause slideshow" : "Play slideshow"}
             aria-pressed={!isPlaying}
             title={isPlaying ? "Pause slideshow" : "Play slideshow"}
-            className="flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-[#3a4146] text-[#ecefee] hover:bg-white/10 transition-colors cursor-pointer"
+            className="flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-border text-text hover:bg-text/10 transition-colors cursor-pointer"
           >
             {isPlaying ? (
               <svg
@@ -336,7 +347,7 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
             onClick={handleNext}
             aria-label="Next photo"
             title="Next photo"
-            className="flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-[#ecefee] hover:bg-white/10 transition-colors cursor-pointer"
+            className="flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-text hover:bg-text/10 transition-colors cursor-pointer"
           >
             <svg
               aria-hidden="true"
@@ -360,7 +371,7 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
             type="button"
             aria-pressed={motionOn}
             onClick={toggleMotion}
-            className="inline-flex min-h-[44px] items-center rounded-full border border-[#2a3034] px-3 font-mono text-[11px] text-[#9aa4a8] hover:text-[#ecefee] transition-colors cursor-pointer"
+            className="inline-flex min-h-[44px] items-center rounded-full border border-border px-3 font-mono text-[11px] text-muted hover:text-text transition-colors cursor-pointer"
           >
             Motion {motionOn ? "on" : "off"}
           </button>
@@ -368,7 +379,7 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
             type="button"
             aria-pressed={thumbsOn}
             onClick={toggleThumbs}
-            className="inline-flex min-h-[44px] items-center rounded-full border border-[#2a3034] px-3 font-mono text-[11px] text-[#9aa4a8] hover:text-[#ecefee] transition-colors cursor-pointer"
+            className="inline-flex min-h-[44px] items-center rounded-full border border-border px-3 font-mono text-[11px] text-muted hover:text-text transition-colors cursor-pointer"
           >
             Thumbnails {thumbsOn ? "on" : "off"}
           </button>

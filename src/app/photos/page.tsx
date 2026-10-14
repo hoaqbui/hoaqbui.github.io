@@ -1,6 +1,7 @@
 import { ViewTransition } from "react";
 import type { Metadata } from "next";
 import Photos from "@/sections/Photos";
+import { DuskFull } from "@/fx/Dusk";
 
 export const metadata: Metadata = {
   title: "Photographs — Hoa Bui",
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 export default function PhotosPage() {
   return (
     <ViewTransition>
+      <DuskFull />
       <Photos />
     </ViewTransition>
   );

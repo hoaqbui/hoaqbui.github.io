@@ -7,17 +7,17 @@ export default function Photos({ band = false }: { band?: boolean }) {
   return (
     <section
       id="photos"
-      className={`w-full bg-photo text-[#ecefee] ${
+      className={`w-full text-text ${
         band ? "py-20 md:py-24" : "pt-20 md:pt-24 pb-32 md:pb-24 min-h-screen"
       }`}
     >
       <div className="mx-auto max-w-[1240px] px-4 sm:px-6">
         <header className="mb-6 flex flex-wrap items-baseline justify-between gap-4">
           <div>
-            <Heading className="font-mono text-sm tracking-wide text-[#9aa4a8]">
+            <Heading className="font-mono text-sm tracking-wide text-muted">
               Photographs
             </Heading>
-            <p className="mt-2 text-base text-[#a3adab]">
+            <p className="mt-2 text-base text-muted">
               A quiet selection of frames from travels in Japan, Czechia and Brazil.
             </p>
           </div>
@@ -25,7 +25,7 @@ export default function Photos({ band = false }: { band?: boolean }) {
             href="https://hoaqbui.myportfolio.com"
             target="_blank"
             rel="noopener"
-            className="inline-flex min-h-[44px] items-center text-sm font-medium text-[#3cc9b4] hover:underline"
+            className="inline-flex min-h-[44px] items-center text-sm font-medium text-teal hover:underline"
           >
             All photographs →
           </a>

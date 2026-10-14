@@ -219,45 +219,70 @@ test("pill marks Photos and goes dark on the /photos page", async ({ page }) => 
   await expect(nav.locator(":scope > div")).toHaveCSS("background-color", "rgba(13, 15, 16, 0.72)");
 });
 
-test.describe("Letterbox seam (card 66)", () => {
-  test("film bars frame the way into and out of the band", async ({ page }) => {
+test.describe("Page fades to black around Photos (card 66)", () => {
+  test("background goes light → black → light across the band", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
-    const bar = (edge: string) =>
-      page.locator(`[data-letterbox-bar="${edge}"]`).evaluate((el) => el.getBoundingClientRect().height);
-    const scrollTo = (expr: string) => page.evaluate((e) => window.scrollTo(0, eval(e)), expr);
-    const M = Math.min(0.12 * 844, 120);
-    // far above: no bars
-    await scrollTo("0");
-    await expect.poll(() => bar("top")).toBe(0);
-    // band's top half the grow distance below the screen: both bars half grown
-    await scrollTo("document.getElementById('photos').getBoundingClientRect().top + scrollY - innerHeight * 1.15");
-    await expect.poll(() => bar("top")).toBeGreaterThan(M / 2 - 3);
-    await expect.poll(() => bar("bottom")).toBeGreaterThan(M / 2 - 3);
-    // inside the band: no bar covers the photos (the bottom bar may extend the dark below a short band)
-    await scrollTo("document.getElementById('photos').getBoundingClientRect().top + scrollY + 20");
-    await expect.poll(() => bar("top")).toBe(0);
-    const bandBottom = await page.locator("#photos").evaluate((el) => el.getBoundingClientRect().bottom);
-    await expect.poll(async () => 844 - (await bar("bottom"))).toBeGreaterThanOrEqual(bandBottom - 1);
-    // band's bottom at the bar line: the bottom bar meets it, full height
-    await scrollTo(`document.getElementById('photos').getBoundingClientRect().bottom + scrollY - innerHeight + ${M}`);
-    await expect.poll(() => bar("bottom")).toBeGreaterThan(M - 3);
-    // a short band can still show its top: the top bar only ever reaches the band's top edge
-    const bandTop = await page.locator("#photos").evaluate((el) => el.getBoundingClientRect().top);
-    await expect.poll(() => bar("top")).toBeLessThanOrEqual(Math.max(0, bandTop) + 1);
-    // end of the page: no bars over Contact
-    await scrollTo("document.documentElement.scrollHeight");
-    await expect.poll(() => bar("top")).toBe(0);
-    await expect.poll(() => bar("bottom")).toBe(0);
+    // body background's red channel, read back through a canvas (computed colors come as oklab)
+    const lum = () =>
+      page.evaluate(() => {
+        const c = document.createElement("canvas").getContext("2d")!;
+        c.fillStyle = getComputedStyle(document.body).backgroundColor;
+        c.fillRect(0, 0, 1, 1);
+        return c.getImageData(0, 0, 1, 1).data[0];
+      });
+    const at = (expr: string) => page.evaluate((e) => window.scrollTo(0, eval(e)), expr);
+    await at("0");
+    await expect.poll(lum).toBeGreaterThan(240);
+    // band's top 30% down the screen: fully dark
+    await at("document.getElementById('photos').getBoundingClientRect().top + scrollY - innerHeight * 0.3");
+    await expect.poll(lum).toBeLessThan(20);
+    // band's top at the screen's bottom edge: partway
+    await at("document.getElementById('photos').getBoundingClientRect().top + scrollY - innerHeight");
+    await expect.poll(lum).toBeGreaterThan(40);
+    await expect.poll(lum).toBeLessThan(220);
+    // end of the page: light again
+    await at("document.documentElement.scrollHeight");
+    await expect.poll(lum).toBeGreaterThan(240);
   });
 
-  test("reduced motion gets still gradients, no bars", async ({ browser }) => {
-    const ctx = await browser.newContext({ reducedMotion: "reduce" });
-    const page = await ctx.newPage();
+  test("/photos loads at full dark", async ({ page }) => {
+    await page.goto("/photos/");
+    const red = await page.evaluate(() => {
+      const c = document.createElement("canvas").getContext("2d")!;
+      c.fillStyle = getComputedStyle(document.body).backgroundColor;
+      c.fillRect(0, 0, 1, 1);
+      return c.getImageData(0, 0, 1, 1).data[0];
+    });
+    expect(red).toBeLessThan(20);
+  });
+
+  test("Work's quote stays readable through the fade", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
-    await expect(page.locator("[data-letterbox]")).toHaveCount(2);
-    await expect(page.locator("[data-letterbox-bar]")).toHaveCount(0);
-    await ctx.close();
+    let worst = 21;
+    for (let f = 1.25; f >= 0.35; f -= 0.05) {
+      await page.evaluate((f) => window.scrollTo(0, document.getElementById("photos")!.getBoundingClientRect().top + scrollY - innerHeight * f), f);
+      await page.waitForTimeout(60);
+      const ratio = await page.evaluate(() => {
+        const rgb = (css: string) => {
+          const c = document.createElement("canvas").getContext("2d")!;
+          c.fillStyle = css;
+          c.fillRect(0, 0, 1, 1);
+          return Array.from(c.getImageData(0, 0, 1, 1).data.slice(0, 3));
+        };
+        const lum = ([r, g, b]: number[]) => {
+          const ch = (v: number) => ((v /= 255) <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
+          return 0.2126 * ch(r) + 0.7152 * ch(g) + 0.0722 * ch(b);
+        };
+        const q = document.querySelector("#work blockquote p")!;
+        const a = lum(rgb(getComputedStyle(q).color));
+        const b = lum(rgb(getComputedStyle(document.body).backgroundColor));
+        return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+      });
+      worst = Math.min(worst, ratio);
+    }
+    expect(worst).toBeGreaterThan(3);
   });
 
   test("thumbnail strip hides its scrollbar", async ({ page }) => {

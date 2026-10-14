@@ -1,16 +1,24 @@
 @import "tailwindcss";
 
+/* --dusk (0–1, set by fx/Dusk on scroll) blends every token toward the photo band's dark
+   palette, so the whole page fades to black around Photos and back. Text-like tokens use
+   --ink instead, which flips from dark to light where the background crosses mid-grey, so
+   text never fades into it. */
+:root {
+  --ink: clamp(0, calc((var(--dusk, 0) - 0.495) * 1000), 1);
+}
+
 @theme static {
-  --color-bg: #fafaf8;
-  --color-surface: #ffffff;
-  --color-border: #e4e5e1;
-  --color-text: #1f2326;
-  --color-muted: #596064;
-  --color-teal: #0d7a6e;
+  --color-bg: color-mix(in oklab, #fafaf8, #0d0f10 calc(var(--dusk, 0) * 100%));
+  --color-surface: color-mix(in oklab, #ffffff, #181c1f calc(var(--dusk, 0) * 100%));
+  --color-border: color-mix(in oklab, #e4e5e1, #2a3034 calc(var(--dusk, 0) * 100%));
+  --color-text: color-mix(in oklab, #1f2326, #ecefee calc(var(--ink) * 100%));
+  --color-muted: color-mix(in oklab, #596064, #a3adab calc(var(--ink) * 100%));
+  --color-teal: color-mix(in oklab, #0d7a6e, #3cc9b4 calc(var(--ink) * 100%));
   --color-amber: #f2b544;
-  --color-amber-text: #8a5300;
+  --color-amber-text: color-mix(in oklab, #8a5300, #f2b544 calc(var(--ink) * 100%));
   --color-photo: #0d0f10;
-  --color-well: #f1f2ef;
+  --color-well: color-mix(in oklab, #f1f2ef, #1d2124 calc(var(--dusk, 0) * 100%));
 
   --font-sans: var(--font-geist), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
@@ -18,7 +26,7 @@
 }
 
 :root[data-theme="dark"] {
-  --color-bg: #111416;
+  --color-bg: color-mix(in oklab, #111416, #0d0f10 calc(var(--dusk, 0) * 100%));
   --color-surface: #181c1f;
   --color-border: #2a3034;
   --color-text: #ecefee;

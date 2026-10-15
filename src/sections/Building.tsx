@@ -1,4 +1,5 @@
 "use client";
+import SectionLabel from "@/ui/SectionLabel";
 
 import { useState, Fragment } from "react";
 import Link from "next/link";
@@ -65,8 +66,8 @@ export default function Building() {
       <Reveal>
         <div className="flex flex-wrap gap-12 items-center">
         <div className="flex-[1_1_340px] max-w-[420px] min-w-0">
-          <p className="font-mono text-[13px] text-muted">Building</p>
-          <h2 className="mt-3 text-[40px] leading-[1.1] tracking-[-0.035em] font-medium">
+          <SectionLabel>Building</SectionLabel>
+          <h2 className="mt-4 text-[40px] leading-[1.1] tracking-[-0.035em] font-medium">
             Three things I’m building with my own hands.
           </h2>
           <p className="mt-4 text-[17px] leading-relaxed text-muted">

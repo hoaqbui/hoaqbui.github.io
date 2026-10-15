@@ -1,3 +1,4 @@
+import SectionLabel from "@/ui/SectionLabel";
 import { photos } from "@/content/photos";
 import Cinemascope from "@/ui/Cinemascope";
 
@@ -14,10 +15,10 @@ export default function Photos({ band = false }: { band?: boolean }) {
       <div className="mx-auto max-w-[1240px] px-4 sm:px-6">
         <header className="mb-6 flex flex-wrap items-baseline justify-between gap-4">
           <div>
-            <Heading className="font-mono text-sm tracking-wide text-muted">
+            <SectionLabel as={Heading}>
               Photographs
-            </Heading>
-            <p className="mt-2 text-base text-muted">
+            </SectionLabel>
+            <p className="mt-3 text-base text-muted">
               A quiet selection of frames from travels in Japan, Czechia, Taiwan, Ireland, Vietnam and Brazil.
             </p>
           </div>

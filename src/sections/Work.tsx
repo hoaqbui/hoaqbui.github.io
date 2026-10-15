@@ -1,4 +1,5 @@
 "use client";
+import SectionLabel from "@/ui/SectionLabel";
 
 import { useState, useEffect } from "react";
 import Bars from "@/ui/Bars";
@@ -48,9 +49,9 @@ export default function Work() {
       className="mx-auto max-w-[1120px] px-6 py-20 border-t border-border"
     >
       <div className="flex flex-wrap items-baseline gap-x-16 gap-y-3">
-        <h2 className="flex-[0_0_200px] font-mono text-sm text-muted">
+        <SectionLabel as="h2" className="flex-[0_0_200px]">
           Work
-        </h2>
+        </SectionLabel>
         <p className="max-w-[620px] flex-[1_1_420px] text-2xl leading-[1.4] tracking-[-0.015em]">
           A few things I’m proud of from 13 years at Riot.
         </p>

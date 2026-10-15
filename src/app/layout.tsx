@@ -24,7 +24,7 @@ const instrumentSerif = Instrument_Serif({
 });
 
 const DESCRIPTION =
-  "Senior Technical Product Manager in Los Angeles for AI creative tools: generative video and agentic AI, after 19 years of film, animation and game pipelines at Lucasfilm, Pixar and Riot Games.";
+  "Senior Technical Product Manager in Los Angeles for AI creative tools: generative video and agentic AI, after 18 years of film, animation and game pipelines at Lucasfilm, Pixar and Riot Games.";
 
 // schema.org Person for search engines; nothing on screen
 const PERSON = {

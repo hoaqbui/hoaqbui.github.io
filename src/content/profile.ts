@@ -20,7 +20,7 @@ export const profile: Profile = {
   name: "Hoa Bui",
   roleLine: "Senior Technical Product Manager · AI creative tools · Los Angeles",
   headline: "AI and creative tools that put more in people’s hands.",
-  subLine: "19 years of pipelines and tools at Lucasfilm, Pixar and Riot Games.",
+  subLine: "18 years of pipelines and tools at Lucasfilm, Pixar and Riot Games.",
   email,
   linkedin,
   resumePath: "https://docs.google.com/document/d/1s-OGEpBgFRViEk3mBTeSgL9CHzl-wdsOQKxoBNQtU7s/view",

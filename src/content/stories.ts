@@ -5,21 +5,21 @@ export type Story = {
   tags: string[]; vizLabel: string; bars?: Bar[]; vizNote?: string; reach?: { from: string[]; to: string[] };
 };
 export const stories: Story[] = [
-  { id: "greybox", tags: ["Live-service games", "Workflow automation", "Level design tooling"], num: "<1 hr", numNote: "down from weeks", title: "A League map blocked out in under an hour", years: "2024–26",
+  { id: "greybox", tags: ["Live-service games", "Workflow automation", "Level design tooling"], num: "<1 hr", numNote: "down from about 3 months", title: "A League map blocked out in under an hour", years: "2024–26",
     role: "Sr. TPM, League of Legends tools", team: "4 engineers, a tech lead and an engineering lead",
-    context: "Map ideas waited weeks on engineering before anyone could play them.",
+    context: "A playable map prototype took about 3 months of cross-functional work across design, art and engineering.",
     call: "I set a one-hour bar and bet on region boundaries: ground planes designers draw themselves.",
     tradeOff: "[ the greybox alternative I passed on, and why ]",
-    result: "Weeks to under an hour. It became the studio default.",
-    bars: [{ label: "Idea → playable map", before: "weeks", beforeWidth: "100%", after: "under 1 hour", afterWidth: "3%" }],
+    result: "About 3 months to under an hour. It became the studio default.",
+    bars: [{ label: "Idea → playable map", before: "about 3 months", beforeWidth: "100%", after: "under 1 hour", afterWidth: "3%" }],
     vizNote: "Concept, not to scale.",
-    vizLabel: "Time from map idea to playable greybox: weeks before, under one hour after." },
+    vizLabel: "Time from map idea to playable greybox: about 3 months before, under one hour after." },
   { id: "cosmetics", tags: ["Internal tools platform", "Vendor management & outsourcing", "Scaling teams", "Cost reduction"], num: "−50%", numNote: "cost per asset, at 2× capacity", title: "Half the cost per asset, twice the output", years: "2019–22",
     role: "TPM, PIE Tooling (League content)", team: "tools team 2 → 12 engineers, plus Virtuos Sparx",
     context: "League's content team shipped all of its content, skins included, on a two-week release cadence.",
     call: "I embedded a tools team with the cosmetics content team and grew it from 2 to 12 engineers, and I vetted, selected and signed Virtuos Sparx as the outsourcing partner.",
     tradeOff: "[ the trade-off of embedding ]",
-    result: "Cost per asset fell by half while capacity doubled. Sparx now produces almost all of League’s skins.",
+    result: "Cost per asset fell by half while capacity doubled. Sparx now delivers about 100 skins a year.",
     bars: [
       { label: "Cost per asset", before: "1×", beforeWidth: "100%", after: "0.5×", afterWidth: "50%" },
       { label: "Capacity", before: "1×", beforeWidth: "50%", after: "2×", afterWidth: "100%" },

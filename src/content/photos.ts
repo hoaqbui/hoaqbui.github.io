@@ -1,3 +1,16 @@
+// the LTX prompt a shot was rendered from, split into its fields (v3)
+export type Shot = {
+  webm: string;
+  mp4: string;
+  webmBytes: number;
+  mp4Bytes: number;
+  soundSource: "LTX 2.5" | "Scored from frames";
+  subject: string;
+  whatHappens: string;
+  camera: string;
+  sound: string;
+};
+
 export type Photo = {
   id: string;
   src: string;
@@ -9,6 +22,7 @@ export type Photo = {
   alt: string;
   // vertical crop position in the 2.39:1 frame, percent (default 50, centred)
   focusY?: number;
+  shot?: Shot;
 };
 
 export const photos: Photo[] = [
@@ -42,6 +56,17 @@ export const photos: Photo[] = [
     place: "CZECHIA · 2023",
     title: "Night on the river",
     alt: "River at night with city lights",
+    shot: {
+      webm: "/photos/shots/cz-34.webm",
+      mp4: "/photos/shots/cz-34.mp4",
+      webmBytes: 1049793,
+      mp4Bytes: 1112751,
+      soundSource: "LTX 2.5",
+      subject: "a wide shot from above the bank of a broad river at blue hour. In the middle of the river a small white pedal boat carries a lamp and people in silhouette, pedalling slowly. Behind it a dark wooded hill rises against a deep blue sky, a lit lookout tower on its crest; warm streetlights line the far bank, lit buildings sit on the right, and golden reflections streak the water on the left.",
+      whatHappens: "The boat glides at an easy pace to the right, its lamp swinging slightly; a V-shaped wake opens behind it and rolls outward in thin lines. As the wake reaches the golden reflections, they break into trembling pieces and slowly gather again. Near the bank, a moored pedal boat rocks gently as the ripples arrive. A few clouds drift across the blue sky.",
+      camera: "The camera remains static.",
+      sound: "the boat's paddle wheel churning in a slow rhythm, water slapping its hull, laughter carrying across the water from the bank, and a tram bell far across the city.",
+    },
   },
   {
     id: "jp-16",
@@ -62,6 +87,17 @@ export const photos: Photo[] = [
     place: "CZECHIA · 2023",
     title: "Small figure, big wall",
     alt: "A lone figure beside a patterned wall",
+    shot: {
+      webm: "/photos/shots/cz-17.webm",
+      mp4: "/photos/shots/cz-17.mp4",
+      webmBytes: 1440601,
+      mp4Bytes: 1037534,
+      soundSource: "Scored from frames",
+      subject: "a wide shot at eye level across a cobbled street toward the long facade of a Renaissance palace. At the far left, small against the wall, a lone figure in dark clothes walks along the pavement. The facade fills the frame, its plaster scored in a repeating pattern of carved diamond blocks, topped on the left by an ornate frieze and stone pinnacles; on the right it rises a storey higher with tall windows. Two bicycles lean beside a dark wooden door near a tall black lamppost; the pavement runs in pale and dark stripes.",
+      whatHappens: "The figure walks at an unhurried pace, arms swinging lightly, along the striped pavement to the left edge and steps out of frame. The long wall is left empty and still. Then a cloud passes and soft light spreads across the facade, lifting the carved diamond pattern into relief.",
+      camera: "The camera remains static.",
+      sound: "footsteps on stone paving, echoing off the facade and fading as the figure leaves, pigeons cooing on a ledge, and a bicycle bell once, a street away.",
+    },
   },
   {
     id: "jp-28",
@@ -72,6 +108,17 @@ export const photos: Photo[] = [
     place: "JAPAN · 2023",
     title: "Toward the light",
     alt: "Black-and-white pavilion with a walking figure",
+    shot: {
+      webm: "/photos/shots/jp-28.webm",
+      mp4: "/photos/shots/jp-28.mp4",
+      webmBytes: 1264235,
+      mp4Bytes: 1114602,
+      soundSource: "Scored from frames",
+      subject: "a wide shot at low height across the floor of a vast, dark wooden hall. In the middle distance a lone figure in silhouette walks from left to right in front of a long row of bright, open windows. Thick round wooden pillars stand in the foreground and recede into shadow; the polished floorboards shine like water, holding long reflections of the windows and pillars. At the far left, near a bright doorway, a second figure carrying shopping bags heads out.",
+      whatHappens: "The walker crosses at a steady, unhurried pace, a dark cut-out against the glowing windows, their reflection gliding beneath them on the floor; they pass behind a thick pillar and disappear into its shadow. At the same time, the figure with the bags steps through the doorway and out of frame on the left, leaving the hall empty.",
+      camera: "The camera remains static.",
+      sound: "slow footsteps on old floorboards with a creak under one step, shopping bags rustling and fading out, the hush of a large wooden hall, and cicadas outside the windows.",
+    },
   },
   {
     id: "cz-58",
@@ -162,5 +209,16 @@ export const photos: Photo[] = [
     place: "CZECHIA · 2023",
     title: "The weir below Petřín",
     alt: "The Vltava weir under a cloudy sky, a wooded hill with a lookout tower behind",
+    shot: {
+      webm: "/photos/shots/cz-prague-weir.webm",
+      mp4: "/photos/shots/cz-prague-weir.mp4",
+      webmBytes: 1204224,
+      mp4Bytes: 1341304,
+      soundSource: "LTX 2.5",
+      subject: "a wide shot from the embankment, a little above a broad river, on an overcast afternoon. In the middle of the frame a low weir curves diagonally toward the lower right, the river spilling over its edge in a long white curl. Still, dark water in the left foreground mirrors the trees and sky. On the far bank a white building sits below a wooded hill, and a slender lookout tower rises on the hilltop at the right.",
+      whatHappens: "The river slides smooth and glassy up to the weir's lip, then tips over and breaks into tumbling white foam, churning at the foot of the step and spreading downstream in streaks and eddies. Spray lifts in a faint mist along the whole curve. A small branch drifts on the smooth water, reaches the lip, and is swept over and gone. Above, soft grey clouds drift slowly to the left.",
+      camera: "The camera remains static.",
+      sound: "the weir's steady roar close by, the hiss of spray, the river lapping the embankment below, and a gull calling once overhead.",
+    },
   },
 ];

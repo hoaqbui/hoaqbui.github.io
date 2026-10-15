@@ -3,6 +3,7 @@ import Hero from "@/sections/Hero";
 import Building from "@/sections/Building";
 import Work from "@/sections/Work";
 import Photos from "@/sections/Photos";
+import InMotion from "@/sections/InMotion";
 import Dusk from "@/fx/Dusk";
 import Contact from "@/sections/Contact";
 
@@ -17,6 +18,7 @@ export default function Home() {
         <Work />
         <Dusk>
           <Photos band />
+          <InMotion />
         </Dusk>
         <Contact />
       </main>

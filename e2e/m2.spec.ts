@@ -562,3 +562,114 @@ test.describe("Intent-to-video screenshots and clips", () => {
     await expect(img).toHaveAttribute("src", "/projects/intent-to-video/card.webp");
   });
 });
+
+test.describe("AI section after Photos (card 72)", () => {
+  // the clips are the only media this section requests
+  const shotRequests = (page: import("@playwright/test").Page) => {
+    const urls: string[] = [];
+    page.on("request", (r) => {
+      if (r.url().includes("/photos/shots/")) urls.push(r.url());
+    });
+    return urls;
+  };
+  const allPaused = (page: import("@playwright/test").Page) =>
+    page.evaluate(() => [...document.querySelectorAll<HTMLVideoElement>("#in-motion video")].every((v) => v.paused));
+
+  test("in-motion sits inside the dusk band, after photos, before contact", async ({ page }) => {
+    await page.goto("/");
+    const place = await page.locator("#in-motion").evaluate((el) => ({
+      after: el.previousElementSibling?.id,
+      inDusk: el.parentElement?.hasAttribute("data-dusk") ?? false,
+      contactFollows: Boolean(el.compareDocumentPosition(document.getElementById("contact")!) & Node.DOCUMENT_POSITION_FOLLOWING),
+    }));
+    expect(place).toEqual({ after: "photos", inDusk: true, contactFollows: true });
+  });
+
+  test("copy, the AI label and the Intent-to-video link", async ({ page }) => {
+    await page.goto("/");
+    const section = page.locator("#in-motion");
+    await expect(section.getByRole("heading", { level: 2, name: "AI" })).toHaveCount(1);
+    await expect(section).toContainText("Six seconds after the shutter.");
+    await expect(section).toContainText("LTX 2.5 · 480p → 720p · 6.1 s each · sound from the model, or scored from the frames");
+    await expect(section.getByRole("link", { name: "How each shot is made → Intent-to-video" })).toHaveAttribute(
+      "href",
+      "/building/intent-to-video/",
+    );
+  });
+
+  test("no clip is requested before the section is in view", async ({ page }) => {
+    const urls = shotRequests(page);
+    await page.goto("/");
+    await page.waitForTimeout(1000);
+    expect(urls).toEqual([]);
+    await page.locator("#in-motion").scrollIntoViewIfNeeded();
+    await expect.poll(() => urls.length).toBeGreaterThan(0);
+  });
+
+  test("muted looping clips play in view and stop once it leaves", async ({ page }) => {
+    await page.goto("/");
+    await page.locator("#in-motion").scrollIntoViewIfNeeded();
+    const videos = page.locator("#in-motion video");
+    await expect(videos).toHaveCount(4);
+    for (const v of await videos.all()) {
+      expect(await v.evaluate((el: HTMLVideoElement) => el.muted && el.loop && el.getAttribute("preload"))).toBe("none");
+    }
+    await expect.poll(() => videos.first().evaluate((el: HTMLVideoElement) => !el.paused)).toBe(true);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect.poll(() => allPaused(page)).toBe(true);
+  });
+
+  test("one pause control stops and restarts every clip", async ({ page }) => {
+    await page.goto("/");
+    await page.locator("#in-motion").scrollIntoViewIfNeeded();
+    await expect.poll(() => page.locator("#in-motion video").first().evaluate((el: HTMLVideoElement) => !el.paused)).toBe(true);
+    await page.getByRole("button", { name: "Pause clips" }).click();
+    await expect.poll(() => allPaused(page)).toBe(true);
+    await page.getByRole("button", { name: "Play clips" }).click();
+    await expect.poll(() => page.locator("#in-motion video").first().evaluate((el: HTMLVideoElement) => !el.paused)).toBe(true);
+  });
+
+  test("Show the photographs swaps every clip for its photo", async ({ page }) => {
+    await page.goto("/");
+    await page.locator("#in-motion").scrollIntoViewIfNeeded();
+    const show = page.getByRole("button", { name: "Show the photographs" });
+    await show.click();
+    await expect(show).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator("#in-motion video")).toHaveCount(0);
+    const imgs = page.locator("#in-motion img");
+    await expect(imgs).toHaveCount(4);
+    for (const img of await imgs.all()) {
+      await img.scrollIntoViewIfNeeded();
+      await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(0);
+    }
+  });
+
+  test("reduced motion: posters only, and no clip is requested", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    const urls = shotRequests(page);
+    await page.goto("/");
+    await page.locator("#in-motion").scrollIntoViewIfNeeded();
+    await expect(page.locator("#in-motion img")).toHaveCount(4);
+    await expect(page.locator("#in-motion video")).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Pause clips" })).toHaveCount(0);
+    await page.waitForTimeout(500);
+    expect(urls).toEqual([]);
+  });
+
+  test("the lead take sits beside the rest on desktop and stacks on a phone", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    await page.locator("#in-motion").scrollIntoViewIfNeeded();
+    const figs = page.locator("#in-motion figure");
+    await expect(figs).toHaveCount(4);
+    const lead = await figs.nth(0).boundingBox();
+    const next = await figs.nth(1).boundingBox();
+    expect(next!.x).toBeGreaterThanOrEqual(lead!.x + lead!.width);
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    const leadPhone = await figs.nth(0).boundingBox();
+    const nextPhone = await figs.nth(1).boundingBox();
+    expect(nextPhone!.y).toBeGreaterThanOrEqual(leadPhone!.y + leadPhone!.height);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
+  });
+});

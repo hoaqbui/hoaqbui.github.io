@@ -3,13 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import SectionLabel from "@/ui/SectionLabel";
-import { photos, type Photo, type Shot } from "@/content/photos";
+import type { Photo, Shot } from "@/content/photos";
 import { useMotion } from "@/fx/useMotion";
 
-// The photographs that have a six-second take, in content order: the first one leads.
-const takes = photos.filter((p): p is Photo & { shot: Shot } => Boolean(p.shot));
+export type MotionPhoto = Pick<Photo, "id" | "src" | "width" | "height" | "title" | "alt" | "focusY"> & {
+  shot: Pick<Shot, "webm" | "mp4">;
+};
 
-const poster = (p: Photo) => p.src.replace(".webp", "-800.webp");
+const poster = (p: MotionPhoto) => p.src.replace(".webp", "-800.webp");
 
 // One take: the video once the section has been in view, the photograph before that, in
 // reduced motion, and while "Show the photographs" is on. Nothing loads before it is shown.
@@ -21,8 +22,8 @@ function Take({
   playing,
   fill = false,
 }: {
-  photo: Photo;
-  shot: Shot;
+  photo: MotionPhoto;
+  shot: MotionPhoto["shot"];
   showVideo: boolean;
   playing: boolean;
   fill?: boolean;
@@ -77,7 +78,7 @@ function Take({
   );
 }
 
-export default function InMotion() {
+export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
   // fx owns reduced motion and the pause state. Its onScreen starts true until its observer
   // reports, so this section keeps its own in-view state: nothing loads before it is seen.
   const { allowed, paused, toggle } = useMotion<HTMLElement>();

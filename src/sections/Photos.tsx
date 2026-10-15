@@ -2,6 +2,9 @@ import SectionLabel from "@/ui/SectionLabel";
 import { photos } from "@/content/photos";
 import Cinemascope from "@/ui/Cinemascope";
 
+// The gallery needs captions and image paths, not the video prompts attached to four photos.
+const galleryPhotos = photos.map(({ shot, ...photo }) => photo);
+
 // band: the home-scroll version (h2, lazy, no full-screen height); default is the /photos page.
 export default function Photos({ band = false }: { band?: boolean }) {
   const Heading = band ? "h2" : "h1";
@@ -32,7 +35,7 @@ export default function Photos({ band = false }: { band?: boolean }) {
           </a>
         </header>
 
-        <Cinemascope photos={photos} eager={!band} />
+        <Cinemascope photos={galleryPhotos} eager={!band} />
       </div>
     </section>
   );

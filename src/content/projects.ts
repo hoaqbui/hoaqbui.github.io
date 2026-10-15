@@ -5,12 +5,14 @@ export type Shot = { src: string; width: number; height: number; alt: string; th
 // A short muted loop the project made.
 export type Clip = { src: string; poster: string; width: number; height: number; caption: string };
 export type Project = { id: string; title: string; body: string; status: string; live: boolean; steps?: string[]; why?: string; chips: string[]; tryUrl?: string;
+  // the From still to shot panel, after How it runs (card 73; Intent-to-video only)
+  photoShots?: boolean;
   // screenshots of the running app (Parti only so far; user, 2026-10-14)
   shots?: { card: Shot; hero?: Shot; clips?: Clip[]; stepsTitle?: string; steps: { shot: Shot; caption: string }[] } };
 export const projects: Project[] = [
   { id: "intent-to-video", title: "Intent-to-video pipeline",
     body: "Turns creative intent into images, then video, on ComfyUI and LTX, with character orthos, render profiles and a continuity ledger for shot-to-shot consistency.",
-    status: "runs end to end · hardening", live: true,
+    status: "runs end to end · hardening", live: true, photoShots: true,
     steps: ["Intent", "Character orthos · ComfyUI", "Image · render profiles", "Video · LTX", "Continuity ledger"],
     why: "Removing the friction between a creative’s intent and what they make. Building it end to end shows where generative video still breaks.",
     chips: ["Generative video", "Diffusion", "Human-in-the-loop", "ComfyUI", "LTX"],

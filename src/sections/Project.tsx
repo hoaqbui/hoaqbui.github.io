@@ -1,8 +1,13 @@
 import Link from "next/link";
 import { projects } from "@/content/projects";
+import { photos } from "@/content/photos";
 import { diagrams, portraits, Portrait } from "@/ui/diagrams";
 import TryIt from "@/ui/TryIt";
 import Shot from "@/ui/Shot";
+import StillToShot, { type Take } from "@/ui/StillToShot";
+
+// The photographs that have a six-second shot, for the From still to shot panel.
+const takes = photos.filter((p): p is Take => Boolean(p.shot));
 
 export default function Project({ id }: { id: string }) {
   const currentIndex = projects.findIndex((p) => p.id === id);
@@ -268,6 +273,8 @@ function ShotsLayout({
           )}
         </div>
       </div>
+
+      {project.photoShots && <StillToShot takes={takes} />}
     </div>
   );
 }

@@ -673,3 +673,78 @@ test.describe("AI section after Photos (card 72)", () => {
     expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
   });
 });
+
+test.describe("From still to shot (card 73)", () => {
+  const panel = (page: import("@playwright/test").Page) => page.locator("[data-still-to-shot]");
+  const wipe = (page: import("@playwright/test").Page) =>
+    panel(page).getByRole("slider", { name: "Drag to compare the photograph with the shot" });
+  const video = (page: import("@playwright/test").Page) => panel(page).locator("video");
+
+  test("sits after How it runs with four picks, and 44px controls", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/building/intent-to-video/");
+    await expect(panel(page)).toHaveCount(1);
+    await expect(panel(page).getByRole("heading", { level: 3, name: "My photographs, directed as six-second shots." })).toBeVisible();
+    const after = await page.evaluate(() => {
+      const how = [...document.querySelectorAll("h2")].find((h) => h.textContent === "How it runs")!;
+      return Boolean(how.compareDocumentPosition(document.querySelector("[data-still-to-shot]")!) & Node.DOCUMENT_POSITION_FOLLOWING);
+    });
+    expect(after).toBe(true);
+
+    const picks = panel(page).getByRole("group", { name: "Choose a shot" }).getByRole("button");
+    await expect(picks).toHaveCount(4);
+    await panel(page).scrollIntoViewIfNeeded();
+    const controls = panel(page).getByRole("button");
+    await expect(panel(page).getByRole("button", { name: "Turn sound on" })).toBeVisible();
+    for (const b of await controls.all()) {
+      expect((await b.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+    }
+  });
+
+  test("the range wipes from the shot (0) to the whole photograph (100)", async ({ page }) => {
+    await page.goto("/building/intent-to-video/");
+    const photo = panel(page).locator("img").first();
+    await wipe(page).scrollIntoViewIfNeeded();
+    await wipe(page).fill("0");
+    await expect.poll(() => photo.evaluate((el) => getComputedStyle(el).clipPath)).toContain("100%");
+    await wipe(page).fill("100");
+    await expect.poll(() => photo.evaluate((el) => getComputedStyle(el).clipPath)).toBe("inset(0px 0% 0px 0px)");
+  });
+
+  test("a pick swaps the video and the prompt text", async ({ page }) => {
+    await page.goto("/building/intent-to-video/");
+    await panel(page).scrollIntoViewIfNeeded();
+    await panel(page).getByRole("button", { name: "Small figure, big wall" }).click();
+    await expect(panel(page).getByRole("button", { name: "Small figure, big wall" })).toHaveAttribute("aria-pressed", "true");
+    await expect(panel(page)).toContainText("a wide shot at eye level across a cobbled street");
+    await expect.poll(() => video(page).evaluate((el: HTMLVideoElement) => el.currentSrc)).toContain("/photos/shots/cz-17.webm");
+  });
+
+  test("sound is off by default, and the sound button unmutes the take", async ({ page }) => {
+    await page.goto("/building/intent-to-video/");
+    await panel(page).scrollIntoViewIfNeeded();
+    await expect.poll(() => video(page).evaluate((el: HTMLVideoElement) => el.muted)).toBe(true);
+    await panel(page).getByRole("button", { name: "Turn sound on" }).click();
+    await expect.poll(() => video(page).evaluate((el: HTMLVideoElement) => el.muted)).toBe(false);
+    await expect(panel(page).getByRole("button", { name: "Turn sound off" })).toBeVisible();
+  });
+
+  test("the pause control stops and restarts the take", async ({ page }) => {
+    await page.goto("/building/intent-to-video/");
+    await panel(page).scrollIntoViewIfNeeded();
+    await expect.poll(() => video(page).evaluate((el: HTMLVideoElement) => !el.paused)).toBe(true);
+    await panel(page).getByRole("button", { name: "Pause take" }).click();
+    await expect.poll(() => video(page).evaluate((el: HTMLVideoElement) => el.paused)).toBe(true);
+    await panel(page).getByRole("button", { name: "Play take" }).click();
+    await expect.poll(() => video(page).evaluate((el: HTMLVideoElement) => !el.paused)).toBe(true);
+  });
+
+  test("no second Try Compo link, and no other project page has the panel", async ({ page }) => {
+    await page.goto("/building/intent-to-video/");
+    await expect(page.getByRole("link", { name: "Try Compo ↗" })).toHaveCount(1);
+    for (const id of ["parti", "himmelcam"]) {
+      await page.goto(`/building/${id}/`);
+      await expect(page.locator("[data-still-to-shot]")).toHaveCount(0);
+    }
+  });
+});

@@ -53,7 +53,7 @@ export default function Work() {
           Work
         </SectionLabel>
         <p className="max-w-[620px] flex-[1_1_420px] text-2xl leading-[1.4] tracking-[-0.015em]">
-          A few things I’m proud of from 13 years at Riot.
+          A few things I’m proud of from 12+ years at Riot.
         </p>
       </div>
 

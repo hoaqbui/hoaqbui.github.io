@@ -26,7 +26,7 @@ test.describe("M1 P0 steps", () => {
   test("first proof number shows above the nav on a 390x664 phone", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 664 });
     await page.goto("/");
-    const num = page.locator('section[aria-label="Proof"]').getByText("<1 hour").first();
+    const num = page.locator('section[aria-label="Proof"]').getByText("<1 hr").first();
     const numBox = await num.boundingBox();
     const navBox = await page.locator('nav[aria-label="Sections"]').boundingBox();
     expect(numBox).not.toBeNull();

@@ -68,7 +68,7 @@ export default function Building() {
         <div className="flex-[1_1_340px] max-w-[420px] min-w-0">
           <SectionLabel>Building</SectionLabel>
           <h2 className="mt-4 text-[40px] leading-[1.1] tracking-[-0.035em] font-medium">
-            Three things I’m building with my own hands.
+            Three things I’m building with agents.
           </h2>
           <p className="mt-4 text-[17px] leading-relaxed text-muted">
             Each one is a bet on how people will make things with AI.

@@ -629,19 +629,60 @@ test.describe("AI section after Photos (card 72)", () => {
     await expect.poll(() => page.locator("#in-motion video").first().evaluate((el: HTMLVideoElement) => !el.paused)).toBe(true);
   });
 
-  test("Show the photographs swaps every clip for its photo", async ({ page }) => {
+  test("home clip comparison has four independent photograph and video wipes", async ({ page }) => {
     await page.goto("/");
     await page.locator("#in-motion").scrollIntoViewIfNeeded();
-    const show = page.getByRole("button", { name: "Show the photographs" });
-    await show.click();
-    await expect(show).toHaveAttribute("aria-pressed", "true");
-    await expect(page.locator("#in-motion video")).toHaveCount(0);
-    const imgs = page.locator("#in-motion img");
-    await expect(imgs).toHaveCount(4);
-    for (const img of await imgs.all()) {
-      await img.scrollIntoViewIfNeeded();
-      await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(0);
-    }
+    const frames = page.locator("#in-motion [data-compare-frame]");
+    const sliders = frames.getByRole("slider");
+    await expect(frames).toHaveCount(4);
+    await expect(sliders).toHaveCount(4);
+    await expect(page.locator("#in-motion video")).toHaveCount(4);
+    await expect(page.locator("#in-motion img")).toHaveCount(4);
+    await expect(page.getByRole("button", { name: "Show the photographs" })).toHaveCount(0);
+    for (const slider of await sliders.all()) await expect(slider).toHaveValue("50");
+    await expect(sliders.first()).toHaveAttribute("aria-label", /Compare Night on the river photograph and video/);
+    const photo = frames.first().locator("img");
+    await sliders.first().fill("0");
+    await expect.poll(() => photo.evaluate((el) => getComputedStyle(el).clipPath)).toBe("inset(0px 100% 0px 0px)");
+    await sliders.first().fill("100");
+    await expect.poll(() => photo.evaluate((el) => getComputedStyle(el).clipPath)).toBe("inset(0px 0% 0px 0px)");
+    await expect(sliders.nth(1)).toHaveValue("50");
+    await sliders.first().focus();
+    await page.keyboard.press("ArrowLeft");
+    await expect(sliders.first()).toHaveValue("99");
+    await expect(frames.first()).toHaveCSS("outline-style", "solid");
+    const handle = await frames.first().locator("[data-compare-handle]").boundingBox();
+    expect(handle!.width).toBeGreaterThanOrEqual(44);
+    expect(handle!.height).toBeGreaterThanOrEqual(44);
+  });
+
+  test("home clip comparison works by touch and leaves vertical page scrolling available", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send("Emulation.setTouchEmulationEnabled", { enabled: true, maxTouchPoints: 1 });
+    await page.goto("/");
+    await page.locator("#in-motion").scrollIntoViewIfNeeded();
+    const slider = page.locator("#in-motion [data-compare-frame]").first().getByRole("slider");
+    await expect(slider).toHaveValue("50");
+    const box = (await slider.boundingBox())!;
+    const x = Math.round(box.x + box.width / 2);
+    const y = Math.round(box.y + box.height / 2);
+    const touch = (type: "touchStart" | "touchMove" | "touchEnd", px: number, py: number) =>
+      cdp.send("Input.dispatchTouchEvent", {
+        type,
+        touchPoints: type === "touchEnd" ? [] : [{ x: px, y: py }],
+      });
+    await touch("touchStart", x, y);
+    for (let i = 1; i <= 8; i++) await touch("touchMove", x + i * 10, y);
+    await touch("touchEnd", x + 80, y);
+    await expect.poll(async () => Number(await slider.inputValue())).toBeGreaterThan(50);
+
+    const before = await page.evaluate(() => window.scrollY);
+    await touch("touchStart", x, y);
+    for (let i = 1; i <= 10; i++) await touch("touchMove", x, y - i * 12);
+    await touch("touchEnd", x, y - 120);
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(before + 20);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
   });
 
   test("reduced motion: posters only, and no clip is requested", async ({ page }) => {
@@ -651,6 +692,7 @@ test.describe("AI section after Photos (card 72)", () => {
     await page.locator("#in-motion").scrollIntoViewIfNeeded();
     await expect(page.locator("#in-motion img")).toHaveCount(4);
     await expect(page.locator("#in-motion video")).toHaveCount(0);
+    await expect(page.locator("#in-motion input[type='range']")).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Pause clips" })).toHaveCount(0);
     await page.waitForTimeout(500);
     expect(urls).toEqual([]);

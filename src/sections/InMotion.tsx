@@ -12,8 +12,8 @@ export type MotionPhoto = Pick<Photo, "id" | "src" | "width" | "height" | "title
 
 const poster = (p: MotionPhoto) => p.src.replace(".webp", "-800.webp");
 
-// One take: the video once the section has been in view, the photograph before that, in
-// reduced motion, and while "Show the photographs" is on. Nothing loads before it is shown.
+// One take: the video and its photograph can be compared once the section is in view.
+// Before that, or in reduced motion, only the photograph is shown.
 // fill: on a wide screen the lead take stretches to the height of the column beside it
 function Take({
   photo,
@@ -29,6 +29,7 @@ function Take({
   fill?: boolean;
 }) {
   const video = useRef<HTMLVideoElement>(null);
+  const [wipe, setWipe] = useState(50);
 
   useEffect(() => {
     const el = video.current;
@@ -40,28 +41,29 @@ function Take({
 
   // the frame keeps its 16:9 box on a phone; on a wide screen a filled frame crops to fit
   const ratio = fill ? undefined : { aspectRatio: `${photo.width} / ${photo.height}` };
-  const cls = `block h-auto w-full rounded-xl bg-black object-cover ${fill ? "md:h-0 md:min-h-0 md:flex-1" : ""}`;
+  const frameClass = `relative w-full overflow-hidden rounded-xl bg-black has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-teal ${fill ? "aspect-video md:aspect-auto md:h-0 md:min-h-0 md:flex-1" : ""}`;
+  const mediaClass = "absolute inset-0 h-full w-full object-cover";
 
   return (
     <figure className={`m-0 flex flex-col ${fill ? "md:h-full" : ""}`}>
-      {showVideo ? (
-        <video
-          ref={video}
-          muted
-          loop
-          playsInline
-          preload="none"
-          poster={poster(photo)}
-          width={photo.width}
-          height={photo.height}
-          style={ratio}
-          className={cls}
-          aria-label={`A six-second take of “${photo.title}”`}
-        >
-          <source src={shot.webm} type="video/webm" />
-          <source src={shot.mp4} type="video/mp4" />
-        </video>
-      ) : (
+      <div className={frameClass} style={ratio} data-compare-frame={showVideo ? "" : undefined}>
+        {showVideo && (
+          <video
+            ref={video}
+            muted
+            loop
+            playsInline
+            preload="none"
+            poster={poster(photo)}
+            width={photo.width}
+            height={photo.height}
+            className={mediaClass}
+            aria-label={`A six-second take of “${photo.title}”`}
+          >
+            <source src={shot.webm} type="video/webm" />
+            <source src={shot.mp4} type="video/mp4" />
+          </video>
+        )}
         <img
           src={photo.src}
           alt={photo.alt}
@@ -69,10 +71,42 @@ function Take({
           height={photo.height}
           loading="lazy"
           decoding="async"
-          style={{ ...ratio, objectPosition: `50% ${photo.focusY ?? 50}%` }}
-          className={cls}
+          style={{
+            objectPosition: `50% ${photo.focusY ?? 50}%`,
+            clipPath: showVideo ? `inset(0 ${100 - wipe}% 0 0)` : undefined,
+          }}
+          className={mediaClass}
         />
-      )}
+        {showVideo && (
+          <>
+            <span aria-hidden="true" className="pointer-events-none absolute left-2 top-2 rounded bg-black/65 px-2 py-1 font-mono text-[10px] text-white">
+              Photograph
+            </span>
+            <span aria-hidden="true" className="pointer-events-none absolute right-2 top-2 rounded bg-black/65 px-2 py-1 font-mono text-[10px] text-white">
+              Video
+            </span>
+            <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 w-0.5 bg-white/90 shadow-sm" style={{ left: `${wipe}%` }} />
+            <div
+              aria-hidden="true"
+              data-compare-handle
+              className="pointer-events-none absolute top-1/2 flex size-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#0d0f10] shadow-lg"
+              style={{ left: `clamp(22px, ${wipe}%, calc(100% - 22px))` }}
+            >
+              <span className="font-mono text-base leading-none">↔</span>
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={100}
+              value={wipe}
+              onChange={(event) => setWipe(Number(event.target.value))}
+              aria-label={`Compare ${photo.title} photograph and video`}
+              aria-valuetext={`${wipe}% photograph`}
+              className="absolute inset-0 m-0 h-full w-full cursor-ew-resize appearance-none bg-transparent opacity-0 touch-pan-y focus-visible:outline-none"
+            />
+          </>
+        )}
+      </div>
       <figcaption className="mt-2 font-mono text-[12px] text-muted">{photo.title}</figcaption>
     </figure>
   );
@@ -85,7 +119,6 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
   const ref = useRef<HTMLElement>(null);
   const [inView, setInView] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  const [stills, setStills] = useState(false);
 
   useEffect(() => {
     if (typeof IntersectionObserver === "undefined") {
@@ -107,8 +140,8 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
   if (takes.length === 0) return null;
 
   const [lead, ...rest] = takes;
-  const playing = allowed && !paused && inView && !stills;
-  const showVideos = allowed && loaded && !stills;
+  const playing = allowed && !paused && inView;
+  const showVideos = allowed && loaded;
 
   return (
     <section id="in-motion" ref={ref} className="w-full py-20 md:py-24 text-text">
@@ -120,26 +153,17 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
               Six seconds after the shutter. I wrote each photograph a shot — a subject, what happens to it, the camera, the
               sound — and Compo, my intent-to-video pipeline, rendered it on LTX 2.5.
             </p>
+            {allowed && <p className="mt-3 font-mono text-xs text-muted">Drag each frame to compare the photograph with its shot.</p>}
           </div>
           {allowed && (
             <div className="flex flex-wrap gap-2">
-              {!stills && (
-                <button
-                  type="button"
-                  onClick={toggle}
-                  aria-pressed={paused}
-                  className="inline-flex min-h-[44px] items-center rounded-full border border-border px-4 font-mono text-xs text-text hover:bg-well"
-                >
-                  {paused ? "Play clips" : "Pause clips"}
-                </button>
-              )}
               <button
                 type="button"
-                onClick={() => setStills((s) => !s)}
-                aria-pressed={stills}
+                onClick={toggle}
+                aria-pressed={paused}
                 className="inline-flex min-h-[44px] items-center rounded-full border border-border px-4 font-mono text-xs text-text hover:bg-well"
               >
-                Show the photographs
+                {paused ? "Play clips" : "Pause clips"}
               </button>
             </div>
           )}

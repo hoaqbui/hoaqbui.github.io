@@ -99,6 +99,9 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
   const mainImg = useRef<HTMLImageElement>(null);
   const userScrolling = useRef(false);
   const settleTimer = useRef<number | undefined>(undefined);
+  const touchActive = useRef(false);
+  const touchScrolling = useRef(false);
+  const touchMoved = useRef(false);
   const drag = useRef<{ x: number; left: number; moved: boolean } | null>(null);
   const [dragging, setDragging] = useState(false);
   // the strip picked the photo itself, so don't re-centre it
@@ -154,6 +157,7 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
   const handleStripScroll = () => {
     const strip = stripRef.current;
     if (!strip) return;
+    if (touchActive.current) touchMoved.current = true;
     const pos = position(strip);
     scrollPos.set(pos);
     if (userScrolling.current) {
@@ -166,27 +170,28 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
     }
     window.clearTimeout(settleTimer.current);
     settleTimer.current = window.setTimeout(() => {
-      if (!userScrolling.current || drag.current) return;
+      if (!userScrolling.current || drag.current || touchActive.current) return;
       const nearest = Math.round(position(strip));
       const target = nearest * pitch(strip);
-      if (Math.abs(strip.scrollLeft - target) > 1) {
+      if (!touchScrolling.current && Math.abs(strip.scrollLeft - target) > 1) {
         // ease into the nearest thumbnail; this settles again when it arrives
         strip.scrollTo({ left: target, behavior: reducedMotion ? "auto" : "smooth" });
         return;
       }
       userScrolling.current = false;
+      touchScrolling.current = false;
       setDragging(false);
       fromStrip.current = true;
       setInstant(true);
       setCurrentIndex(nearest);
       setEndingScrub(true); // the scrub layers go once the committed photo is decoded
-    }, 120);
+    }, touchScrolling.current ? 250 : 120);
   };
 
   const handleStripPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    userScrolling.current = true;
     const strip = stripRef.current;
     if (e.pointerType !== "mouse" || !strip) return; // touch and pen scroll natively
+    userScrolling.current = true;
     drag.current = { x: e.clientX, left: strip.scrollLeft, moved: false };
     const move = (ev: PointerEvent) => {
       if (!drag.current) return;
@@ -367,7 +372,33 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
           ref={stripRef}
           onScroll={handleStripScroll}
           onPointerDown={handleStripPointerDown}
-          onWheel={() => (userScrolling.current = true)}
+          onTouchStart={() => {
+            window.clearTimeout(settleTimer.current);
+            touchActive.current = true;
+            touchScrolling.current = true;
+            touchMoved.current = false;
+            userScrolling.current = true;
+          }}
+          onTouchEnd={() => {
+            touchActive.current = false;
+            if (touchMoved.current) handleStripScroll();
+            else {
+              touchScrolling.current = false;
+              userScrolling.current = false;
+            }
+          }}
+          onTouchCancel={() => {
+            touchActive.current = false;
+            if (touchMoved.current) handleStripScroll();
+            else {
+              touchScrolling.current = false;
+              userScrolling.current = false;
+            }
+          }}
+          onWheel={() => {
+            touchScrolling.current = false;
+            userScrolling.current = true;
+          }}
           onClickCapture={(e) => {
             if (drag.current?.moved) {
               e.preventDefault();
@@ -385,6 +416,7 @@ export default function Cinemascope({ photos, eager = true }: CinemascopeProps) 
               onClick={() => {
                 // a tap selects without pausing; only a drag pauses
                 userScrolling.current = false;
+                touchScrolling.current = false;
                 goTo(i);
               }}
               aria-label={`Show ${photo.title}`}

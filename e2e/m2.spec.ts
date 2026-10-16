@@ -1,5 +1,20 @@
 import { test, expect } from "@playwright/test";
 
+// Simulate a browser that refuses autoplay but accepts a direct user gesture.
+const blockAutoPlay = (page: import("@playwright/test").Page) =>
+  page.addInitScript(() => {
+    const nativePlay = HTMLMediaElement.prototype.play;
+    let tapped = false;
+    window.addEventListener("pointerdown", () => { tapped = true; }, { capture: true });
+    window.addEventListener("keydown", () => { tapped = true; }, { capture: true });
+    HTMLMediaElement.prototype.play = function () {
+      if (!tapped) {
+        return Promise.reject(new DOMException("Autoplay blocked", "NotAllowedError"));
+      }
+      return nativePlay.call(this);
+    };
+  });
+
 test.describe("M2 route transitions", () => {
   test("transition: push-in keeps the card name across the route", async ({ page }) => {
     await page.goto("/");
@@ -685,6 +700,18 @@ test.describe("AI section after Photos (card 72)", () => {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
   });
 
+  test("home clip comparison offers tap to play when autoplay is blocked", async ({ page }) => {
+    await blockAutoPlay(page);
+    await page.goto("/");
+    await page.evaluate(() => document.querySelector("#in-motion")?.scrollIntoView());
+    const first = page.locator("#in-motion [data-compare-frame]").first();
+    const play = first.getByRole("button", { name: "Play Night on the river video" });
+    await expect(play).toBeVisible();
+    await play.click();
+    await expect.poll(() => first.locator("video").evaluate((el: HTMLVideoElement) => el.currentTime)).toBeGreaterThan(0.1);
+    await expect(play).toHaveCount(0);
+  });
+
   test("reduced motion: posters only, and no clip is requested", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     const urls = shotRequests(page);
@@ -721,6 +748,17 @@ test.describe("From still to shot (card 73)", () => {
   const wipe = (page: import("@playwright/test").Page) =>
     panel(page).getByRole("slider", { name: "Drag to compare the photograph with the shot" });
   const video = (page: import("@playwright/test").Page) => panel(page).locator("video");
+
+  test("project comparison offers tap to play when autoplay is blocked", async ({ page }) => {
+    await blockAutoPlay(page);
+    await page.goto("/building/intent-to-video/");
+    await page.evaluate(() => document.querySelector("[data-still-to-shot]")?.scrollIntoView());
+    const play = panel(page).getByRole("button", { name: "Play video" });
+    await expect(play).toBeVisible();
+    await play.click();
+    await expect.poll(() => video(page).evaluate((el: HTMLVideoElement) => el.currentTime)).toBeGreaterThan(0.1);
+    await expect(play).toHaveCount(0);
+  });
 
   test("sits after How it runs with four picks, and 44px controls", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });

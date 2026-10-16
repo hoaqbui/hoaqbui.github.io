@@ -30,12 +30,13 @@ function Take({
 }) {
   const video = useRef<HTMLVideoElement>(null);
   const [wipe, setWipe] = useState(50);
+  const [needsTap, setNeedsTap] = useState(false);
 
   useEffect(() => {
     const el = video.current;
     if (!el) return;
-    // a refused play leaves the poster frame, and the pause control still works
-    if (playing) el.play().catch(() => {});
+    // iPhone Low Power Mode can refuse muted autoplay; offer a direct tap to play.
+    if (playing) el.play().catch(() => setNeedsTap(true));
     else el.pause();
   }, [playing, showVideo]);
 
@@ -59,6 +60,8 @@ function Take({
             height={photo.height}
             className={mediaClass}
             aria-label={`A six-second take of “${photo.title}”`}
+            onPlaying={() => setNeedsTap(false)}
+            onPause={() => playing && setNeedsTap(true)}
           >
             <source src={shot.webm} type="video/webm" />
             <source src={shot.mp4} type="video/mp4" />
@@ -104,6 +107,16 @@ function Take({
               aria-valuetext={`${wipe}% photograph`}
               className="absolute inset-0 m-0 h-full w-full cursor-ew-resize appearance-none bg-transparent opacity-0 touch-pan-y focus-visible:outline-none"
             />
+            {playing && needsTap && wipe < 100 && (
+              <button
+                type="button"
+                onClick={() => video.current?.play().catch(() => setNeedsTap(true))}
+                aria-label={`Play ${photo.title} video`}
+                className="absolute bottom-3 right-3 z-10 inline-flex min-h-11 items-center rounded-full bg-white px-4 font-mono text-xs text-[#0d0f10] shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal"
+              >
+                Play video
+              </button>
+            )}
           </>
         )}
       </div>

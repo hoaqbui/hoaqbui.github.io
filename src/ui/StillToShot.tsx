@@ -14,13 +14,14 @@ export default function StillToShot({ takes }: { takes: Take[] }) {
   const [pick, setPick] = useState(0);
   const [wipe, setWipe] = useState(50);
   const [sound, setSound] = useState(false);
+  const [needsTap, setNeedsTap] = useState(false);
   const video = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     const el = video.current;
     if (!el) return;
-    // a refused play leaves the first frame, and the pause control still works
-    if (running) el.play().catch(() => {});
+    // iPhone Low Power Mode can refuse muted autoplay; offer a direct tap to play.
+    if (running) el.play().catch(() => setNeedsTap(true));
     else el.pause();
   }, [running, pick]);
 
@@ -59,6 +60,8 @@ export default function StillToShot({ takes }: { takes: Take[] }) {
               preload="metadata"
               className="absolute inset-0 h-full w-full object-cover"
               aria-label={`A six-second take of “${take.title}”`}
+              onPlaying={() => setNeedsTap(false)}
+              onPause={() => running && setNeedsTap(true)}
             >
               <source src={shot.webm} type="video/webm" />
               <source src={shot.mp4} type="video/mp4" />
@@ -89,6 +92,15 @@ export default function StillToShot({ takes }: { takes: Take[] }) {
               aria-label={compare}
               className="absolute inset-0 m-0 h-full w-full cursor-ew-resize appearance-none bg-transparent opacity-0 focus-visible:outline-none"
             />
+            {running && needsTap && wipe < 100 && (
+              <button
+                type="button"
+                onClick={() => video.current?.play().catch(() => setNeedsTap(true))}
+                className="absolute bottom-3 right-3 z-10 inline-flex min-h-11 items-center rounded-full bg-white px-4 font-mono text-xs text-[#0d0f10] shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal"
+              >
+                Play video
+              </button>
+            )}
           </div>
 
           {allowed && (

@@ -32,18 +32,20 @@ export default function Hero() {
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-6">
             <a
+              href={profile.resumePath}
+              target="_blank"
+              rel="noopener"
+              className="inline-flex min-h-[44px] items-center font-medium text-teal"
+            >
+              Résumé →
+            </a>
+            <a
               href={profile.linkedin}
               target="_blank"
               rel="noopener"
               className="inline-flex min-h-[44px] items-center font-medium text-teal"
             >
               LinkedIn →
-            </a>
-            <a
-              href={profile.resumeEmailHref}
-              className="inline-flex min-h-[44px] items-center font-medium text-teal"
-            >
-              Résumé →
             </a>
           </div>
         </Parallax>
@@ -68,10 +70,10 @@ export default function Hero() {
           <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-8">
             {proof.map((item, index) => (
               <div key={index}>
-                <div className="text-4xl font-medium tracking-[-0.03em]">
+                <div className="text-sm text-muted">{item.label}</div>
+                <div className="mt-1.5 text-4xl font-medium tracking-[-0.03em]">
                   {item.value}
                 </div>
-                <div className="mt-1.5 text-sm text-muted">{item.label}</div>
               </div>
             ))}
           </div>

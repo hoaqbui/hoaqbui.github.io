@@ -9,8 +9,8 @@ test.describe("M1 P0 steps", () => {
     const who = top.getByText("Hoa Bui").first();
     const role = top.getByText("Senior Technical Product Manager").first();
     const linkedinLink = top.locator('a[href="https://www.linkedin.com/in/hoaqbui/"]').first();
-    // Résumé opens an email draft that links the fresh PDF export of the public Doc.
-    const resumeLink = top.locator('a[href^="mailto:"][href*="1s-OGEpBgFRViEk3mBTeSgL9CHzl-wdsOQKxoBNQtU7s"]').first();
+    // Résumé opens the public Doc itself, never an email draft (tester, 2026-10-16).
+    const resumeLink = top.locator('a[href="https://docs.google.com/document/d/1s-OGEpBgFRViEk3mBTeSgL9CHzl-wdsOQKxoBNQtU7s/view"]').first();
 
     for (const locator of [who, role, linkedinLink, resumeLink]) {
       await expect(locator).toBeVisible();
@@ -26,7 +26,7 @@ test.describe("M1 P0 steps", () => {
   test("first proof number shows above the nav on a 390x664 phone", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 664 });
     await page.goto("/");
-    const num = page.locator('section[aria-label="Proof"]').getByText("<1 hr").first();
+    const num = page.locator('section[aria-label="Proof"]').getByText("<1 hour").first();
     const numBox = await num.boundingBox();
     const navBox = await page.locator('nav[aria-label="Sections"]').boundingBox();
     expect(numBox).not.toBeNull();

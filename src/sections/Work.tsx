@@ -96,11 +96,11 @@ export default function Work() {
                     className="flex w-full min-h-[88px] py-6 text-left cursor-pointer flex-wrap items-baseline justify-between gap-x-8 gap-y-2 border-none bg-transparent font-inherit"
                   >
                     <div className="flex flex-col gap-1 basis-[180px]">
-                      <span className="text-[34px] font-medium tracking-[-0.03em] text-teal">
-                        {story.num}
-                      </span>
                       <span className="font-mono text-xs text-muted">
                         {story.numNote}
+                      </span>
+                      <span className="text-[34px] font-medium tracking-[-0.03em] text-teal">
+                        {story.num}
                       </span>
                     </div>
                     <div className="flex flex-1 min-w-0 flex-col gap-1.5 basis-[320px]">

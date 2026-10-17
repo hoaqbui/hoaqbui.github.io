@@ -36,20 +36,38 @@ export default function HeroBackground({ running }: { running: boolean }) {
   }, []);
 
   // Clicking empty hero space swaps in a different random background (user, 2026-10-13).
-  // Links, buttons and text selections are left alone.
+  // Mouse clicks only, with a crossfade: phone taps while scrolling re-seeded it and felt jarring
+  // (friend's feedback, 2026-10-17). Links, buttons and text selections are left alone.
+  const [visible, setVisible] = useState(true);
   useEffect(() => {
     const hero = rootRef.current?.parentElement;
     if (!hero) return;
+    let lastPointerType = "mouse";
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const handlePointerDown = (e: PointerEvent) => {
+      lastPointerType = e.pointerType;
+    };
     const handleClick = (e: MouseEvent) => {
+      if (lastPointerType !== "mouse") return;
       if ((e.target as Element).closest("a, button")) return;
       if (window.getSelection()?.toString()) return;
-      setChoice((current) => {
-        const others = POOL.filter((c) => c !== current);
-        return others[Math.floor(Math.random() * others.length)];
-      });
+      setVisible(false);
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        setChoice((current) => {
+          const others = POOL.filter((c) => c !== current);
+          return others[Math.floor(Math.random() * others.length)];
+        });
+        setVisible(true);
+      }, 250);
     };
+    hero.addEventListener("pointerdown", handlePointerDown);
     hero.addEventListener("click", handleClick);
-    return () => hero.removeEventListener("click", handleClick);
+    return () => {
+      clearTimeout(timer);
+      hero.removeEventListener("pointerdown", handlePointerDown);
+      hero.removeEventListener("click", handleClick);
+    };
   }, []);
 
   // Setup canvas, resize observer, and pointer tracking for active network background.
@@ -175,7 +193,13 @@ export default function HeroBackground({ running }: { running: boolean }) {
   }, [choice, running]);
 
   return (
-    <div ref={rootRef} aria-hidden="true" data-hero-bg={choice} className="absolute inset-0">
+    <div
+      ref={rootRef}
+      aria-hidden="true"
+      data-hero-bg={choice}
+      style={{ opacity: visible ? 1 : 0 }}
+      className="absolute inset-0 transition-opacity duration-300 ease-out motion-reduce:transition-none"
+    >
       {choice === "ripple" ? (
         <RippleBackground running={running} />
       ) : (

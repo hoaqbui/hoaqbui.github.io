@@ -71,7 +71,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(PERSON) }} />
         <PillNav
           items={[
-            { id: "top", label: "HB", href: "/#top" },
+            { id: "top", label: "Hoa", href: "/#top" },
             { id: "building", label: "Building", href: "/#building" },
             { id: "work", label: "Work", href: "/#work" },
             { id: "photos", label: "Photos", href: "/#photos" },

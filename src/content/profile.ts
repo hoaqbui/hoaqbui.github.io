@@ -4,7 +4,7 @@ const linkedin = "https://www.linkedin.com/in/hoaqbui/";
 
 export const profile: Profile = {
   name: "Hoa Bui",
-  roleLine: "Senior Technical Product Manager · AI creative tools · Los Angeles",
+  roleLine: "Technical Product Manager & Producer · AI creative tools · Los Angeles",
   headline: "AI and creative tools that put more in people’s hands.",
   subLine: "18 years of pipelines and tools at Lucasfilm, Pixar and Riot Games.",
   email,
@@ -14,7 +14,7 @@ export const profile: Profile = {
   // link-preview card for every page (pages that set their own openGraph must repeat it)
   ogImage: { url: "/og.png", width: 1200, height: 630, alt: "Hoa Bui — AI and creative tools that put more in people’s hands." },
   vcardPath: "/hoa-bui.vcf",
-  openTo: "Open to product leadership roles in AI video and generative creative tools. Los Angeles.",
+  openTo: "Open to hands-on TPM and producer roles in AI video and creative tools, including forward deployed teams. Los Angeles.",
   // shown under the proof numbers
   industries: ["Film & VFX", "Animation", "Live-service games", "Generative AI", "Creative software"],
   // page keywords and schema.org knowsAbout; only terms the work on the page backs

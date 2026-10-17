@@ -2,6 +2,7 @@ import { ViewTransition } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { projects } from "@/content/projects";
+import { profile } from "@/content/profile";
 import Project from "@/sections/Project";
 
 export const dynamicParams = false;
@@ -24,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
   return {
     title: `${project.title} — Hoa Bui`,
-    openGraph: { url: `/building/${id}/` },
+    openGraph: { url: `/building/${id}/`, images: [profile.ogImage] },
     description: project.body,
   };
 }

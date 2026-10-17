@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://hoa.flamme.us",
     siteName: "Hoa Bui",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Hoa Bui — AI and creative tools that put more in people’s hands." }],
+    images: [profile.ogImage],
   },
   twitter: { card: "summary_large_image", images: ["/og.png"] },
 };

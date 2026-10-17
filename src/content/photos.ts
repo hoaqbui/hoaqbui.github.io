@@ -65,7 +65,7 @@ export const photos: Photo[] = [
       subject: "a wide shot from above the bank of a broad river at blue hour. In the middle of the river a small white pedal boat carries a lamp and people in silhouette, pedalling slowly. Behind it a dark wooded hill rises against a deep blue sky, a lit lookout tower on its crest; warm streetlights line the far bank, lit buildings sit on the right, and golden reflections streak the water on the left.",
       whatHappens: "The boat glides at an easy pace to the right, its lamp swinging slightly; a V-shaped wake opens behind it and rolls outward in thin lines. As the wake reaches the golden reflections, they break into trembling pieces and slowly gather again. Near the bank, a moored pedal boat rocks gently as the ripples arrive. A few clouds drift across the blue sky.",
       camera: "The camera remains static.",
-      sound: "the boat's paddle wheel churning in a slow rhythm, water slapping its hull, laughter carrying across the water from the bank, and a tram bell far across the city.",
+      sound: "the boat’s paddle wheel churning in a slow rhythm, water slapping its hull, laughter carrying across the water from the bank, and a tram bell far across the city.",
     },
   },
   {
@@ -216,9 +216,9 @@ export const photos: Photo[] = [
       mp4Bytes: 1341304,
       soundSource: "LTX 2.5",
       subject: "a wide shot from the embankment, a little above a broad river, on an overcast afternoon. In the middle of the frame a low weir curves diagonally toward the lower right, the river spilling over its edge in a long white curl. Still, dark water in the left foreground mirrors the trees and sky. On the far bank a white building sits below a wooded hill, and a slender lookout tower rises on the hilltop at the right.",
-      whatHappens: "The river slides smooth and glassy up to the weir's lip, then tips over and breaks into tumbling white foam, churning at the foot of the step and spreading downstream in streaks and eddies. Spray lifts in a faint mist along the whole curve. A small branch drifts on the smooth water, reaches the lip, and is swept over and gone. Above, soft grey clouds drift slowly to the left.",
+      whatHappens: "The river slides smooth and glassy up to the weir’s lip, then tips over and breaks into tumbling white foam, churning at the foot of the step and spreading downstream in streaks and eddies. Spray lifts in a faint mist along the whole curve. A small branch drifts on the smooth water, reaches the lip, and is swept over and gone. Above, soft grey clouds drift slowly to the left.",
       camera: "The camera remains static.",
-      sound: "the weir's steady roar close by, the hiss of spray, the river lapping the embankment below, and a gull calling once overhead.",
+      sound: "the weir’s steady roar close by, the hiss of spray, the river lapping the embankment below, and a gull calling once overhead.",
     },
   },
 ];

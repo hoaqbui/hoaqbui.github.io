@@ -103,11 +103,8 @@ test.describe("M2 route transitions", () => {
     }
   });
 
-  test("every auto-advancing loop has a pause control", async ({ page }) => {
-    await page.goto("/");
-    const topPause = page.locator("#top").getByRole("button", { name: /pause motion|play motion/i });
-    await expect(topPause).toBeVisible();
-
+  // The hero's Pause motion button was removed (user, 2026-10-17); reduced-motion settings still stop it.
+  test("the photo slideshow has a pause control", async ({ page }) => {
     await page.goto("/photos/");
     const photosPause = page.getByRole("button", { name: /pause slideshow|play slideshow/i });
     await expect(photosPause).toBeVisible();

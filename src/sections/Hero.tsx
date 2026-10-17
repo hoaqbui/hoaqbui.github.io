@@ -9,7 +9,7 @@ import Parallax from "@/fx/Parallax";
 import Reveal from "@/fx/Reveal";
 
 export default function Hero() {
-  const { ref, allowed, paused, running, toggle } = useMotion<HTMLElement>();
+  const { ref, running } = useMotion<HTMLElement>();
 
   return (
     <>
@@ -49,16 +49,6 @@ export default function Hero() {
             </a>
           </div>
         </Parallax>
-        {allowed && (
-          <button
-            type="button"
-            aria-pressed={paused}
-            onClick={toggle}
-            className="absolute left-3 top-[calc(12px+env(safe-area-inset-top))] md:left-auto md:top-auto md:bottom-6 md:right-6 z-20 inline-flex min-h-[44px] items-center rounded-full border border-border bg-surface/80 px-4 font-mono text-xs text-muted"
-          >
-            {paused ? "Play motion" : "Pause motion"}
-          </button>
-        )}
       </section>
 
       <Reveal>

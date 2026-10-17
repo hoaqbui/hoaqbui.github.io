@@ -508,7 +508,7 @@ test("a nav click scrolls without starting a page transition", async ({ page }) 
   });
   await page.goto("/");
   await page.waitForTimeout(500);
-  for (const name of ["Contact", "Building", "Photos", "Hoa"]) {
+  for (const name of ["Contact", "Building", "Photos", "About"]) {
     await page.getByRole("navigation", { name: "Sections" }).getByRole("link", { name }).click();
     await page.waitForTimeout(400);
   }

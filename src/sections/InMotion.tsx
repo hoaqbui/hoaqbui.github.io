@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import SectionLabel from "@/ui/SectionLabel";
+import { em } from "@/ui/em";
 import type { Photo, Shot } from "@/content/photos";
 import { useMotion } from "@/fx/useMotion";
 
@@ -163,7 +164,7 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
           <div className="max-w-[720px]">
             <SectionLabel as="h2">Now, with AI</SectionLabel>
             <p className="mt-4 text-[clamp(1.5rem,3vw,2rem)] font-medium leading-[1.2] tracking-[-0.025em]">
-              The latest problem: consistent video out of generative models, tested on my own photographs.
+              {em("The latest problem: **consistent video** out of generative models, tested on my own photographs.")}
             </p>
             <p className="mt-4 text-[17px] leading-relaxed text-muted">
               Each travel photo got a shot: a subject, what happens, the camera, the sound. Compo, my intent-to-video

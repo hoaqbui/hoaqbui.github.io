@@ -4,6 +4,7 @@ import SectionLabel from "@/ui/SectionLabel";
 import Flow from "@/ui/Flow";
 import WeekGrid from "@/ui/WeekGrid";
 import { stories } from "@/content/stories";
+import { em } from "@/ui/em";
 import Reveal from "@/fx/Reveal";
 
 // Four tiles: a number, its caption, one line on how. A tile opens its story below the grid,
@@ -78,7 +79,7 @@ export default function Work() {
               <span className="text-teal">{open.talent}</span> · {open.years}
             </p>
             <h3 className="mt-2 max-w-[820px] text-[24px] font-medium leading-[1.2] tracking-[-0.025em] text-text md:text-[30px]">
-              {open.title}
+              {em(open.title)}
             </h3>
             <div className="mt-6 flex flex-col gap-6">
               {open.pictureFirst && picture}

@@ -1,4 +1,5 @@
 import SectionLabel from "@/ui/SectionLabel";
+import { em } from "@/ui/em";
 import Reveal from "@/fx/Reveal";
 
 const steps = [
@@ -29,7 +30,7 @@ export default function HowIWork() {
               How I work
             </SectionLabel>
             <p className="max-w-[640px] flex-[1_1_420px] text-[clamp(1.5rem,3vw,2rem)] font-medium leading-[1.2] tracking-[-0.025em]">
-              The same three moves, in film, games, and now AI.
+              {em("The same **three moves**, in film, games, and now AI.")}
             </p>
           </div>
           <ol className="mt-12 grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-8">

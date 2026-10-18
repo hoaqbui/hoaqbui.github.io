@@ -4,7 +4,7 @@ import { profile } from "@/content/profile";
 
 const steps = [
   { title: "Sit with the creators.", body: "Map how artists and designers actually work, end to end, before deciding what to build." },
-  { title: "Find the real bottleneck.", body: "Usually it isn’t the tech. It’s a handoff, a wait, or work nobody should be doing. Sometimes the fix is saying no, with the math." },
+  { title: "Find the real bottleneck.", body: "Usually it isn’t the tech. It’s a handoff, a wait, or work nobody should be doing. Pick the fix that pays off most, not the first one that fits." },
   { title: "Prototype the fix, then ship it.", body: "Put a working version in front of a few people, fix what they hit the same week, measure who uses it, then roll out." },
 ];
 

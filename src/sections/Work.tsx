@@ -17,7 +17,7 @@ export default function Work() {
           Work
         </SectionLabel>
         <p className="max-w-[640px] flex-[1_1_420px] text-[clamp(1.5rem,3vw,2rem)] font-medium leading-[1.2] tracking-[-0.025em]">
-          Four times I found what was slowing a creative team at Riot down, and fixed it.
+          Four problems at Riot, four different fixes. Each one was the move with the most impact on the table.
         </p>
       </div>
 
@@ -26,6 +26,7 @@ export default function Work() {
           const fields = [
             { label: "What was slowing them down", value: story.stuck },
             { label: "The fix", value: story.did },
+            { label: "Why this fix", value: story.why },
             { label: "What changed", value: story.adoption },
           ];
           return (

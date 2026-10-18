@@ -3,14 +3,15 @@ export type Bar = { label: string; before: string; beforeWidth: string; after: s
 // Each is told the same way: who was stuck, on what, what I did, how it got adopted, then the number.
 export type Story = {
   id: string; num: string; numNote: string; title: string; years: string; role: string; team: string;
-  kind: string; who: string; stuck: string; did: string; adoption: string;
+  kind: string; who: string; stuck: string; did: string; why: string; adoption: string;
   tags: string[]; vizLabel: string; bars?: Bar[]; vizNote?: string; reach?: { from: string[]; to: string[] };
 };
 export const stories: Story[] = [
   { id: "greybox", tags: ["Live-service games", "Workflow automation", "Level design tooling"], kind: "Tool", who: "League level designers", numNote: "per map prototype, down from about 3 months", num: "<1 hr", title: "Level designers got from idea to playable map in under an hour", years: "2024–26",
     role: "Sr. TPM, League of Legends tools", team: "9-person engineering team",
     stuck: "Terrain waited on art and handoffs. Prototyping a new map took about 3 months of work across design, art and engineering.",
-    did: "I sat with designers, mapped the workflow and set a one-hour target. We shipped region boundaries so designers draw the ground themselves, piloted them with a few designers, and fixed what they hit the same week.",
+    did: "Sitting with designers and mapping the workflow showed where the time went. I set a one-hour target; the team shipped region boundaries so designers draw the ground themselves, piloted them with a few designers, and fixed what they hit the same week.",
+    why: "A faster handoff wasn’t enough. The handoff had to go.",
     adoption: "Editor use grew from about half of designers to nearly all. It’s now the studio’s default way to start a map, used by 10–25 designers.",
     bars: [{ label: "Idea → playable map", before: "about 3 months", beforeWidth: "100%", after: "under 1 hour", afterWidth: "3%" }],
     vizNote: "Concept, not to scale.",
@@ -18,7 +19,8 @@ export const stories: Story[] = [
   { id: "scripting", tags: ["Live-service games", "Prioritization", "Cross-team planning"], kind: "Decision", who: "League gameplay and level designers", numNote: "of best-case conversion work kept off designers: ~165 champions × at least 1 week each", num: "3+ yrs", title: "Designers kept shipping instead of converting 165 champions", years: "2022–24",
     role: "Manager, Technical Product Management · Creator Workflows", team: "4 internal and 4 external developers, plus outsourcing",
     stuck: "Designers scripted in a mix of text scripts and engineer-written code: slow to test, hard to debug, and often blocked on an engineer. A new scripting engine was meant to fix that, but adoption had stalled on missing features, low trust, no owner and the cost of converting existing content.",
-    did: "Short pulse surveys showed which features were missing and why designers didn’t trust the new engine. I did the capacity math for converting every champion, asked to see the promised automation (it couldn’t be shown), and brought gameplay and engineering leadership to the same view.",
+    did: "Short pulse surveys showed which features were missing and why designers didn’t trust the new engine. The capacity math for converting every champion came to years, and the promised automation couldn’t be shown when asked. I brought gameplay and engineering leadership to the same view.",
+    why: "The math said years of conversion. The right fix was a no, with the engine team owning the move.",
     adoption: "The old system stayed supported, not deprecated, and the core engine team took on the conversion itself. Designers kept shipping on what worked, my team’s roadmap stayed on what designers asked for, a release stayed on schedule, and tool requests went from weeks to days.",
     bars: [{ label: "Conversion work on designers’ plates", before: "3+ years, best case", beforeWidth: "100%", after: "none: owned by the engine team", afterWidth: "2%" }],
     vizNote: "Best case: about 165 champions at 1 week each, with automated conversion plus QA.",
@@ -26,14 +28,16 @@ export const stories: Story[] = [
   { id: "okr", tags: ["OKRs", "Cross-discipline leadership", "External development"], kind: "Prototype", who: "Art, audio and graphics teams", numNote: "people across 4–5 countries, on reliable milestones", num: "50+", title: "A 50-person team got a plan it could actually hit", years: "2022",
     role: "Technical Product Manager · Lead Producer role, unannounced project", team: "art, audio and graphics teams, 4 partner studios",
     stuck: "A new project’s plan wasn’t realistic, and nobody could see week to week whether it was on track.",
-    did: "I ran a 3-week timeboxed prototype that built a character and scripted gameplay end to end, to show what could land and what it would take. Then I tied weekly sprint velocity to numeric OKR targets so the team could see if it was on track.",
+    did: "A 3-week timeboxed prototype built a character and scripted gameplay end to end, to show what could land and what it would take. Weekly sprint velocity, tied to numeric OKR targets, then let the team see whether it was on track.",
+    why: "Nobody believed the plan. Three weeks of building a real slice settled what could land.",
     adoption: "Leadership re-planned the scope, milestones became reliable, and the delivery lead adopted and extended the system.",
     reach: { from: ["One objective", "Key results"], to: ["rigging", "animation", "VFX", "rendering", "audio", "art engineering"] },
     vizLabel: "One objective and its key results, set across rigging, animation, VFX, rendering, audio and art engineering." },
   { id: "cosmetics", tags: ["Vendor partnerships & outsourcing", "Internal tools platform", "Scaling teams"], kind: "Trial", who: "League skin artists", numNote: "League skins a year from the partnership today", num: "~100", title: "The skins team got about 100 skins a year without hiring", years: "2019–22",
     role: "TPM, PIE Tooling (League content)", team: "tools team 2 → 12 engineers, plus Virtuos Sparx",
     stuck: "League needed more skins every year, on a two-week release cadence, and the internal content team couldn’t grow to match.",
-    did: "I ran a paid trial with 4–5 outside studios. Each built a test skin and worked inside a trial of League’s pipeline and security, scored on quality, speed, cost, pipeline fit, operations and talent development. Virtuos Sparx won. For security, I asked the tools team for a separate dev branch so partners stayed apart from our internal developers. I set up the operations and working agreement between the studios, and grew the embedded tools team from 2 to 12 engineers.",
+    did: "A paid trial with 4–5 outside studios: each built a test skin and worked inside a trial of League’s pipeline and security, scored on quality, speed, cost, pipeline fit, operations, and talent development. Virtuos Sparx won. For security, I asked the tools team for a separate partner dev branch; operations and a working agreement between the studios followed, and the embedded tools team grew from 2 to 12 engineers.",
+    why: "Hiring couldn’t close the gap. A trial found a studio that could.",
     adoption: "Within two years Sparx made about half of League’s skins. Today it delivers about 100 a year, roughly 30–40 artists’ worth of work, without growing Riot’s own content team.",
     bars: [
       { label: "Share of League skins from Sparx", before: "none", beforeWidth: "2%", after: "about half, within 2 years", afterWidth: "50%" },

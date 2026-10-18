@@ -5,8 +5,8 @@ const linkedin = "https://www.linkedin.com/in/hoaqbui/";
 export const profile: Profile = {
   name: "Hoa Bui",
   roleLine: "Technical Product Manager & Producer · AI creative tools · Los Angeles",
-  headline: "I find what’s slowing creative teams down, prototype the fix, and ship it.",
-  subLine: "18 years in film and games: pipelines at Lucasfilm and Pixar, then 12 years at Riot Games, from technical artist to leading League’s tools teams. Now I do it with AI.",
+  headline: "Most stuck creative teams don’t need more tools. They need the right problem solved.",
+  subLine: "That has been the work for 18 years: for artists and designers at Lucasfilm, Pixar, and Riot Games, and now in AI video.",
   // the one proof point in the hero; the full stories are in Work
   latest: { label: "League map prototyping", value: "3 months → under an hour" },
   email,
@@ -14,7 +14,7 @@ export const profile: Profile = {
   // the public 2-page Doc: always current, readable on a phone
   resumePath: "https://docs.google.com/document/d/1s-OGEpBgFRViEk3mBTeSgL9CHzl-wdsOQKxoBNQtU7s/view",
   // link-preview card for every page (pages that set their own openGraph must repeat it)
-  ogImage: { url: "/og.png", width: 1200, height: 630, alt: "Hoa Bui — I find what’s slowing creative teams down, prototype the fix, and ship it." },
+  ogImage: { url: "/og.png", width: 1200, height: 630, alt: "Hoa Bui — Most stuck creative teams don’t need more tools. They need the right problem solved." },
   vcardPath: "/hoa-bui.vcf",
   openTo: "Open to hands-on technical product manager and producer roles in AI video and creative tools, including forward deployed teams. Los Angeles.",
   // shown under the proof numbers

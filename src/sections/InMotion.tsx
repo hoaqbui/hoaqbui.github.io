@@ -224,6 +224,9 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
             <Link href="/building/himmelcam/" className="font-medium text-teal hover:underline">HimmelCam</Link>, a dog-cam
             that keeps Himmel in view with a vision model.
           </span>
+          <Link href="/building/" className="inline-flex min-h-[44px] items-center font-medium text-teal hover:underline">
+            All projects →
+          </Link>
         </div>
       </div>
     </section>

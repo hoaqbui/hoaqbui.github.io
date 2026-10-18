@@ -1,4 +1,5 @@
 import { profile } from "@/content/profile";
+import Link from "next/link";
 import Reveal from "@/fx/Reveal";
 
 export default function Contact() {
@@ -39,6 +40,9 @@ export default function Contact() {
           >
             Résumé
           </a>
+          <Link href="/building/" className="inline-flex min-h-[44px] items-center font-medium text-teal">
+            Projects
+          </Link>
         </div>
       </section>
     </Reveal>

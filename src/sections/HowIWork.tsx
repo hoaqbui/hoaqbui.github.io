@@ -1,6 +1,5 @@
 import SectionLabel from "@/ui/SectionLabel";
 import Reveal from "@/fx/Reveal";
-import { profile } from "@/content/profile";
 
 const steps = [
   { title: "Start with the people doing the work.", lines: [
@@ -49,19 +48,11 @@ export default function HowIWork() {
               </li>
             ))}
           </ol>
-          <div className="mt-14 grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] items-end gap-8 border-t border-border pt-10">
-            <blockquote className="m-0">
-              <p className="text-2xl md:text-[28px] font-medium leading-[1.3] tracking-[-0.02em]">
-                “{profile.quote.text}”
-              </p>
-              <footer className="mt-3 font-mono text-[13px] text-muted">{profile.quote.by}, on the map tools</footer>
-            </blockquote>
-            <p className="text-[15px] leading-relaxed text-muted">
-              The pattern started in film: at Lucasfilm, keeping thousands of assets a season moving between 4+ studios on{" "}
-              <i>Star Wars: The Clone Wars</i>; at Pixar, delivering final shots and handing lighters tools they could run
-              themselves.
-            </p>
-          </div>
+          <p className="mt-14 max-w-[720px] border-t border-border pt-10 text-[15px] leading-relaxed text-muted">
+            The pattern started in film: at Lucasfilm, keeping thousands of assets a season moving between 4+ studios on{" "}
+            <i>Star Wars: The Clone Wars</i>; at Pixar, delivering final shots and handing lighters tools they could run
+            themselves.
+          </p>
         </Reveal>
       </div>
     </section>

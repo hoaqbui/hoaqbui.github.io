@@ -6,7 +6,7 @@ export const profile: Profile = {
   name: "Hoa Bui",
   roleLine: "Technical Product Manager & Producer · AI creative tools · Los Angeles",
   headline: "Most stuck creative teams don’t need more tools. They need the right problem solved.",
-  subLine: "That has been the work for 18 years, with artists and designers at Lucasfilm, Pixar, and Riot Games, and now in AI video.",
+  subLine: "Eighteen years of that: Lucasfilm, Pixar, Riot Games, and now AI video.",
   // the one proof point in the hero; the full stories are in Work
   latest: { label: "League map prototyping", value: "3 months → under an hour" },
   email,

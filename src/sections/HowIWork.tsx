@@ -3,18 +3,18 @@ import Reveal from "@/fx/Reveal";
 
 const steps = [
   { title: "Start with the people doing the work.", lines: [
-    "Talk to them directly. Check the data.",
-    "Watch them work. Use the same tools.",
+    "Talk to them. Check the data.",
+    "Watch them work. Use their tools.",
     "Talk to the people who support those tools.",
   ] },
   { title: "Name the right problem.", lines: [
-    "It’s rarely the one on the ticket.",
+    "Rarely the one on the ticket.",
     "A handoff. A migration nobody should take on. A plan the team can’t see itself in. A team at capacity.",
   ] },
   { title: "Solve it, then see it through.", lines: [
-    "A rework, a no, a prototype, a partner: whatever it needs.",
-    "Leave behind a process the team runs itself.",
-    "Follow up with short surveys. Show the team, regularly, what the tools can do now.",
+    "A rework, a no, a prototype, a partner.",
+    "Leave a process the team runs itself.",
+    "Short surveys. Regular show-and-tells of what the tools can do.",
   ] },
 ];
 
@@ -49,9 +49,8 @@ export default function HowIWork() {
             ))}
           </ol>
           <p className="mt-14 max-w-[720px] border-t border-border pt-10 text-[15px] leading-relaxed text-muted">
-            The pattern started in film: at Lucasfilm, keeping thousands of assets a season moving between 4+ studios on{" "}
-            <i>Star Wars: The Clone Wars</i>; at Pixar, delivering final shots and handing lighters tools they could run
-            themselves.
+            It started in film: at Lucasfilm, moving thousands of assets a season between 4+ studios on{" "}
+            <i>Star Wars: The Clone Wars</i>; at Pixar, final shots, and tools that lighters ran themselves.
           </p>
         </Reveal>
       </div>

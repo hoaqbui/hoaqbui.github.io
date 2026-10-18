@@ -8,7 +8,7 @@ import Reveal from "@/fx/Reveal";
 // three one-line beats, one number, one chart. Nothing longer than a line.
 export default function Work() {
   return (
-    <section id="work" className="mx-auto max-w-[1120px] px-6 py-20 border-t border-border">
+    <section id="work" className="mx-auto max-w-[1120px] px-6 py-20">
       <div className="flex flex-wrap items-baseline gap-x-16 gap-y-3">
         <SectionLabel as="h2" className="flex-[0_0_200px]">
           Work

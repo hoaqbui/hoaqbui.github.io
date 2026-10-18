@@ -22,7 +22,7 @@ const steps = [
 // The thread that ties film, Riot and the AI work together.
 export default function HowIWork() {
   return (
-    <section id="how" className="border-t border-border bg-well">
+    <section id="how" className="scroll-mt-[155px] border-t border-border bg-well">
       <div className="mx-auto max-w-[1120px] px-6 py-20">
         <Reveal>
           <div className="flex flex-wrap items-baseline gap-x-16 gap-y-3">

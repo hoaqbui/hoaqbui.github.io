@@ -17,16 +17,16 @@ export default function Work() {
           Work
         </SectionLabel>
         <p className="max-w-[640px] flex-[1_1_420px] text-[clamp(1.5rem,3vw,2rem)] font-medium leading-[1.2] tracking-[-0.025em]">
-          Three times I found what was slowing a creative team at Riot down, and fixed it.
+          Four times I found what was slowing a creative team at Riot down, and fixed it.
         </p>
       </div>
 
       <div className="mt-12 flex flex-col gap-6">
         {stories.map((story) => {
           const fields = [
-            { label: "Stuck on", value: story.stuck },
-            { label: "What I did", value: story.did },
-            { label: "Adoption", value: story.adoption },
+            { label: "What was slowing them down", value: story.stuck },
+            { label: "The fix", value: story.did },
+            { label: "What changed", value: story.adoption },
           ];
           return (
             <Reveal key={story.id}>
@@ -76,10 +76,6 @@ export default function Work() {
           );
         })}
       </div>
-      <p data-also className="mt-8 text-[15px] text-muted">
-        Also at Riot: set up the outside-studio partnership with Virtuos Sparx that now delivers about 100 League skins a year,
-        and grew its embedded tools team from 2 to 12 engineers.
-      </p>
     </section>
   );
 }

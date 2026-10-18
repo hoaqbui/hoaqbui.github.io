@@ -6,7 +6,7 @@ export const profile: Profile = {
   name: "Hoa Bui",
   roleLine: "Technical Product Manager & Producer · AI creative tools · Los Angeles",
   headline: "I find what’s slowing creative teams down, prototype the fix, and ship it.",
-  subLine: "18 years in film and games: pipelines at Lucasfilm and Pixar, then 12 years leading tools teams at Riot Games. Now I do it with AI.",
+  subLine: "18 years in film and games: pipelines at Lucasfilm and Pixar, then 12 years at Riot Games, from technical artist to leading League’s tools teams. Now I do it with AI.",
   // the one proof point in the hero; the full stories are in Work
   latest: { label: "League map prototyping", value: "3 months → under an hour" },
   email,
@@ -16,7 +16,7 @@ export const profile: Profile = {
   // link-preview card for every page (pages that set their own openGraph must repeat it)
   ogImage: { url: "/og.png", width: 1200, height: 630, alt: "Hoa Bui — I find what’s slowing creative teams down, prototype the fix, and ship it." },
   vcardPath: "/hoa-bui.vcf",
-  openTo: "Open to hands-on TPM and producer roles in AI video and creative tools, including forward deployed teams. Los Angeles.",
+  openTo: "Open to hands-on technical product manager and producer roles in AI video and creative tools, including forward deployed teams. Los Angeles.",
   // shown under the proof numbers
   industries: ["Film & VFX", "Animation", "Live-service games", "Generative AI", "Creative software"],
   // page keywords and schema.org knowsAbout; only terms the work on the page backs

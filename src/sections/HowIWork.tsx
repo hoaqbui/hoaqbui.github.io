@@ -39,8 +39,8 @@ export default function HowIWork() {
               <footer className="mt-3 font-mono text-[13px] text-muted">{profile.quote.by}, on the map tools</footer>
             </blockquote>
             <p className="text-[15px] leading-relaxed text-muted">
-              Before Riot: at Lucasfilm I moved thousands of assets a season between 4+ studios on{" "}
-              <i>Star Wars: The Clone Wars</i>. At Pixar I built rendering tools that lighters ran themselves.
+              Before Riot: at Lucasfilm I built the tools that moved thousands of assets a season between 4+ studios on{" "}
+              <i>Star Wars: The Clone Wars</i>. At Pixar, rendering tools that lighters ran themselves.
             </p>
           </div>
         </Reveal>

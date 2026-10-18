@@ -163,7 +163,7 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
           <div className="max-w-[720px]">
             <SectionLabel as="h2">Now, with AI</SectionLabel>
             <p className="mt-4 text-[clamp(1.5rem,3vw,2rem)] font-medium leading-[1.2] tracking-[-0.025em]">
-              Now I’m the creator and the toolmaker.
+              Now I run the same loop on AI video, on myself.
             </p>
             <p className="mt-4 text-[17px] leading-relaxed text-muted">
               I wrote a shot for each of my travel photographs: a subject, what happens to it, the camera, the sound.

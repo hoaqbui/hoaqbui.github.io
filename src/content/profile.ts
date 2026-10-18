@@ -5,7 +5,7 @@ const linkedin = "https://www.linkedin.com/in/hoaqbui/";
 export const profile: Profile = {
   name: "Hoa Bui",
   roleLine: "Technical Product Manager & Producer · AI creative tools · Los Angeles",
-  headline: "Most stuck creative teams don’t need more tools. They need **the right problem solved**.",
+  headline: "Most stuck **creative teams** don’t need more tools. They need **the right problem** solved.",
   subLine: "Eighteen years solving it at Lucasfilm, Pixar and Riot Games. Now in AI video.",
   // the one proof point in the hero; the full stories are in Work
   latest: { label: "League map prototyping", value: "3 months → under an hour" },

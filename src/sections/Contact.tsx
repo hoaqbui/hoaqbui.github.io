@@ -9,6 +9,12 @@ export default function Contact() {
         id="contact"
         className="mx-auto min-h-[70svh] max-w-[1120px] border-t border-border px-6 pt-24 pb-32 md:pb-24"
       >
+        <blockquote className="mb-16 max-w-[720px]">
+          <p className="text-[clamp(1.5rem,3.5vw,2.25rem)] font-medium leading-[1.25] tracking-[-0.025em] text-text">
+            “{profile.quote.text}”
+          </p>
+          <footer className="mt-3 font-mono text-[13px] text-muted">{profile.quote.by}, on the map tools</footer>
+        </blockquote>
         <p className="font-mono text-sm text-muted">{profile.openTo}</p>
         <a
           href={`mailto:${profile.email}`}

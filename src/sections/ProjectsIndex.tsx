@@ -35,7 +35,7 @@ export default function ProjectsIndex() {
                 </div>
               )}
               {!project.status.startsWith("[") && (
-                <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-well px-2.5 py-1 font-mono text-label text-text">
+                <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-well px-2.5 py-1 text-label text-text">
                   <span className={`h-1.5 w-1.5 rounded-full ${project.live ? "bg-teal" : "bg-amber"}`} />
                   {project.status}
                 </span>
@@ -49,7 +49,7 @@ export default function ProjectsIndex() {
                 {project.chips
                   .filter((chip) => !chip.startsWith("["))
                   .map((chip) => (
-                    <span key={chip} className="rounded-full bg-well px-2.5 py-1 font-mono text-label text-text">
+                    <span key={chip} className="rounded-full bg-well px-2.5 py-1 text-label text-text">
                       {chip}
                     </span>
                   ))}

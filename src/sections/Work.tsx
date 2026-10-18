@@ -58,7 +58,7 @@ export default function Work() {
                   isOpen ? "border-teal bg-surface" : "border-border bg-surface hover:border-teal/60"
                 }`}
               >
-                <span className="font-mono text-label text-muted">
+                <span className="text-label text-muted">
                   <span className="text-teal">{story.talent}</span> · {story.years}
                 </span>
                 <span className="flex flex-col gap-2.5 md:flex-row md:items-end md:gap-4">
@@ -78,7 +78,7 @@ export default function Work() {
       <div id="work-story" aria-live="polite">
         {open && (
           <article className="mt-5 rounded-[20px] border border-teal bg-surface p-6 md:p-8">
-            <p className="font-mono text-label text-muted">
+            <p className="text-label text-muted">
               <span className="text-teal">{open.talent}</span> · {open.years}
             </p>
             <h3 className="mt-2 max-w-[820px] text-title font-medium text-text">
@@ -92,13 +92,13 @@ export default function Work() {
                 {open.quote && (
                   <blockquote className="m-0 border-l-2 border-teal pl-4">
                     <p className="m-0 text-lead text-text">“{open.quote.text}”</p>
-                    <footer className="mt-1 font-mono text-label text-muted">{open.quote.by}</footer>
+                    <footer className="mt-1 text-label text-muted">{open.quote.by}</footer>
                   </blockquote>
                 )}
               </div>
               {!open.pictureFirst && picture}
             </div>
-            <p className="mt-5 font-mono text-label text-muted">{open.role}</p>
+            <p className="mt-5 text-label text-muted">{open.role}</p>
           </article>
         )}
       </div>

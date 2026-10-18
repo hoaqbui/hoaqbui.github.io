@@ -52,7 +52,7 @@ export default function IntentToVideo() {
 
       {/* Boxes and labels */}
       <g
-        fontFamily="var(--font-mono)"
+        fontFamily="var(--font-sans)"
         textAnchor="middle"
         fill="var(--color-text)"
         fontSize="11"

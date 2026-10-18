@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { Geist } from "next/font/google";
 import PillNav from "@/ui/PillNav";
 import { profile } from "@/content/profile";
 import "./globals.css";
@@ -10,18 +10,7 @@ const geist = Geist({
   weight: ["400", "500", "600"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  weight: "400",
-});
 
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
-  subsets: ["latin"],
-  weight: "400",
-  style: "italic",
-});
 
 const DESCRIPTION =
   "Technical Product Manager and producer in Los Angeles for AI creative tools: generative video and agentic AI, after 18 years of film, animation and game pipelines at Lucasfilm, Pixar and Riot Games.";
@@ -58,7 +47,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geist.variable} ${geistMono.variable} ${instrumentSerif.variable} h-full antialiased scroll-pt-20`}
+      className={`${geist.variable} h-full antialiased scroll-pt-20`}
     >
       <head>
         <script

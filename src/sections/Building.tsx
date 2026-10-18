@@ -89,7 +89,7 @@ export default function Building() {
                   }`}
                 >
                   <span
-                    className={`font-mono text-label ${
+                    className={`text-label ${
                       isActive ? "text-teal" : "text-muted"
                     }`}
                   >
@@ -142,7 +142,7 @@ export default function Building() {
                 )}
                 {!project.status.startsWith("[") && (
                   <div className="flex items-center">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-well px-2.5 py-1 font-mono text-label text-text">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-well px-2.5 py-1 text-label text-text">
                       <span
                         className={`h-1.5 w-1.5 rounded-full ${
                           project.live ? "bg-teal" : "bg-amber"
@@ -174,7 +174,7 @@ export default function Building() {
                             →
                           </span>
                         )}
-                        <span className="rounded-full bg-surface px-3 py-1.5 font-mono text-label text-text">
+                        <span className="rounded-full bg-surface px-3 py-1.5 text-label text-text">
                           {step}
                         </span>
                       </Fragment>
@@ -190,7 +190,7 @@ export default function Building() {
                     .map((chip, idx) => (
                       <span
                         key={idx}
-                        className="rounded-full bg-well px-2.5 py-1 font-mono text-label text-text"
+                        className="rounded-full bg-well px-2.5 py-1 text-label text-text"
                       >
                         {chip}
                       </span>

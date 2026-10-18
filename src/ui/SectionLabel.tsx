@@ -13,7 +13,7 @@ export default function SectionLabel({
 }) {
   return (
     <Tag
-      className={`flex items-center gap-3 font-mono text-label font-medium uppercase tracking-[0.14em] text-teal ${className}`}
+      className={`flex items-center gap-3 text-label font-medium uppercase tracking-[0.1em] text-teal ${className}`}
     >
       <span aria-hidden="true" className="h-px w-6 shrink-0 bg-current" />
       {children}

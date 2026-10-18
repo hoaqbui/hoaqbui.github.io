@@ -54,7 +54,7 @@ export default function HowIWork() {
             ))}
           </ol>
           <div data-career-timeline className="mt-12 border-t border-border pt-8">
-            <p className="font-mono text-label uppercase tracking-[0.14em] text-muted">Same moves, every stop</p>
+            <p className="text-label uppercase tracking-[0.1em] text-muted">Same moves, every stop</p>
             <ol className="m-0 mt-5 grid list-none grid-cols-2 gap-x-6 gap-y-6 p-0 md:grid-cols-4">
               {stops.map((stop) => {
                 const logo = profile.logos.find((l) => l.name === stop.logo);
@@ -77,7 +77,7 @@ export default function HowIWork() {
                         <span className="text-heading font-medium text-teal">AI</span>
                       )}
                     </span>
-                    <span className="font-mono text-label text-muted">{stop.caption}</span>
+                    <span className="text-label text-muted">{stop.caption}</span>
                   </li>
                 );
               })}

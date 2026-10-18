@@ -15,7 +15,7 @@ export default function WeekGrid({
           <span key={i} className="block aspect-square rounded-[3px] bg-teal/35" />
         ))}
       </div>
-      <p className="mt-4 font-mono text-label text-muted">{caption}</p>
+      <p className="mt-4 text-label text-muted">{caption}</p>
     </div>
   );
 }

@@ -7,7 +7,7 @@ export type TileFig =
   | { kind: "dots"; count: number; caption: string }
   | { kind: "pick"; tried: number; caption: string };
 
-const caption = "font-mono text-label text-muted";
+const caption = "text-label text-muted";
 
 export default function TileFigure({ fig, label }: { fig: TileFig; label: string }) {
   return (
@@ -23,7 +23,7 @@ export default function TileFigure({ fig, label }: { fig: TileFig; label: string
             <span className={`${caption} w-12`}>now</span>
             <span className="h-2.5 w-1.5 rounded-full bg-teal" />
             <span className="flex-1" />
-            <span className="font-mono text-label text-teal">{fig.after}</span>
+            <span className="text-label text-teal">{fig.after}</span>
           </span>
         </>
       )}

@@ -83,10 +83,10 @@ function Take({
         />
         {showVideo && (
           <>
-            <span aria-hidden="true" className="pointer-events-none absolute left-2 top-2 rounded bg-black/65 px-2 py-1 font-mono text-label text-white">
+            <span aria-hidden="true" className="pointer-events-none absolute left-2 top-2 rounded bg-black/65 px-2 py-1 text-label text-white">
               Photograph
             </span>
-            <span aria-hidden="true" className="pointer-events-none absolute right-2 top-2 rounded bg-black/65 px-2 py-1 font-mono text-label text-white">
+            <span aria-hidden="true" className="pointer-events-none absolute right-2 top-2 rounded bg-black/65 px-2 py-1 text-label text-white">
               Video
             </span>
             <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 w-0.5 bg-white/90 shadow-sm" style={{ left: `${wipe}%` }} />
@@ -96,7 +96,7 @@ function Take({
               className="pointer-events-none absolute top-1/2 flex size-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#0d0f10] shadow-lg"
               style={{ left: `clamp(22px, ${wipe}%, calc(100% - 22px))` }}
             >
-              <span className="font-mono text-base leading-none">↔</span>
+              <span className="text-base leading-none">↔</span>
             </div>
             <input
               type="range"
@@ -113,7 +113,7 @@ function Take({
                 type="button"
                 onClick={() => video.current?.play().catch(() => setNeedsTap(true))}
                 aria-label={`Play ${photo.title} video`}
-                className="absolute bottom-3 right-3 z-10 inline-flex min-h-11 items-center rounded-full bg-white px-4 font-mono text-label text-[#0d0f10] shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal"
+                className="absolute bottom-3 right-3 z-10 inline-flex min-h-11 items-center rounded-full bg-white px-4 text-label text-[#0d0f10] shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal"
               >
                 Play video
               </button>
@@ -121,7 +121,7 @@ function Take({
           </>
         )}
       </div>
-      <figcaption className="mt-2 font-mono text-label text-muted">{photo.title}</figcaption>
+      <figcaption className="mt-2 text-label text-muted">{photo.title}</figcaption>
     </figure>
   );
 }
@@ -170,7 +170,7 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
               Each travel photo got a shot: a subject, what happens, the camera, the sound. Compo, my intent-to-video
               pipeline on ComfyUI and LTX, rendered it. Building it end to end shows where generative video still breaks.
             </p>
-            {allowed && <p className="mt-3 font-mono text-label text-muted">Drag each frame to compare the photograph with its shot.</p>}
+            {allowed && <p className="mt-3 text-label text-muted">Drag each frame to compare the photograph with its shot.</p>}
           </div>
           {allowed && (
             <div className="flex flex-wrap gap-2">
@@ -178,7 +178,7 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
                 type="button"
                 onClick={toggle}
                 aria-pressed={paused}
-                className="inline-flex min-h-[44px] items-center rounded-full border border-border px-4 font-mono text-label text-text hover:bg-well"
+                className="inline-flex min-h-[44px] items-center rounded-full border border-border px-4 text-label text-text hover:bg-well"
               >
                 {paused ? "Play clips" : "Pause clips"}
               </button>
@@ -197,7 +197,7 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
         </div>
 
         <footer className="mt-6 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-          <p className="font-mono text-label text-muted">
+          <p className="text-label text-muted">
             LTX 2.5 · 480p → 720p · 6.1 s each · sound from the model, or scored from the frames
           </p>
           <div className="flex flex-wrap gap-x-6">

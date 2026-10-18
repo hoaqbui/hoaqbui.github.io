@@ -52,7 +52,7 @@ export default function HimmelCam() {
 
       {/* Stages and text */}
       <g
-        fontFamily="var(--font-mono)"
+        fontFamily="var(--font-sans)"
         textAnchor="middle"
         fill="var(--color-text)"
         fontSize="11"

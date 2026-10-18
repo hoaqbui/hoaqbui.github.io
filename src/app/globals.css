@@ -21,10 +21,9 @@
   --color-well: color-mix(in oklab, #f1f2ef, #1d2124 calc(var(--dusk, 0) * 100%));
 
   --font-sans: var(--font-geist), system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-  --font-serif: var(--font-instrument-serif), Georgia, serif;
 
-  /* One type scale (card 90): every text element uses one of these seven roles.
+  /* One type scale (card 90): every text element uses one of these seven roles, all in
+     Geist sans (user, 2026-10-18: no monospace or serif).
      Sizes are fluid where a phone and a desktop need different ones. */
   --text-display: clamp(2rem, 6vw, 3.5rem);
   --text-display--line-height: 1.06;
@@ -43,8 +42,8 @@
   --text-lead--letter-spacing: -0.005em;
   --text-body: 0.9375rem;
   --text-body--line-height: 1.6;
-  --text-label: 0.75rem;
-  --text-label--line-height: 1.5;
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1.45;
 }
 
 :root[data-theme="dark"] {

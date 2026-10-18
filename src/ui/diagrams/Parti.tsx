@@ -104,7 +104,7 @@ export default function Parti() {
 
       {/* Host / Stage Nodes and Text */}
       <g
-        fontFamily="var(--font-mono)"
+        fontFamily="var(--font-sans)"
         textAnchor="middle"
         fill="var(--color-text)"
         fontSize="11"

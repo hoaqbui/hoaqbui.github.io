@@ -8,7 +8,7 @@ export default function Flow({ rows, label }: { rows: FlowRow[]; label: string }
       {rows.map((row, r) => (
         <div key={r} className="flex flex-wrap items-center gap-x-3 gap-y-2">
           {row.label && (
-            <span className="w-full font-mono text-label text-muted md:w-[88px] md:shrink-0">{row.label}</span>
+            <span className="w-full text-label text-muted md:w-[88px] md:shrink-0">{row.label}</span>
           )}
           {row.steps.map((step, i) => (
             <span key={i} className="contents">
@@ -24,12 +24,12 @@ export default function Flow({ rows, label }: { rows: FlowRow[]; label: string }
               >
                 <span>{step.text}</span>
                 {step.sub && (
-                  <span className={`font-mono text-label ${step.strong ? "text-white/80" : "text-muted"}`}>{step.sub}</span>
+                  <span className={`text-label ${step.strong ? "text-white/80" : "text-muted"}`}>{step.sub}</span>
                 )}
               </span>
             </span>
           ))}
-          {row.note && <span className="font-mono text-label text-muted">{row.note}</span>}
+          {row.note && <span className="text-label text-muted">{row.note}</span>}
         </div>
       ))}
     </div>

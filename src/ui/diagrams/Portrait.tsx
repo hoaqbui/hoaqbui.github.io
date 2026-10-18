@@ -77,7 +77,7 @@ export default function Portrait({ spec }: { spec: PortraitSpec }) {
           key={g.label}
           x={BOX_X - 2}
           y={labelOnTop(g) ? ys[g.from] - GROUP_LABEL - GROUP_PAD + 19 : ys[g.to] + BOX_H + GROUP_PAD + 10}
-          fontFamily="var(--font-mono)"
+          fontFamily="var(--font-sans)"
           fontSize="10"
           fill="var(--color-muted)"
         >
@@ -96,7 +96,7 @@ export default function Portrait({ spec }: { spec: PortraitSpec }) {
         />
       )}
 
-      <g fontFamily="var(--font-mono)" textAnchor="middle" fill="var(--color-text)" fontSize="12">
+      <g fontFamily="var(--font-sans)" textAnchor="middle" fill="var(--color-text)" fontSize="12">
         {spec.steps.map((s, i) => (
           <g key={s.label}>
             <rect
@@ -124,7 +124,7 @@ export default function Portrait({ spec }: { spec: PortraitSpec }) {
       {spec.base && (
         <g>
           <rect x={BOX_X - 12} y={baseY} width={BOX_W + 24} height={baseH} rx="12" fill="none" stroke="var(--color-border)" strokeDasharray="3 3" />
-          <text textAnchor="middle" fontFamily="var(--font-mono)" fontSize="10" fill="var(--color-muted)">
+          <text textAnchor="middle" fontFamily="var(--font-sans)" fontSize="10" fill="var(--color-muted)">
             {spec.base.map((line, i) => (
               <tspan key={line} x={CX} y={baseY + 20 + i * 14}>
                 {line}
@@ -135,7 +135,7 @@ export default function Portrait({ spec }: { spec: PortraitSpec }) {
       )}
 
       {spec.loop && (
-        <text x={CX} y={H - 10} textAnchor="middle" fontFamily="var(--font-mono)" fontSize="11" fill="var(--color-amber-text)">
+        <text x={CX} y={H - 10} textAnchor="middle" fontFamily="var(--font-sans)" fontSize="11" fill="var(--color-amber-text)">
           ↺ {spec.loop.label}
         </text>
       )}

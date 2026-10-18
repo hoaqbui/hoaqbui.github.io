@@ -38,7 +38,7 @@ export default function StillToShot({ takes }: { takes: Take[] }) {
 
   return (
     <section ref={ref} data-still-to-shot className="w-full text-text">
-      <h2 className="font-mono text-label text-muted">From still to shot</h2>
+      <h2 className="text-label text-muted">From still to shot</h2>
       <h3 className="mt-3 text-title font-medium">
         My photographs, directed as six-second shots.
       </h3>
@@ -49,7 +49,7 @@ export default function StillToShot({ takes }: { takes: Take[] }) {
 
       <div className="mt-8 grid grid-cols-1 items-start gap-8 md:grid-cols-[1.6fr_1fr]">
         <div className="flex flex-col gap-4">
-          <p className="font-mono text-label text-muted">{compare}</p>
+          <p className="text-label text-muted">{compare}</p>
           <div className="relative aspect-video overflow-hidden rounded-xl bg-black has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-2 has-[input:focus-visible]:outline-teal">
             <video
               key={pick}
@@ -96,7 +96,7 @@ export default function StillToShot({ takes }: { takes: Take[] }) {
               <button
                 type="button"
                 onClick={() => video.current?.play().catch(() => setNeedsTap(true))}
-                className="absolute bottom-3 right-3 z-10 inline-flex min-h-11 items-center rounded-full bg-white px-4 font-mono text-label text-[#0d0f10] shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal"
+                className="absolute bottom-3 right-3 z-10 inline-flex min-h-11 items-center rounded-full bg-white px-4 text-label text-[#0d0f10] shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal"
               >
                 Play video
               </button>
@@ -108,14 +108,14 @@ export default function StillToShot({ takes }: { takes: Take[] }) {
               <button
                 type="button"
                 onClick={() => setSound((s) => !s)}
-                className="inline-flex min-h-[44px] items-center rounded-full border border-border px-4 font-mono text-label text-text hover:bg-well"
+                className="inline-flex min-h-[44px] items-center rounded-full border border-border px-4 text-label text-text hover:bg-well"
               >
                 {sound ? "Turn sound off" : "Turn sound on"}
               </button>
               <button
                 type="button"
                 onClick={toggle}
-                className="inline-flex min-h-[44px] items-center rounded-full border border-border px-4 font-mono text-label text-text hover:bg-well"
+                className="inline-flex min-h-[44px] items-center rounded-full border border-border px-4 text-label text-text hover:bg-well"
               >
                 {paused ? "Play take" : "Pause take"}
               </button>
@@ -142,25 +142,25 @@ export default function StillToShot({ takes }: { takes: Take[] }) {
         <div className="flex flex-col gap-5">
           <dl className="m-0 flex flex-col gap-4 rounded-3xl bg-surface p-5 shadow-sm">
             <div>
-              <dt className="font-mono text-label text-teal">Subject</dt>
+              <dt className="text-label text-teal">Subject</dt>
               <dd className="mt-1 text-body text-text">{shot.subject}</dd>
             </div>
             <div>
-              <dt className="font-mono text-label text-teal">What happens</dt>
+              <dt className="text-label text-teal">What happens</dt>
               <dd className="mt-1 text-body text-text">{shot.whatHappens}</dd>
             </div>
             <div>
-              <dt className="font-mono text-label text-teal">Camera</dt>
+              <dt className="text-label text-teal">Camera</dt>
               <dd className="mt-1 text-body text-text">{shot.camera}</dd>
             </div>
             <div>
-              <dt className="font-mono text-label text-teal">Sound</dt>
+              <dt className="text-label text-teal">Sound</dt>
               <dd className="mt-1 text-body text-text">{shot.sound}</dd>
             </div>
           </dl>
           <div className="flex flex-wrap gap-1.5">
             {chips.map((chip) => (
-              <span key={chip} className="rounded-full bg-well px-2.5 py-1 font-mono text-label text-text">
+              <span key={chip} className="rounded-full bg-well px-2.5 py-1 text-label text-text">
                 {chip}
               </span>
             ))}

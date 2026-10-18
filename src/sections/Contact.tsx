@@ -13,7 +13,7 @@ export default function Contact() {
           <p className="text-title font-medium text-text">
             “{profile.quote.text}”
           </p>
-          <footer className="mt-3 font-mono text-label text-muted">{profile.quote.by}, on the map tools</footer>
+          <footer className="mt-3 text-label text-muted">{profile.quote.by}, on the map tools</footer>
         </blockquote>
         <p className="text-body text-muted">{profile.openTo}</p>
         <a

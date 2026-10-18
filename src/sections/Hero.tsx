@@ -8,7 +8,8 @@ import { em } from "@/ui/em";
 
 import Parallax from "@/fx/Parallax";
 
-// The 3-second story: who and what (the strip), the mission, where (the logos), one proof point.
+// The 3-second story: who and what (the strip), the mission, where (the logos).
+// The proof numbers live in Work; the Latest chip left the hero (user, 2026-10-18).
 // The numbers and their stories live in Work, so they appear once.
 export default function Hero() {
   const { ref, running } = useMotion<HTMLElement>();
@@ -57,17 +58,7 @@ export default function Hero() {
               />
             ))}
           </div>
-          <a
-            href="#greybox"
-            data-latest
-            className="mt-7 inline-flex min-h-[44px] flex-wrap items-center justify-start gap-x-3 text-left gap-y-1 rounded-full border border-border bg-surface px-5 py-2 text-[15px] text-text"
-          >
-            <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted">Latest</span>
-            <span>
-              {profile.latest.label}: <strong className="font-semibold">{profile.latest.value}</strong>
-            </span>
-          </a>
-          <div className="mt-6 flex flex-wrap gap-6">
+          <div className="mt-8 flex flex-wrap gap-6">
             <a
               href={profile.resumePath}
               target="_blank"

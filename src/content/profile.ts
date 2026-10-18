@@ -1,4 +1,4 @@
-export type Profile = { name: string; roleLine: string; headline: string; logos: { name: string; src: string; height: number; ratio: number }[]; latest: { label: string; value: string }; email: string; linkedin: string; resumePath: string; ogImage: { url: string; width: number; height: number; alt: string }; vcardPath: string; openTo: string; industries: string[]; searchTerms: string[]; quote: { text: string; by: string } };
+export type Profile = { name: string; roleLine: string; headline: string; logos: { name: string; src: string; height: number; ratio: number }[]; email: string; linkedin: string; resumePath: string; ogImage: { url: string; width: number; height: number; alt: string }; vcardPath: string; openTo: string; industries: string[]; searchTerms: string[]; quote: { text: string; by: string } };
 const email = "hoaqbui@gmail.com";
 const linkedin = "https://www.linkedin.com/in/hoaqbui/";
 
@@ -12,8 +12,6 @@ export const profile: Profile = {
     { name: "Pixar", src: "/logos/pixar.svg", height: 22, ratio: 667 / 108 },
     { name: "Riot Games", src: "/logos/riot.svg", height: 32, ratio: 264.6 / 117.6 },
   ],
-  // the one proof point in the hero; the full stories are in Work
-  latest: { label: "League map prototyping", value: "3 months → under an hour" },
   email,
   linkedin,
   // the public 2-page Doc: always current, readable on a phone

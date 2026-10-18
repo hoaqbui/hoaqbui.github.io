@@ -161,17 +161,8 @@ test.describe("Homepage redesign", () => {
     expect((await h1.innerText()).trim().length).toBeGreaterThan(0);
     await expect(page.locator('section[aria-label="Proof"]')).toHaveCount(0);
     await expect(page.getByRole("button", { name: /pause motion/i })).toHaveCount(0);
-  });
-
-  test("the Latest chip opens the greybox story", async ({ page }) => {
-    await page.goto("/");
-    const chip = page.locator("#top a[data-latest]");
-    await expect(chip).toBeVisible();
-    await expect(chip).toHaveAttribute("href", "#greybox");
-    await chip.click();
-    await expect(page.locator("button#greybox")).toHaveAttribute("aria-expanded", "true");
-    await expect(page.locator("#work-story article")).toBeVisible();
-    expect(await page.evaluate(() => location.hash)).toBe("#greybox");
+    // the Latest chip left the hero (user, 2026-10-18)
+    await expect(page.locator("#top [data-latest]")).toHaveCount(0);
   });
 
   test("Work has four tiles; a tile opens its story, sets the hash, and closes again", async ({ page }) => {

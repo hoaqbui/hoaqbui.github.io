@@ -1,22 +1,24 @@
 import SectionLabel from "@/ui/SectionLabel";
 import { em } from "@/ui/em";
+import { profile } from "@/content/profile";
 import Reveal from "@/fx/Reveal";
 
+// One line each: the moves as a picture, not a list (card 89; the longer bullets were cut).
 const steps = [
-  { title: "Start with the people.", lines: [
-    "Talk to them. Check the data.",
-    "Watch them work. Use their tools.",
-    "Talk to the people who support those tools.",
-  ] },
-  { title: "Identify the right problem.", lines: [
-    "Rarely the one on the ticket.",
-    "A handoff. A migration nobody should take on. A plan the team can’t see itself in. A team at capacity.",
-  ] },
-  { title: "See it through.", lines: [
-    "Rework, prototype, partner.",
-    "Leave a process the team runs itself.",
-    "Short surveys. Regular show-and-tells of what the tools can do.",
-  ] },
+  { title: "Start with the people.", line: "Talk to them. Watch them work.",
+    icon: <><circle cx="9" cy="8" r="3.2" /><circle cx="16.5" cy="9" r="2.6" /><path d="M3 19c.6-3.3 3-5 6-5s5.4 1.7 6 5M14.5 14.2c2.6-.3 5 1 5.5 4.8" /></> },
+  { title: "Identify the right problem.", line: "Rarely the one on the ticket.",
+    icon: <><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="4" /><circle cx="12" cy="12" r="0.8" fill="currentColor" /></> },
+  { title: "See it through.", line: "Rework, prototype, partner.",
+    icon: <path d="M5 21V4M5 4h11l-2 4 2 4H5" /> },
+];
+
+// The same moves at every stop: the studio logos, then the AI work.
+const stops = [
+  { logo: "Lucasfilm", caption: "Clone Wars assets across 4+ studios" },
+  { logo: "Pixar", caption: "final shots, lighting tools" },
+  { logo: "Riot Games", caption: "League tools, 12+ years" },
+  { logo: null, caption: "video and agents, now" },
 ];
 
 // The thread that ties film, Riot and the AI work together.
@@ -33,26 +35,54 @@ export default function HowIWork() {
               {em("The same **three moves**, in film, games, and now AI.")}
             </p>
           </div>
-          <ol className="mt-12 grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-8">
+          <ol className="m-0 mt-12 grid list-none gap-0 p-0 md:grid-cols-3 md:gap-8">
             {steps.map((s, i) => (
-              <li key={s.title} className="flex flex-col gap-2">
-                <span className="font-mono text-label text-muted">0{i + 1}</span>
-                <span className="text-heading font-medium">{s.title}</span>
-                <ul className="m-0 flex list-none flex-col gap-1.5 p-0 text-body text-muted">
-                  {s.lines.map((line) => (
-                    <li key={line} className="flex gap-2">
-                      <span aria-hidden="true" className="mt-[0.55em] h-1 w-1 shrink-0 rounded-full bg-teal" />
-                      <span>{line}</span>
-                    </li>
-                  ))}
-                </ul>
+              <li key={s.title} className="flex gap-4 md:flex-col">
+                <span className="flex flex-col items-center md:items-start">
+                  <span className="flex size-12 shrink-0 items-center justify-center rounded-full border border-border bg-surface text-teal">
+                    <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                      {s.icon}
+                    </svg>
+                  </span>
+                  {i < steps.length - 1 && <span aria-hidden="true" className="min-h-5 w-px flex-1 bg-border md:hidden" />}
+                </span>
+                <span className="flex flex-col gap-1 pb-6 pt-2.5 md:p-0">
+                  <span className="text-heading font-medium">{s.title}</span>
+                  <span className="text-body text-muted">{s.line}</span>
+                </span>
               </li>
             ))}
           </ol>
-          <p className="mt-14 max-w-[720px] border-t border-border pt-10 text-body text-muted">
-            It started in film: at Lucasfilm, moving thousands of assets a season between 4+ studios on{" "}
-            <i>Star Wars: The Clone Wars</i>; at Pixar, final shots, and tools that lighters ran themselves.
-          </p>
+          <div data-career-timeline className="mt-12 border-t border-border pt-8">
+            <p className="font-mono text-label uppercase tracking-[0.14em] text-muted">Same moves, every stop</p>
+            <ol className="m-0 mt-5 grid list-none grid-cols-2 gap-x-6 gap-y-6 p-0 md:grid-cols-4">
+              {stops.map((stop) => {
+                const logo = profile.logos.find((l) => l.name === stop.logo);
+                return (
+                  <li key={stop.caption} className="flex flex-col gap-2">
+                    <span className="flex h-8 items-center text-muted opacity-85">
+                      {logo ? (
+                        <span
+                          role="img"
+                          aria-label={logo.name}
+                          className="block max-w-full bg-current"
+                          style={{
+                            width: Math.round(logo.height * 0.8 * logo.ratio),
+                            aspectRatio: logo.ratio,
+                            mask: `url(${logo.src}) left center / contain no-repeat`,
+                            WebkitMask: `url(${logo.src}) left center / contain no-repeat`,
+                          }}
+                        />
+                      ) : (
+                        <span className="text-heading font-medium text-teal">AI</span>
+                      )}
+                    </span>
+                    <span className="font-mono text-label text-muted">{stop.caption}</span>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
         </Reveal>
       </div>
     </section>

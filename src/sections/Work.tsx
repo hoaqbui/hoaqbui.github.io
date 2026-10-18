@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import SectionLabel from "@/ui/SectionLabel";
 import Flow from "@/ui/Flow";
 import WeekGrid from "@/ui/WeekGrid";
+import TileFigure from "@/ui/TileFigure";
 import { stories } from "@/content/stories";
 import { em } from "@/ui/em";
 import Reveal from "@/fx/Reveal";
@@ -64,8 +65,8 @@ export default function Work() {
                   <span className="shrink-0 text-stat font-medium text-teal">{story.num}</span>
                   <span className="text-heading font-medium text-text">{story.numNote}</span>
                 </span>
-                <span className="mt-auto text-body text-muted">
-                  {story.how}{" "}
+                <span className="mt-auto flex flex-col gap-3.5 pt-1.5 text-body">
+                  <TileFigure fig={story.tile} label={story.how} />
                   <span className="whitespace-nowrap font-medium text-teal">{isOpen ? "Close ↑" : "The story →"}</span>
                 </span>
               </button>

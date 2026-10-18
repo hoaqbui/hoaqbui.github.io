@@ -198,7 +198,9 @@ test.describe("Homepage redesign", () => {
   test("How I work has three steps", async ({ page }) => {
     await page.goto("/");
     await expect(page.locator("#how").getByRole("heading", { level: 2, name: "How I work" })).toBeVisible();
-    await expect(page.locator("#how ol > li")).toHaveCount(3);
+    await expect(page.locator("#how ol").first().locator("> li")).toHaveCount(3);
+    // the career timeline under the steps (card 89): three studios, then AI
+    await expect(page.locator("#how [data-career-timeline] li")).toHaveCount(4);
   });
 
   test("Contact shows the quote, email and links", async ({ page }) => {

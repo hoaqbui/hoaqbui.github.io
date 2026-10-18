@@ -39,9 +39,11 @@ export const stories: Story[] = [
     num: "50+", numNote: "people across 4–5 countries, on reliable milestones",
     role: "Technical Product Manager · Lead Producer role, unannounced project, since canceled · 4 partner studios",
     flow: [
-      { steps: [{ text: "Plan the team couldn’t see", sub: "no way to track completion" }, { text: "3-week prototype", sub: "character + gameplay", strong: true }, { text: "Scope re-planned" }, { text: "Velocity vs OKRs", sub: "every week" }, { text: "Milestones held" }] },
+      { label: "Before", steps: [{ text: "The plan" }, { text: "Art, audio, graphics teams" }], note: "no way to see what counted as done" },
+      { label: "Prove it", steps: [{ text: "3-week prototype", sub: "character + gameplay, end to end", strong: true }, { text: "Scope re-planned", sub: "around what could land" }] },
+      { label: "Track it", steps: [{ text: "Numeric OKR targets", strong: true }, { text: "Velocity vs targets", sub: "every week" }, { text: "Milestones held" }] },
     ],
-    vizLabel: "From a plan the team couldn’t see itself in, through a 3-week prototype, to a re-planned scope, weekly velocity against OKR targets, and milestones that held." },
+    vizLabel: "Before: a plan the teams couldn’t see themselves in. Prove it: a 3-week prototype, then a re-planned scope. Track it: numeric OKR targets, weekly velocity against them, milestones that held." },
   { id: "cosmetics", kind: "Trial", who: "League skin artists", years: "2019–22",
     title: "The skins team got about 100 skins a year without hiring",
     problem: "League needed more skins than its team could make.",

@@ -3,9 +3,9 @@ import Reveal from "@/fx/Reveal";
 import { profile } from "@/content/profile";
 
 const steps = [
-  { title: "Sit with the creators.", body: "Map how artists and designers actually work, end to end, before deciding what to build." },
-  { title: "Find the real bottleneck.", body: "Usually it isn’t the tech. It’s a handoff, a wait, or work nobody should be doing. Pick the fix that pays off most, not the first one that fits." },
-  { title: "Prototype the fix, then ship it.", body: "Put a working version in front of a few people, fix what they hit the same week, measure who uses it, then roll out." },
+  { title: "Start with the people doing the work.", body: "Sit with artists and designers, watch how the work actually flows, and listen for what they’ve stopped asking for." },
+  { title: "Decide what’s worth doing.", body: "Find the real problem, do the math on the options, and pick the one with the most impact, even when the answer is no." },
+  { title: "Get it delivered, and used.", body: "Bring engineering, art, and leadership to the same plan, ship in small steps, and measure who uses it, not just what shipped." },
 ];
 
 // The thread that ties film, Riot and the AI work together.
@@ -19,7 +19,7 @@ export default function HowIWork() {
               How I work
             </SectionLabel>
             <p className="max-w-[640px] flex-[1_1_420px] text-[clamp(1.5rem,3vw,2rem)] font-medium leading-[1.2] tracking-[-0.025em]">
-              The same pattern since 2008.
+              The same three moves, in film, games, and now AI.
             </p>
           </div>
           <ol className="mt-12 grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-8">
@@ -39,8 +39,9 @@ export default function HowIWork() {
               <footer className="mt-3 font-mono text-[13px] text-muted">{profile.quote.by}, on the map tools</footer>
             </blockquote>
             <p className="text-[15px] leading-relaxed text-muted">
-              Before Riot: at Lucasfilm I built the tools that moved thousands of assets a season between 4+ studios on{" "}
-              <i>Star Wars: The Clone Wars</i>. At Pixar, rendering tools that lighters ran themselves.
+              The pattern started in film: at Lucasfilm, keeping thousands of assets a season moving between 4+ studios on{" "}
+              <i>Star Wars: The Clone Wars</i>; at Pixar, delivering final shots and handing lighters tools they could run
+              themselves.
             </p>
           </div>
         </Reveal>

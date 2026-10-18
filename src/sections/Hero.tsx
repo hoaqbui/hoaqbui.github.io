@@ -27,7 +27,7 @@ export default function Hero() {
         <h1 className="mt-5 text-[clamp(2rem,6vw,3.5rem)] font-medium leading-[1.08] tracking-[-0.035em]">
           {em(profile.headline)}
         </h1>
-        <p className="mt-4 max-w-xl mx-auto text-[15px] md:text-[17px] text-muted">
+        <p className="mt-4 max-w-xl mx-auto text-balance text-[15px] md:text-[17px] text-muted">
           {profile.subLine}
         </p>
         <a

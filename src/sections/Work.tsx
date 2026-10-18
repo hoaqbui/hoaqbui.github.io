@@ -17,7 +17,7 @@ export default function Work() {
           Work
         </SectionLabel>
         <p className="max-w-[640px] flex-[1_1_420px] text-[clamp(1.5rem,3vw,2rem)] font-medium leading-[1.2] tracking-[-0.025em]">
-          Three times a creative team at Riot was stuck, and what changed.
+          Three times I got something new working inside a creative team at Riot.
         </p>
       </div>
 
@@ -35,7 +35,7 @@ export default function Work() {
                 className="scroll-mt-24 rounded-[20px] border border-border bg-surface p-6 md:p-8"
               >
                 <p className="font-mono text-[12px] text-muted">
-                  {story.who} · Riot · {story.years}
+                  <span className="text-teal">{story.kind}</span> · {story.who} · Riot · {story.years}
                 </p>
                 <h3 className="mt-2 text-[22px] md:text-[26px] font-medium leading-[1.25] tracking-[-0.02em] text-text">
                   {story.title}

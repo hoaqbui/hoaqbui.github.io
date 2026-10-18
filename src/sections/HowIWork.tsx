@@ -3,16 +3,16 @@ import { em } from "@/ui/em";
 import Reveal from "@/fx/Reveal";
 
 const steps = [
-  { title: "Start with the people doing the work.", lines: [
+  { title: "Start with the people.", lines: [
     "Talk to them. Check the data.",
     "Watch them work. Use their tools.",
     "Talk to the people who support those tools.",
   ] },
-  { title: "Name the right problem.", lines: [
+  { title: "Identify the right problem.", lines: [
     "Rarely the one on the ticket.",
     "A handoff. A migration nobody should take on. A plan the team can’t see itself in. A team at capacity.",
   ] },
-  { title: "Solve it, then see it through.", lines: [
+  { title: "See it through.", lines: [
     "A rework, a no, a prototype, a partner.",
     "Leave a process the team runs itself.",
     "Short surveys. Regular show-and-tells of what the tools can do.",

@@ -29,16 +29,16 @@ export default function HowIWork() {
             <SectionLabel as="h2" className="flex-[0_0_200px]">
               How I work
             </SectionLabel>
-            <p className="max-w-[640px] flex-[1_1_420px] text-[clamp(1.5rem,3vw,2rem)] font-medium leading-[1.2] tracking-[-0.025em]">
+            <p className="max-w-[640px] flex-[1_1_420px] text-title font-medium">
               {em("The same **three moves**, in film, games, and now AI.")}
             </p>
           </div>
           <ol className="mt-12 grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-8">
             {steps.map((s, i) => (
               <li key={s.title} className="flex flex-col gap-2">
-                <span className="font-mono text-[13px] text-muted">0{i + 1}</span>
-                <span className="text-xl font-medium tracking-[-0.015em]">{s.title}</span>
-                <ul className="m-0 flex list-none flex-col gap-1.5 p-0 text-[15px] leading-snug text-muted">
+                <span className="font-mono text-label text-muted">0{i + 1}</span>
+                <span className="text-heading font-medium">{s.title}</span>
+                <ul className="m-0 flex list-none flex-col gap-1.5 p-0 text-body text-muted">
                   {s.lines.map((line) => (
                     <li key={line} className="flex gap-2">
                       <span aria-hidden="true" className="mt-[0.55em] h-1 w-1 shrink-0 rounded-full bg-teal" />
@@ -49,7 +49,7 @@ export default function HowIWork() {
               </li>
             ))}
           </ol>
-          <p className="mt-14 max-w-[720px] border-t border-border pt-10 text-[15px] leading-relaxed text-muted">
+          <p className="mt-14 max-w-[720px] border-t border-border pt-10 text-body text-muted">
             It started in film: at Lucasfilm, moving thousands of assets a season between 4+ studios on{" "}
             <i>Star Wars: The Clone Wars</i>; at Pixar, final shots, and tools that lighters ran themselves.
           </p>

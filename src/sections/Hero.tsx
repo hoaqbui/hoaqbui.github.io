@@ -23,8 +23,8 @@ export default function Hero() {
       <HeroBackground running={running} />
       <Parallax className="relative z-10 w-full max-w-[1120px] px-6">
         <div className="max-w-3xl">
-          <p className="text-lg font-semibold">{profile.name}</p>
-          <p className="mt-2 text-[15px] leading-relaxed text-muted">
+          <p className="text-heading font-semibold">{profile.name}</p>
+          <p className="mt-2 text-body text-muted">
             {profile.roleLine.split(" · ").map((part, i, all) => (
               <Fragment key={part}>
                 <span className={`whitespace-nowrap ${i === 0 ? "text-teal" : ""}`}>
@@ -34,7 +34,7 @@ export default function Hero() {
               </Fragment>
             ))}
           </p>
-          <h1 className="mt-5 text-balance text-[clamp(2rem,6vw,3.5rem)] font-medium leading-[1.08] tracking-[-0.035em]">
+          <h1 className="mt-5 text-balance text-display font-medium">
             {em(profile.headline)}
           </h1>
           <div

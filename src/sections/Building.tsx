@@ -67,10 +67,10 @@ export default function Building() {
         <div className="flex flex-wrap gap-12 items-center">
         <div className="flex-[1_1_340px] max-w-[420px] min-w-0">
           <SectionLabel>Building</SectionLabel>
-          <h2 className="mt-4 text-[40px] leading-[1.1] tracking-[-0.035em] font-medium">
+          <h2 className="mt-4 text-title font-medium">
             Three things I’m building with agents.
           </h2>
-          <p className="mt-4 text-[17px] leading-relaxed text-muted">
+          <p className="mt-4 text-lead text-muted">
             Each one is a bet on how people will make things with AI.
           </p>
           <div className="mt-7 flex flex-col gap-1">
@@ -82,14 +82,14 @@ export default function Building() {
                   type="button"
                   aria-pressed={isActive}
                   onClick={() => setCurrent(index)}
-                  className={`flex min-h-[48px] items-baseline gap-3.5 rounded-xl px-3.5 py-2.5 text-left text-base transition-colors duration-300 motion-reduce:transition-none ${
+                  className={`flex min-h-[48px] items-baseline gap-3.5 rounded-xl px-3.5 py-2.5 text-left text-body transition-colors duration-300 motion-reduce:transition-none ${
                     isActive
                       ? "bg-surface text-text shadow-sm"
                       : "text-muted hover:text-text bg-transparent"
                   }`}
                 >
                   <span
-                    className={`font-mono text-xs ${
+                    className={`font-mono text-label ${
                       isActive ? "text-teal" : "text-muted"
                     }`}
                   >
@@ -105,7 +105,7 @@ export default function Building() {
               type="button"
               onClick={prev}
               aria-label="Previous project"
-              className="flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-border bg-surface text-base text-text cursor-pointer"
+              className="flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-border bg-surface text-body text-text cursor-pointer"
             >
               ←
             </button>
@@ -113,7 +113,7 @@ export default function Building() {
               type="button"
               onClick={next}
               aria-label="Next project"
-              className="flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-border bg-surface text-base text-text cursor-pointer"
+              className="flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-border bg-surface text-body text-text cursor-pointer"
             >
               →
             </button>
@@ -142,7 +142,7 @@ export default function Building() {
                 )}
                 {!project.status.startsWith("[") && (
                   <div className="flex items-center">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-well px-2.5 py-1 font-mono text-[11px] text-text">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-well px-2.5 py-1 font-mono text-label text-text">
                       <span
                         className={`h-1.5 w-1.5 rounded-full ${
                           project.live ? "bg-teal" : "bg-amber"
@@ -152,10 +152,10 @@ export default function Building() {
                     </span>
                   </div>
                 )}
-                <h3 className="mt-4 text-2xl font-medium tracking-tight text-text">
+                <h3 className="mt-4 text-heading font-medium text-text">
                   {project.title}
                 </h3>
-                <p className="mt-2 text-[15px] leading-relaxed text-muted">
+                <p className="mt-2 text-body text-muted">
                   {project.body}
                 </p>
                 {!project.shots && project.steps && project.steps.length > 0 && (
@@ -174,7 +174,7 @@ export default function Building() {
                             →
                           </span>
                         )}
-                        <span className="rounded-full bg-surface px-3 py-1.5 font-mono text-[11px] text-text">
+                        <span className="rounded-full bg-surface px-3 py-1.5 font-mono text-label text-text">
                           {step}
                         </span>
                       </Fragment>
@@ -182,7 +182,7 @@ export default function Building() {
                   </div>
                 )}
                 {project.why && !project.why.startsWith("[") && (
-                  <p className="mt-3 text-sm text-muted">Why: {project.why}</p>
+                  <p className="mt-3 text-body text-muted">Why: {project.why}</p>
                 )}
                 <div className="mt-4 flex flex-wrap gap-1.5">
                   {project.chips
@@ -190,7 +190,7 @@ export default function Building() {
                     .map((chip, idx) => (
                       <span
                         key={idx}
-                        className="rounded-full bg-well px-2.5 py-1 font-mono text-[11px] text-text"
+                        className="rounded-full bg-well px-2.5 py-1 font-mono text-label text-text"
                       >
                         {chip}
                       </span>

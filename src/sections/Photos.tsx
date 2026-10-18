@@ -21,7 +21,7 @@ export default function Photos({ band = false }: { band?: boolean }) {
             <SectionLabel as={Heading}>
               Photographs
             </SectionLabel>
-            <p className="mt-3 text-base text-muted">
+            <p className="mt-3 text-body text-muted">
               A quiet selection of frames from travels in Japan, Czechia, Taiwan, Ireland, Vietnam and Brazil.
             </p>
           </div>
@@ -29,7 +29,7 @@ export default function Photos({ band = false }: { band?: boolean }) {
             href="https://hoaqbui.myportfolio.com"
             target="_blank"
             rel="noopener"
-            className="inline-flex min-h-[44px] items-center text-sm font-medium text-teal hover:underline"
+            className="inline-flex min-h-[44px] items-center text-body font-medium text-teal hover:underline"
           >
             All photographs →
           </a>

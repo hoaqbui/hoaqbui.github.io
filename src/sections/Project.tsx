@@ -33,7 +33,7 @@ export default function Project({ id }: { id: string }) {
       <div className="flex flex-wrap items-center justify-between gap-4 mb-12">
         <Link
           href="/building/"
-          className="inline-flex min-h-[44px] items-center text-sm font-medium text-muted hover:text-text transition-colors"
+          className="inline-flex min-h-[44px] items-center text-body font-medium text-muted hover:text-text transition-colors"
         >
           ← All projects
         </Link>
@@ -41,14 +41,14 @@ export default function Project({ id }: { id: string }) {
           <Link
             href={`/building/${prevProject.id}/`}
             aria-label={`Previous project: ${prevProject.title}`}
-            className="inline-flex min-h-[44px] items-center rounded-full border border-border bg-surface px-4 text-sm text-text hover:border-text transition-colors"
+            className="inline-flex min-h-[44px] items-center rounded-full border border-border bg-surface px-4 text-body text-text hover:border-text transition-colors"
           >
             ← {prevProject.title}
           </Link>
           <Link
             href={`/building/${nextProject.id}/`}
             aria-label={`Next project: ${nextProject.title}`}
-            className="inline-flex min-h-[44px] items-center rounded-full bg-text px-4 text-sm text-surface hover:opacity-90 transition-opacity"
+            className="inline-flex min-h-[44px] items-center rounded-full bg-text px-4 text-body text-surface hover:opacity-90 transition-opacity"
           >
             {nextProject.title} →
           </Link>
@@ -78,7 +78,7 @@ export default function Project({ id }: { id: string }) {
         <div className="flex flex-col gap-6">
           {showStatus && (
             <div className="flex items-center">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-well px-2.5 py-1 font-mono text-[11px] text-text">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-well px-2.5 py-1 font-mono text-label text-text">
                 <span
                   className={`h-1.5 w-1.5 rounded-full ${
                     project.live ? "bg-teal" : "bg-amber"
@@ -88,7 +88,7 @@ export default function Project({ id }: { id: string }) {
               </span>
             </div>
           )}
-          <h1 className="text-[40px] leading-[1.1] tracking-tight font-medium text-text">
+          <h1 className="text-title font-medium text-text">
             {project.title}
           </h1>
           {Diagram && (
@@ -113,22 +113,22 @@ export default function Project({ id }: { id: string }) {
         {/* Right column */}
         <div className="flex flex-col gap-8">
           <div>
-            <h2 className="font-mono text-sm text-muted">What it is</h2>
-            <p className="mt-2.5 text-[17px] leading-relaxed text-text">
+            <h2 className="font-mono text-label text-muted">What it is</h2>
+            <p className="mt-2.5 text-lead text-text">
               {project.body}
             </p>
           </div>
 
           {validSteps.length > 0 && (
             <div>
-              <h2 className="font-mono text-sm text-muted">How it works</h2>
+              <h2 className="font-mono text-label text-muted">How it works</h2>
               <ol className="mt-3 flex flex-col gap-2 list-none p-0">
                 {validSteps.map((step, idx) => (
                   <li
                     key={idx}
-                    className="flex items-center gap-3 rounded-xl bg-surface px-3.5 py-3 text-[15px] shadow-sm text-text"
+                    className="flex items-center gap-3 rounded-xl bg-surface px-3.5 py-3 text-body shadow-sm text-text"
                   >
-                    <span className="font-mono text-[11px] text-teal">
+                    <span className="font-mono text-label text-teal">
                       0{idx + 1}
                     </span>
                     <span>{step}</span>
@@ -142,8 +142,8 @@ export default function Project({ id }: { id: string }) {
 
           {showWhy && (
             <div>
-              <h2 className="font-mono text-sm text-muted">Why build it</h2>
-              <p className="mt-2.5 text-[17px] leading-relaxed text-text">
+              <h2 className="font-mono text-label text-muted">Why build it</h2>
+              <p className="mt-2.5 text-lead text-text">
                 {project.why}
               </p>
             </div>
@@ -154,7 +154,7 @@ export default function Project({ id }: { id: string }) {
               {validChips.map((chip, idx) => (
                 <span
                   key={idx}
-                  className="rounded-full bg-well px-2.5 py-1 font-mono text-[11px] text-text"
+                  className="rounded-full bg-well px-2.5 py-1 font-mono text-label text-text"
                 >
                   {chip}
                 </span>
@@ -190,14 +190,14 @@ function ShotsLayout({
       <div className="flex flex-col gap-5">
         {showStatus && (
           <div className="flex items-center">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-well px-2.5 py-1 font-mono text-[11px] text-text">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-well px-2.5 py-1 font-mono text-label text-text">
               <span className={`h-1.5 w-1.5 rounded-full ${project.live ? "bg-teal" : "bg-amber"}`} />
               {project.status}
             </span>
           </div>
         )}
-        <h1 className="text-[40px] leading-[1.1] tracking-tight font-medium text-text">{project.title}</h1>
-        <p className="max-w-[720px] text-[17px] leading-relaxed text-text">{project.body}</p>
+        <h1 className="text-title font-medium text-text">{project.title}</h1>
+        <p className="max-w-[720px] text-lead text-text">{project.body}</p>
         {project.tryUrl && <TryIt href={project.tryUrl} />}
         {shots.hero && (
           <div style={{ viewTransitionName: `card-${project.id}` }} className="card-morph" data-hero-shot>
@@ -224,7 +224,7 @@ function ShotsLayout({
                   <source src={`${clip.src}.webm`} type="video/webm" />
                   <source src={`${clip.src}.mp4`} type="video/mp4" />
                 </video>
-                <figcaption className="mt-2 font-mono text-[12px] text-muted">{clip.caption}</figcaption>
+                <figcaption className="mt-2 font-mono text-label text-muted">{clip.caption}</figcaption>
               </figure>
             ))}
           </div>
@@ -232,7 +232,7 @@ function ShotsLayout({
       </div>
 
       <div>
-        <h2 className="font-mono text-sm text-muted">{shots.stepsTitle ?? "One task, start to finish"}</h2>
+        <h2 className="font-mono text-label text-muted">{shots.stepsTitle ?? "One task, start to finish"}</h2>
         <ol className="mt-6 flex list-none flex-col gap-12 p-0" data-shot-steps>
           {shots.steps.map((step, i) => (
             <li
@@ -240,8 +240,8 @@ function ShotsLayout({
               // phone captures sit beside their caption on wide screens instead of filling the row
               className={`flex flex-col gap-4 ${(step.shot.scale ?? 2) >= 3 ? "md:flex-row md:items-start md:gap-10" : ""}`}
             >
-              <p className={`flex gap-3 text-[17px] leading-relaxed text-text ${(step.shot.scale ?? 2) >= 3 ? "md:w-[320px] md:shrink-0 md:pt-4" : ""}`}>
-                <span className="font-mono text-[13px] leading-[1.9] text-teal">0{i + 1}</span>
+              <p className={`flex gap-3 text-lead text-text ${(step.shot.scale ?? 2) >= 3 ? "md:w-[320px] md:shrink-0 md:pt-4" : ""}`}>
+                <span className="font-mono text-label text-teal">0{i + 1}</span>
                 <span>{step.caption}</span>
               </p>
               <Shot shot={step.shot} sizes="(min-width: 1168px) 1072px, calc(100vw - 48px)" link />
@@ -252,20 +252,20 @@ function ShotsLayout({
 
       <div className="grid grid-cols-1 items-start gap-12 md:grid-cols-2">
         <div>
-          <h2 className="font-mono text-sm text-muted">How it runs</h2>
+          <h2 className="font-mono text-label text-muted">How it runs</h2>
           <div className="mt-3">{children}</div>
         </div>
         <div className="flex flex-col gap-8">
           {showWhy && (
             <div>
-              <h2 className="font-mono text-sm text-muted">Why build it</h2>
-              <p className="mt-2.5 text-[17px] leading-relaxed text-text">{project.why}</p>
+              <h2 className="font-mono text-label text-muted">Why build it</h2>
+              <p className="mt-2.5 text-lead text-text">{project.why}</p>
             </div>
           )}
           {chips.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
               {chips.map((chip) => (
-                <span key={chip} className="rounded-full bg-well px-2.5 py-1 font-mono text-[11px] text-text">
+                <span key={chip} className="rounded-full bg-well px-2.5 py-1 font-mono text-label text-text">
                   {chip}
                 </span>
               ))}

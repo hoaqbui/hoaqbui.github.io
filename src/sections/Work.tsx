@@ -57,14 +57,14 @@ export default function Work() {
                   isOpen ? "border-teal bg-surface" : "border-border bg-surface hover:border-teal/60"
                 }`}
               >
-                <span className="font-mono text-[12px] text-muted">
+                <span className="font-mono text-label text-muted">
                   <span className="text-teal">{story.talent}</span> · {story.years}
                 </span>
                 <span className="flex flex-col gap-2.5 md:flex-row md:items-end md:gap-4">
-                  <span className="shrink-0 text-[56px] font-medium leading-none tracking-[-0.04em] text-teal md:text-[64px]">{story.num}</span>
-                  <span className="text-[19px] font-medium leading-[1.25] tracking-[-0.015em] text-text">{story.numNote}</span>
+                  <span className="shrink-0 text-stat font-medium text-teal">{story.num}</span>
+                  <span className="text-heading font-medium text-text">{story.numNote}</span>
                 </span>
-                <span className="mt-auto text-[15px] leading-snug text-muted">
+                <span className="mt-auto text-body text-muted">
                   {story.how}{" "}
                   <span className="whitespace-nowrap font-medium text-teal">{isOpen ? "Close ↑" : "The story →"}</span>
                 </span>
@@ -77,27 +77,27 @@ export default function Work() {
       <div id="work-story" aria-live="polite">
         {open && (
           <article className="mt-5 rounded-[20px] border border-teal bg-surface p-6 md:p-8">
-            <p className="font-mono text-[12px] text-muted">
+            <p className="font-mono text-label text-muted">
               <span className="text-teal">{open.talent}</span> · {open.years}
             </p>
-            <h3 className="mt-2 max-w-[820px] text-[24px] font-medium leading-[1.2] tracking-[-0.025em] text-text md:text-[30px]">
+            <h3 className="mt-2 max-w-[820px] text-title font-medium text-text">
               {em(open.title)}
             </h3>
             <div className="mt-6 flex flex-col gap-6">
               {open.pictureFirst && picture}
               <div className="flex max-w-[760px] flex-col gap-4">
-                <p className="m-0 text-[17px] leading-[1.55] text-text">{open.body}</p>
-                <p className="m-0 text-[17px] font-medium leading-[1.4] text-text">{open.worth}</p>
+                <p className="m-0 text-lead text-text">{open.body}</p>
+                <p className="m-0 text-lead font-medium text-text">{open.worth}</p>
                 {open.quote && (
                   <blockquote className="m-0 border-l-2 border-teal pl-4">
-                    <p className="m-0 text-[17px] leading-[1.4] text-text">“{open.quote.text}”</p>
-                    <footer className="mt-1 font-mono text-[12px] text-muted">{open.quote.by}</footer>
+                    <p className="m-0 text-lead text-text">“{open.quote.text}”</p>
+                    <footer className="mt-1 font-mono text-label text-muted">{open.quote.by}</footer>
                   </blockquote>
                 )}
               </div>
               {!open.pictureFirst && picture}
             </div>
-            <p className="mt-5 font-mono text-[12px] text-muted">{open.role}</p>
+            <p className="mt-5 font-mono text-label text-muted">{open.role}</p>
           </article>
         )}
       </div>

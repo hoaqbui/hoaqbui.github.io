@@ -25,8 +25,8 @@ const srcSet = (p: Photo) => `${p.src.replace(".webp", "-800.webp")} 800w, ${p.s
 function Caption({ photo }: { photo: Photo }) {
   return (
     <div data-photo-caption className="mt-4 text-center">
-      <p className="font-mono text-[11px] tracking-[0.18em] uppercase text-amber-text">{photo.place}</p>
-      <h2 className="mt-1 font-serif italic text-[22px] md:text-[24px] text-text">{photo.title}</h2>
+      <p className="font-mono text-label tracking-[0.14em] uppercase text-amber-text">{photo.place}</p>
+      <h2 className="mt-1 font-serif italic text-heading text-text">{photo.title}</h2>
     </div>
   );
 }

@@ -4,7 +4,7 @@ const passwordHref = `mailto:${profile.email}?subject=${encodeURIComponent("Comp
 
 export default function TryIt({ href, className = "" }: { href: string; className?: string }) {
   return (
-    <p className={`flex flex-wrap items-center gap-x-3 text-sm text-muted ${className}`}>
+    <p className={`flex flex-wrap items-center gap-x-3 text-body text-muted ${className}`}>
       <a
         href={href}
         target="_blank"

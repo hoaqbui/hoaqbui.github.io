@@ -83,10 +83,10 @@ function Take({
         />
         {showVideo && (
           <>
-            <span aria-hidden="true" className="pointer-events-none absolute left-2 top-2 rounded bg-black/65 px-2 py-1 font-mono text-[10px] text-white">
+            <span aria-hidden="true" className="pointer-events-none absolute left-2 top-2 rounded bg-black/65 px-2 py-1 font-mono text-label text-white">
               Photograph
             </span>
-            <span aria-hidden="true" className="pointer-events-none absolute right-2 top-2 rounded bg-black/65 px-2 py-1 font-mono text-[10px] text-white">
+            <span aria-hidden="true" className="pointer-events-none absolute right-2 top-2 rounded bg-black/65 px-2 py-1 font-mono text-label text-white">
               Video
             </span>
             <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 w-0.5 bg-white/90 shadow-sm" style={{ left: `${wipe}%` }} />
@@ -113,7 +113,7 @@ function Take({
                 type="button"
                 onClick={() => video.current?.play().catch(() => setNeedsTap(true))}
                 aria-label={`Play ${photo.title} video`}
-                className="absolute bottom-3 right-3 z-10 inline-flex min-h-11 items-center rounded-full bg-white px-4 font-mono text-xs text-[#0d0f10] shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal"
+                className="absolute bottom-3 right-3 z-10 inline-flex min-h-11 items-center rounded-full bg-white px-4 font-mono text-label text-[#0d0f10] shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal"
               >
                 Play video
               </button>
@@ -121,7 +121,7 @@ function Take({
           </>
         )}
       </div>
-      <figcaption className="mt-2 font-mono text-[12px] text-muted">{photo.title}</figcaption>
+      <figcaption className="mt-2 font-mono text-label text-muted">{photo.title}</figcaption>
     </figure>
   );
 }
@@ -163,14 +163,14 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
         <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-[720px]">
             <SectionLabel as="h2">Now, with AI</SectionLabel>
-            <p className="mt-4 text-[clamp(1.5rem,3vw,2rem)] font-medium leading-[1.2] tracking-[-0.025em]">
+            <p className="mt-4 text-title font-medium">
               {em("The latest problem: **consistent video** out of generative models, tested on my own photographs.")}
             </p>
-            <p className="mt-4 text-[17px] leading-relaxed text-muted">
+            <p className="mt-4 text-lead text-muted">
               Each travel photo got a shot: a subject, what happens, the camera, the sound. Compo, my intent-to-video
               pipeline on ComfyUI and LTX, rendered it. Building it end to end shows where generative video still breaks.
             </p>
-            {allowed && <p className="mt-3 font-mono text-xs text-muted">Drag each frame to compare the photograph with its shot.</p>}
+            {allowed && <p className="mt-3 font-mono text-label text-muted">Drag each frame to compare the photograph with its shot.</p>}
           </div>
           {allowed && (
             <div className="flex flex-wrap gap-2">
@@ -178,7 +178,7 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
                 type="button"
                 onClick={toggle}
                 aria-pressed={paused}
-                className="inline-flex min-h-[44px] items-center rounded-full border border-border px-4 font-mono text-xs text-text hover:bg-well"
+                className="inline-flex min-h-[44px] items-center rounded-full border border-border px-4 font-mono text-label text-text hover:bg-well"
               >
                 {paused ? "Play clips" : "Pause clips"}
               </button>
@@ -197,26 +197,26 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
         </div>
 
         <footer className="mt-6 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-          <p className="font-mono text-[12px] text-muted">
+          <p className="font-mono text-label text-muted">
             LTX 2.5 · 480p → 720p · 6.1 s each · sound from the model, or scored from the frames
           </p>
           <div className="flex flex-wrap gap-x-6">
             <Link
               href="/building/intent-to-video/"
-              className="inline-flex min-h-[44px] items-center text-sm font-medium text-teal hover:underline"
+              className="inline-flex min-h-[44px] items-center text-body font-medium text-teal hover:underline"
             >
               How each shot is made →
             </Link>
             <Link
               href="/photos/"
-              className="inline-flex min-h-[44px] items-center text-sm font-medium text-teal hover:underline"
+              className="inline-flex min-h-[44px] items-center text-body font-medium text-teal hover:underline"
             >
               All photographs →
             </Link>
           </div>
         </footer>
 
-        <div data-also-building className="mt-10 flex flex-wrap items-baseline gap-x-6 gap-y-2 rounded-2xl border border-border bg-surface px-6 py-5 text-[15px]">
+        <div data-also-building className="mt-10 flex flex-wrap items-baseline gap-x-6 gap-y-2 rounded-2xl border border-border bg-surface px-6 py-5 text-body">
           <span className="font-medium">Also building</span>
           <span className="min-w-0 flex-[1_1_420px] text-muted">
             <Link href="/building/parti/" className="font-medium text-teal hover:underline">Parti</Link>, a multi-agent

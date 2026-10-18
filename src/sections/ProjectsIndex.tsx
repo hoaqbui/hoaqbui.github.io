@@ -10,16 +10,16 @@ export default function ProjectsIndex() {
     <section className="mx-auto max-w-[1120px] px-6 pt-28 pb-32">
       <Link
         href="/#now"
-        className="inline-flex min-h-[44px] items-center text-sm font-medium text-muted hover:text-text transition-colors"
+        className="inline-flex min-h-[44px] items-center text-body font-medium text-muted hover:text-text transition-colors"
       >
         ← Home
       </Link>
       <div className="mt-8 max-w-[720px]">
         <SectionLabel as="h1">Projects</SectionLabel>
-        <p className="mt-4 text-[clamp(1.75rem,4vw,2.5rem)] font-medium leading-[1.15] tracking-[-0.03em]">
+        <p className="mt-4 text-title font-medium">
           What I’m building with AI.
         </p>
-        <p className="mt-4 text-[17px] leading-relaxed text-muted">
+        <p className="mt-4 text-lead text-muted">
           Each one is a tool I use myself, built hands-on with Claude Code and ComfyUI, to learn where AI helps the
           people making things and where it still breaks.
         </p>
@@ -35,21 +35,21 @@ export default function ProjectsIndex() {
                 </div>
               )}
               {!project.status.startsWith("[") && (
-                <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-well px-2.5 py-1 font-mono text-[11px] text-text">
+                <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-well px-2.5 py-1 font-mono text-label text-text">
                   <span className={`h-1.5 w-1.5 rounded-full ${project.live ? "bg-teal" : "bg-amber"}`} />
                   {project.status}
                 </span>
               )}
-              <h2 className="mt-4 text-2xl font-medium tracking-tight text-text">{project.title}</h2>
-              <p className="mt-2 text-[15px] leading-relaxed text-muted">{project.body}</p>
+              <h2 className="mt-4 text-heading font-medium text-text">{project.title}</h2>
+              <p className="mt-2 text-body text-muted">{project.body}</p>
               {project.why && !project.why.startsWith("[") && (
-                <p className="mt-3 text-sm text-muted">Why: {project.why}</p>
+                <p className="mt-3 text-body text-muted">Why: {project.why}</p>
               )}
               <div className="mt-4 flex flex-wrap gap-1.5">
                 {project.chips
                   .filter((chip) => !chip.startsWith("["))
                   .map((chip) => (
-                    <span key={chip} className="rounded-full bg-well px-2.5 py-1 font-mono text-[11px] text-text">
+                    <span key={chip} className="rounded-full bg-well px-2.5 py-1 font-mono text-label text-text">
                       {chip}
                     </span>
                   ))}

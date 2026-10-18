@@ -16,57 +16,25 @@ const blockAutoPlay = (page: import("@playwright/test").Page) =>
   });
 
 test.describe("M2 route transitions", () => {
-  test("transition: push-in keeps the card name across the route", async ({ page }) => {
-    await page.goto("/");
-
-    // find the Building front card's view-transition-name (card-<id>)
-    const frontCard = page.locator("#building [style*='view-transition-name']").first();
-    await expect(frontCard).toBeVisible();
-
-    const cardTransitionName = await frontCard.evaluate(
-      (el) => window.getComputedStyle(el).viewTransitionName
-    );
-    expect(cardTransitionName).toMatch(/^card-/);
-
-    // click "Read the project →"
-    const readLink = page.locator('#building a:has-text("Read the project →")');
+  test("a project card links to its page, and the page links back to the index", async ({ page }) => {
+    await page.goto("/building/");
+    const readLink = page.getByRole("link", { name: "Read the project →" }).first();
+    const href = (await readLink.getAttribute("href"))!;
     await readLink.click();
-
-    // wait for URL /building/<id>/
-    const id = cardTransitionName.replace(/^card-/, "");
-    await page.waitForURL(`**/building/${id}/`);
-
-    // the project page's lead element (the diagram card, or the screenshot/clips hero on a
-    // page that has them) carries the same view-transition-name
-    const diagramCard = page.locator("[data-clips], [data-hero-shot], [data-diagram-card]").first();
-    await expect(diagramCard).toBeVisible();
-
-    const diagramTransitionName = await diagramCard.evaluate(
-      (el) => window.getComputedStyle(el).viewTransitionName
-    );
-    expect(diagramTransitionName).toBe(cardTransitionName);
-
-    // then go back and assert the URL is "/" (with or without #building)
-    await page.goBack();
-    await page.waitForURL((url) => {
-      const p = url.pathname;
-      return p === "/" || p === "";
-    });
-    const backUrl = new URL(page.url());
-    expect(backUrl.pathname).toBe("/");
-    expect(["", "#building"]).toContain(backUrl.hash);
+    await page.waitForURL(`**${href}`);
+    await expect(page.locator("h1")).toBeVisible();
+    await page.getByRole("link", { name: "← All projects" }).click();
+    await expect(page).toHaveURL(/\/building\/$/);
+    await expect(page.locator("article")).toHaveCount(3);
   });
 
   test("project round trip", async ({ page }) => {
-    await page.goto("/");
-    const readLink = page.locator('#building a:has-text("Read the project →")');
-    await readLink.click();
+    await page.goto("/building/");
+    await page.getByRole("link", { name: "Read the project →" }).first().click();
     await expect(page).toHaveURL(/\/building\/[^/]+\/$/);
     await expect(page.locator("h1")).toBeVisible();
-    const backLink = page.getByRole("link", { name: "← Building" });
-    await backLink.click();
-    await expect(page).toHaveURL(/#building$/);
-    await expect(page.locator("#building")).toBeInViewport();
+    await page.goBack();
+    await expect(page).toHaveURL(/\/building\/$/);
   });
 
   test("photos shows 15 frames", async ({ page }) => {
@@ -125,43 +93,32 @@ test.describe("M2 route transitions", () => {
     await expect(page.locator("html")).not.toHaveAttribute("data-theme", "dark");
   });
 
-  test("dark mode recolors the Building chips", async ({ page }) => {
-    await page.goto("/");
+  test("dark mode recolors the project chips", async ({ page }) => {
+    await page.goto("/building/");
     const chip = page
-      .locator("#building article")
+      .locator("article")
       .first()
       .locator("span")
       .filter({ hasText: /ComfyUI|LTX|multi-agent|PTZ/ })
       .first();
     await expect(chip).toBeVisible();
 
-    const lightBg = await chip.evaluate(
-      (el) => window.getComputedStyle(el).backgroundColor
-    );
+    const lightBg = await chip.evaluate((el) => window.getComputedStyle(el).backgroundColor);
 
-    const switchDark = page
-      .getByRole("button", { name: /switch to dark theme/i })
-      .first();
-    await switchDark.click();
+    await page.getByRole("button", { name: /switch to dark theme/i }).first().click();
 
-    const darkBg = await chip.evaluate(
-      (el) => window.getComputedStyle(el).backgroundColor
-    );
-
+    const darkBg = await chip.evaluate((el) => window.getComputedStyle(el).backgroundColor);
     expect(lightBg).not.toBe(darkBg);
 
-    const switchLight = page
-      .getByRole("button", { name: /switch to light theme/i })
-      .first();
-    await switchLight.click();
+    await page.getByRole("button", { name: /switch to light theme/i }).first().click();
   });
 });
 
 
 test("Compo: try link and password-on-request mailto on intent-to-video", async ({ page }) => {
-  for (const path of ["/", "/building/intent-to-video/"]) {
+  for (const path of ["/building/", "/building/intent-to-video/"]) {
     await page.goto(path);
-    const scope = path === "/" ? page.locator("#building") : page.locator("body");
+    const scope = path === "/building/" ? page.locator("#intent-to-video") : page.locator("body");
     const tryLink = scope.getByRole("link", { name: "Try Compo ↗" });
     await expect(tryLink).toHaveAttribute("href", "https://mac-m4max.eel-terrapin.ts.net/");
     await expect(tryLink).toHaveAttribute("target", "_blank");
@@ -176,8 +133,8 @@ test("Compo: try link and password-on-request mailto on intent-to-video", async 
 
 test("Compo: both links share one line on a 360px phone card", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 });
-  await page.goto("/");
-  const card = page.locator("#building");
+  await page.goto("/building/");
+  const card = page.locator("#intent-to-video");
   const tryLink = card.getByRole("link", { name: "Try Compo ↗" });
   const pwLink = card.getByRole("link", { name: "Password on request" });
   await expect(tryLink).toBeVisible();
@@ -192,40 +149,16 @@ test("Compo: both links share one line on a 360px phone card", async ({ page }) 
     .toBeLessThan(2);
 });
 
-test.describe("Photos on home (card 65)", () => {
-  test("band sits between Work and Contact", async ({ page }) => {
-    await page.goto("/");
-    const ids = await page.locator("main > section[id], main section#photos, main #contact, main #work").evaluateAll((els) =>
-      els.map((e) => e.id).filter((id) => ["work", "photos", "contact"].includes(id)),
-    );
-    expect([...new Set(ids)]).toEqual(["work", "photos", "contact"]);
-    await expect(page.locator("#photos").getByRole("heading", { level: 2, name: "Photographs" })).toHaveCount(1);
-  });
-
-  test("pill Photos scrolls home to the band", async ({ page }) => {
+test.describe("Home navigation", () => {
+  test("pill items scroll home to their sections", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
-    await page.getByRole("navigation", { name: "Sections" }).getByRole("link", { name: "Photos" }).click();
-    await expect(page.locator("#photos")).toBeInViewport();
-    expect(new URL(page.url()).pathname).toBe("/");
-  });
-
-  test("home band images never load at high priority", async ({ page }) => {
-    await page.goto("/");
-    await page.locator("#photos").scrollIntoViewIfNeeded();
-    await expect(page.locator("#photos img").first()).toBeAttached();
-    await expect(page.locator('#photos img[fetchpriority="high"]')).toHaveCount(0);
-    await expect(page.locator("#photos img").first()).toHaveAttribute("loading", "lazy");
-  });
-
-  test("slides hold still while the band is off-screen, play once it's in view", async ({ page }) => {
-    await page.goto("/");
-    const caption = page.locator("#photos [data-photo-caption] h2");
-    const first = await caption.textContent();
-    await page.waitForTimeout(7000);
-    expect(await caption.textContent()).toBe(first);
-    await page.locator("#photos").scrollIntoViewIfNeeded();
-    await expect.poll(() => caption.textContent(), { timeout: 9000 }).not.toBe(first);
+    const nav = page.getByRole("navigation", { name: "Sections" });
+    for (const [name, id] of [["How I work", "how"], ["Now", "now"]]) {
+      await nav.getByRole("link", { name }).click();
+      await expect(page.locator(`#${id}`)).toBeInViewport();
+      expect(new URL(page.url()).pathname).toBe("/");
+    }
   });
 
   test("jumping to Contact doesn't shift the page", async ({ page }) => {
@@ -247,59 +180,13 @@ test.describe("Photos on home (card 65)", () => {
   });
 });
 
-test("pill marks Photos and goes dark on the /photos page", async ({ page }) => {
+test("the nav pill goes dark on the /photos page", async ({ page }) => {
   await page.goto("/photos/");
   const nav = page.getByRole("navigation", { name: "Sections" });
-  await expect(nav.locator("a[aria-current]")).toHaveText("Photos");
   await expect(nav.locator(":scope > div")).toHaveCSS("background-color", "rgb(13, 15, 16)");
 });
 
-test.describe("Page fades to black around Photos (card 66)", () => {
-  test("background goes light → black → light across the band", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto("/");
-    // body background's red channel, read back through a canvas (computed colors come as oklab)
-    const lum = () =>
-      page.evaluate(() => {
-        const c = document.createElement("canvas").getContext("2d")!;
-        c.fillStyle = getComputedStyle(document.body).backgroundColor;
-        c.fillRect(0, 0, 1, 1);
-        return c.getImageData(0, 0, 1, 1).data[0];
-      });
-    const at = (expr: string) => page.evaluate((e) => window.scrollTo(0, eval(e)), expr);
-    await at("0");
-    await expect.poll(lum).toBeGreaterThan(240);
-    // band's top 30% down the screen: fully dark
-    await at("document.getElementById('photos').getBoundingClientRect().top + scrollY - innerHeight * 0.3");
-    await expect.poll(lum).toBeLessThan(20);
-    // band's top just below the middle of the screen: partway
-    await at("document.getElementById('photos').getBoundingClientRect().top + scrollY - innerHeight * 0.58");
-    await expect.poll(lum).toBeGreaterThan(40);
-    await expect.poll(lum).toBeLessThan(220);
-    // end of the page: light again
-    await at("document.documentElement.scrollHeight");
-    await expect.poll(lum).toBeGreaterThan(240);
-  });
-
-  test("on a tall screen the band stays dark while centered and the page ends light", async ({ page }) => {
-    await page.setViewportSize({ width: 783, height: 1323 });
-    await page.goto("/");
-    const red = () =>
-      page.evaluate(() => {
-        const c = document.createElement("canvas").getContext("2d")!;
-        c.fillStyle = getComputedStyle(document.body).backgroundColor;
-        c.fillRect(0, 0, 1, 1);
-        return c.getImageData(0, 0, 1, 1).data[0];
-      });
-    await page.evaluate(() => {
-      const r = document.getElementById("photos")!.getBoundingClientRect();
-      window.scrollTo(0, r.top + scrollY + r.height / 2 - innerHeight / 2);
-    });
-    await expect.poll(red).toBeLessThan(20);
-    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-    await expect.poll(red).toBeGreaterThan(240);
-  });
-
+test.describe("Photos page is dark", () => {
   test("/photos loads at full dark", async ({ page }) => {
     await page.goto("/photos/");
     const red = await page.evaluate(() => {
@@ -309,34 +196,6 @@ test.describe("Page fades to black around Photos (card 66)", () => {
       return c.getImageData(0, 0, 1, 1).data[0];
     });
     expect(red).toBeLessThan(20);
-  });
-
-  test("Work's quote stays readable through the fade", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto("/");
-    let worst = 21;
-    for (let f = 1.25; f >= 0.35; f -= 0.05) {
-      await page.evaluate((f) => window.scrollTo(0, document.getElementById("photos")!.getBoundingClientRect().top + scrollY - innerHeight * f), f);
-      await page.waitForTimeout(60);
-      const ratio = await page.evaluate(() => {
-        const rgb = (css: string) => {
-          const c = document.createElement("canvas").getContext("2d")!;
-          c.fillStyle = css;
-          c.fillRect(0, 0, 1, 1);
-          return Array.from(c.getImageData(0, 0, 1, 1).data.slice(0, 3));
-        };
-        const lum = ([r, g, b]: number[]) => {
-          const ch = (v: number) => ((v /= 255) <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
-          return 0.2126 * ch(r) + 0.7152 * ch(g) + 0.0722 * ch(b);
-        };
-        const q = document.querySelector("#work blockquote p")!;
-        const a = lum(rgb(getComputedStyle(q).color));
-        const b = lum(rgb(getComputedStyle(document.body).backgroundColor));
-        return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
-      });
-      worst = Math.min(worst, ratio);
-    }
-    expect(worst).toBeGreaterThan(3);
   });
 
   test("thumbnail strip hides its scrollbar", async ({ page }) => {
@@ -505,7 +364,7 @@ test("a nav click scrolls without starting a page transition", async ({ page }) 
   });
   await page.goto("/");
   await page.waitForTimeout(500);
-  for (const name of ["Contact", "Building", "Photos", "About"]) {
+  for (const name of ["Contact", "How I work", "Now", "About"]) {
     await page.getByRole("navigation", { name: "Sections" }).getByRole("link", { name }).click();
     await page.waitForTimeout(400);
   }
@@ -514,9 +373,8 @@ test("a nav click scrolls without starting a page transition", async ({ page }) 
 
 test.describe("Parti screenshots (card 69)", () => {
   test("the Parti card leads with a screenshot", async ({ page }) => {
-    await page.goto("/");
-    await page.locator("#building").getByText("Parti", { exact: true }).first().click();
-    const img = page.locator("#building [data-shot].shot-light img").first();
+    await page.goto("/building/");
+    const img = page.locator("#parti [data-shot].shot-light img").first();
     await expect(img).toBeVisible();
     await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(0);
   });
@@ -568,14 +426,14 @@ test.describe("Intent-to-video screenshots and clips", () => {
   });
 
   test("the card leads with the Library screenshot", async ({ page }) => {
-    await page.goto("/");
-    const img = page.locator("#building [data-shot] img").first();
+    await page.goto("/building/");
+    const img = page.locator("#intent-to-video [data-shot] img").first();
     await expect(img).toBeVisible();
     await expect(img).toHaveAttribute("src", "/projects/intent-to-video/card.webp");
   });
 });
 
-test.describe("AI section after Photos (card 72)", () => {
+test.describe("Now, with AI section", () => {
   // the clips are the only media this section requests
   const shotRequests = (page: import("@playwright/test").Page) => {
     const urls: string[] = [];
@@ -585,28 +443,35 @@ test.describe("AI section after Photos (card 72)", () => {
     return urls;
   };
   const allPaused = (page: import("@playwright/test").Page) =>
-    page.evaluate(() => [...document.querySelectorAll<HTMLVideoElement>("#in-motion video")].every((v) => v.paused));
+    page.evaluate(() => [...document.querySelectorAll<HTMLVideoElement>("#now video")].every((v) => v.paused));
 
-  test("in-motion sits inside the dusk band, after photos, before contact", async ({ page }) => {
+  test("Now sits inside the dusk band, after How I work, before contact", async ({ page }) => {
     await page.goto("/");
-    const place = await page.locator("#in-motion").evaluate((el) => ({
-      after: el.previousElementSibling?.id,
+    const place = await page.locator("#now").evaluate((el) => ({
+      after: el.parentElement?.previousElementSibling?.id,
       inDusk: el.parentElement?.hasAttribute("data-dusk") ?? false,
       contactFollows: Boolean(el.compareDocumentPosition(document.getElementById("contact")!) & Node.DOCUMENT_POSITION_FOLLOWING),
     }));
-    expect(place).toEqual({ after: "photos", inDusk: true, contactFollows: true });
+    expect(place).toEqual({ after: "how", inDusk: true, contactFollows: true });
   });
 
-  test("copy, the AI label and the Intent-to-video link", async ({ page }) => {
+  test("heading, and links to the project and photographs", async ({ page }) => {
     await page.goto("/");
-    const section = page.locator("#in-motion");
-    await expect(section.getByRole("heading", { level: 2, name: "AI" })).toHaveCount(1);
-    await expect(section).toContainText("Six seconds after the shutter.");
-    await expect(section).toContainText("LTX 2.5 · 480p → 720p · 6.1 s each · sound from the model, or scored from the frames");
-    await expect(section.getByRole("link", { name: "How each shot is made → Intent-to-video" })).toHaveAttribute(
+    const section = page.locator("#now");
+    await expect(section.getByRole("heading", { level: 2, name: "Now, with AI" })).toHaveCount(1);
+    await expect(section.getByRole("link", { name: "How each shot is made →" })).toHaveAttribute(
       "href",
       "/building/intent-to-video/",
     );
+    await expect(section.getByRole("link", { name: "All photographs →" })).toHaveAttribute("href", "/photos/");
+  });
+
+  test("Also building links to Parti, HimmelCam and the index", async ({ page }) => {
+    await page.goto("/");
+    const box = page.locator("#now [data-also-building]");
+    await expect(box.locator('a[href="/building/parti/"]')).toBeVisible();
+    await expect(box.locator('a[href="/building/himmelcam/"]')).toBeVisible();
+    await expect(box.locator('a[href="/building/"]')).toBeVisible();
   });
 
   test("no clip is requested before the section is in view", async ({ page }) => {
@@ -614,14 +479,14 @@ test.describe("AI section after Photos (card 72)", () => {
     await page.goto("/");
     await page.waitForTimeout(1000);
     expect(urls).toEqual([]);
-    await page.locator("#in-motion").scrollIntoViewIfNeeded();
+    await page.locator("#now").scrollIntoViewIfNeeded();
     await expect.poll(() => urls.length).toBeGreaterThan(0);
   });
 
   test("muted looping clips play in view and stop once it leaves", async ({ page }) => {
     await page.goto("/");
-    await page.locator("#in-motion").scrollIntoViewIfNeeded();
-    const videos = page.locator("#in-motion video");
+    await page.locator("#now").scrollIntoViewIfNeeded();
+    const videos = page.locator("#now video");
     await expect(videos).toHaveCount(4);
     for (const v of await videos.all()) {
       expect(await v.evaluate((el: HTMLVideoElement) => el.muted && el.loop && el.getAttribute("preload"))).toBe("none");
@@ -633,23 +498,23 @@ test.describe("AI section after Photos (card 72)", () => {
 
   test("one pause control stops and restarts every clip", async ({ page }) => {
     await page.goto("/");
-    await page.locator("#in-motion").scrollIntoViewIfNeeded();
-    await expect.poll(() => page.locator("#in-motion video").first().evaluate((el: HTMLVideoElement) => !el.paused)).toBe(true);
+    await page.locator("#now").scrollIntoViewIfNeeded();
+    await expect.poll(() => page.locator("#now video").first().evaluate((el: HTMLVideoElement) => !el.paused)).toBe(true);
     await page.getByRole("button", { name: "Pause clips" }).click();
     await expect.poll(() => allPaused(page)).toBe(true);
     await page.getByRole("button", { name: "Play clips" }).click();
-    await expect.poll(() => page.locator("#in-motion video").first().evaluate((el: HTMLVideoElement) => !el.paused)).toBe(true);
+    await expect.poll(() => page.locator("#now video").first().evaluate((el: HTMLVideoElement) => !el.paused)).toBe(true);
   });
 
   test("home clip comparison has four independent photograph and video wipes", async ({ page }) => {
     await page.goto("/");
-    await page.locator("#in-motion").scrollIntoViewIfNeeded();
-    const frames = page.locator("#in-motion [data-compare-frame]");
+    await page.locator("#now").scrollIntoViewIfNeeded();
+    const frames = page.locator("#now [data-compare-frame]");
     const sliders = frames.getByRole("slider");
     await expect(frames).toHaveCount(4);
     await expect(sliders).toHaveCount(4);
-    await expect(page.locator("#in-motion video")).toHaveCount(4);
-    await expect(page.locator("#in-motion img")).toHaveCount(4);
+    await expect(page.locator("#now video")).toHaveCount(4);
+    await expect(page.locator("#now img")).toHaveCount(4);
     await expect(page.getByRole("button", { name: "Show the photographs" })).toHaveCount(0);
     for (const slider of await sliders.all()) await expect(slider).toHaveValue("50");
     await expect(sliders.first()).toHaveAttribute("aria-label", /Compare Night on the river photograph and video/);
@@ -673,8 +538,8 @@ test.describe("AI section after Photos (card 72)", () => {
     const cdp = await page.context().newCDPSession(page);
     await cdp.send("Emulation.setTouchEmulationEnabled", { enabled: true, maxTouchPoints: 1 });
     await page.goto("/");
-    await page.locator("#in-motion").scrollIntoViewIfNeeded();
-    const slider = page.locator("#in-motion [data-compare-frame]").first().getByRole("slider");
+    await page.locator("#now").scrollIntoViewIfNeeded();
+    const slider = page.locator("#now [data-compare-frame]").first().getByRole("slider");
     await expect(slider).toHaveValue("50");
     const box = (await slider.boundingBox())!;
     const x = Math.round(box.x + box.width / 2);
@@ -700,8 +565,8 @@ test.describe("AI section after Photos (card 72)", () => {
   test("home clip comparison offers tap to play when autoplay is blocked", async ({ page }) => {
     await blockAutoPlay(page);
     await page.goto("/");
-    await page.evaluate(() => document.querySelector("#in-motion")?.scrollIntoView());
-    const first = page.locator("#in-motion [data-compare-frame]").first();
+    await page.evaluate(() => document.querySelector("#now")?.scrollIntoView());
+    const first = page.locator("#now [data-compare-frame]").first();
     const play = first.getByRole("button", { name: "Play Night on the river video" });
     await expect(play).toBeVisible();
     await play.click();
@@ -713,10 +578,10 @@ test.describe("AI section after Photos (card 72)", () => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     const urls = shotRequests(page);
     await page.goto("/");
-    await page.locator("#in-motion").scrollIntoViewIfNeeded();
-    await expect(page.locator("#in-motion img")).toHaveCount(4);
-    await expect(page.locator("#in-motion video")).toHaveCount(0);
-    await expect(page.locator("#in-motion input[type='range']")).toHaveCount(0);
+    await page.locator("#now").scrollIntoViewIfNeeded();
+    await expect(page.locator("#now img")).toHaveCount(4);
+    await expect(page.locator("#now video")).toHaveCount(0);
+    await expect(page.locator("#now input[type='range']")).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Pause clips" })).toHaveCount(0);
     await page.waitForTimeout(500);
     expect(urls).toEqual([]);
@@ -725,8 +590,8 @@ test.describe("AI section after Photos (card 72)", () => {
   test("the lead take sits beside the rest on desktop and stacks on a phone", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/");
-    await page.locator("#in-motion").scrollIntoViewIfNeeded();
-    const figs = page.locator("#in-motion figure");
+    await page.locator("#now").scrollIntoViewIfNeeded();
+    const figs = page.locator("#now figure");
     await expect(figs).toHaveCount(4);
     const lead = await figs.nth(0).boundingBox();
     const next = await figs.nth(1).boundingBox();

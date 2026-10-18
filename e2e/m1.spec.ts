@@ -7,7 +7,7 @@ test.describe("M1 P0 steps", () => {
 
     const top = page.locator("#top");
     const who = top.getByText("Hoa Bui").first();
-    const role = top.getByText("Senior Technical Product Manager").first();
+    const role = top.getByText("Technical Product Manager").first();
     const linkedinLink = top.locator('a[href="https://www.linkedin.com/in/hoaqbui/"]').first();
     // Résumé opens the public Doc itself, never an email draft (tester, 2026-10-16).
     const resumeLink = top.locator('a[href="https://docs.google.com/document/d/1s-OGEpBgFRViEk3mBTeSgL9CHzl-wdsOQKxoBNQtU7s/view"]').first();
@@ -23,17 +23,6 @@ test.describe("M1 P0 steps", () => {
     }
   });
 
-  test("first proof number shows above the nav on a 390x664 phone", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 664 });
-    await page.goto("/");
-    const num = page.locator('section[aria-label="Proof"]').getByText("<1 hr").first();
-    const numBox = await num.boundingBox();
-    const navBox = await page.locator('nav[aria-label="Sections"]').boundingBox();
-    expect(numBox).not.toBeNull();
-    expect(navBox).not.toBeNull();
-    if (numBox && navBox) expect(numBox.y + numBox.height).toBeLessThanOrEqual(navBox.y);
-  });
-
   test("no horizontal scroll at 320px", async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 700 });
     await page.goto("/");
@@ -43,7 +32,7 @@ test.describe("M1 P0 steps", () => {
 
   test("story link opens that story", async ({ page }) => {
     await page.goto("/#greybox");
-    await expect(page.locator("#greybox button[aria-expanded]").first()).toHaveAttribute("aria-expanded", "true");
+    await expect(page.locator("button#greybox")).toHaveAttribute("aria-expanded", "true");
   });
 
   test("reduced motion stops every animation", async ({ page }) => {
@@ -81,10 +70,10 @@ test.describe("M1 P0 steps", () => {
 
   test("no placeholder text ships", async ({ page }) => {
     await page.goto("/");
-    const storyButtons = page.locator("#work article h3 button");
-    const count = await storyButtons.count();
+    const tiles = page.locator("#work button[aria-controls='work-story']");
+    const count = await tiles.count();
     for (let i = 0; i < count; i++) {
-      await storyButtons.nth(i).click();
+      await tiles.nth(i).click();
       const bodyText = await page.locator("body").innerText();
       expect(bodyText).not.toContain("[ ");
     }
@@ -92,9 +81,10 @@ test.describe("M1 P0 steps", () => {
 
   test("one story open at a time", async ({ page }) => {
     await page.goto("/");
-    await page.locator("#cosmetics h3 button").click();
-    await page.locator("#okr h3 button").click();
+    await page.locator("button#cosmetics").click();
+    await page.locator("button#okr").click();
     await expect(page.locator('#work button[aria-expanded="true"]')).toHaveCount(1);
+    await expect(page.locator("#work-story article")).toHaveCount(1);
   });
 
   test("nav fits on a 320px phone", async ({ page }) => {
@@ -126,13 +116,8 @@ test("the headline painted with the HTML is the one that stays (no remount after
   expect(same).toBe(true);
 });
 
-test("industries, story tags and search data are on the page", async ({ page }) => {
+test("structured data and search keywords are on the page", async ({ page }) => {
   await page.goto("/");
-  await expect(page.locator("[data-industries]")).toHaveText(
-    "Film & VFX · Animation · Live-service games · Generative AI · Creative software",
-  );
-  await expect(page.locator("#work [data-story-tags]").first()).toContainText("Workflow automation");
-  await expect(page.locator("#building").getByText("Generative video", { exact: true }).first()).toBeAttached();
   const person = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent())!);
   expect(person["@type"]).toBe("Person");
   expect(person.knowsAbout).toContain("Agentic AI");
@@ -149,4 +134,98 @@ test("the nav pill is opaque, so page text never shows through it", async ({ pag
     return c.getImageData(0, 0, 1, 1).data[3];
   });
   expect(alpha).toBe(255);
+});
+
+test.describe("Homepage redesign", () => {
+  test("sections run Hero, Work, How I work, Now, Contact; old bands are gone", async ({ page }) => {
+    await page.goto("/");
+    const ids = await page
+      .locator("main #top, main #work, main #how, main #now, main #contact")
+      .evaluateAll((els) => els.map((e) => e.id));
+    expect(ids).toEqual(["top", "work", "how", "now", "contact"]);
+    await expect(page.locator("#building")).toHaveCount(0);
+    await expect(page.locator("#photos")).toHaveCount(0);
+  });
+
+  test("nav lists the five sections", async ({ page }) => {
+    await page.goto("/");
+    const links = page.getByRole("navigation", { name: "Sections" }).getByRole("link");
+    await expect(links).toHaveText(["About", "Work", "How I work", "Now", "Contact"]);
+    await expect(links).toHaveCount(5);
+  });
+
+  test("hero has a headline, no stats row and no pause-motion button", async ({ page }) => {
+    await page.goto("/");
+    const h1 = page.locator("#top h1");
+    await expect(h1).toBeVisible();
+    expect((await h1.innerText()).trim().length).toBeGreaterThan(0);
+    await expect(page.locator('section[aria-label="Proof"]')).toHaveCount(0);
+    await expect(page.getByRole("button", { name: /pause motion/i })).toHaveCount(0);
+  });
+
+  test("the Latest chip opens the greybox story", async ({ page }) => {
+    await page.goto("/");
+    const chip = page.locator("#top a[data-latest]");
+    await expect(chip).toBeVisible();
+    await expect(chip).toHaveAttribute("href", "#greybox");
+    await chip.click();
+    await expect(page.locator("button#greybox")).toHaveAttribute("aria-expanded", "true");
+    await expect(page.locator("#work-story article")).toBeVisible();
+    expect(await page.evaluate(() => location.hash)).toBe("#greybox");
+  });
+
+  test("Work has four tiles; a tile opens its story, sets the hash, and closes again", async ({ page }) => {
+    await page.goto("/");
+    const tiles = page.locator("#work button[aria-controls='work-story']");
+    await expect(tiles).toHaveCount(4);
+    for (const id of ["greybox", "scripting", "okr", "cosmetics"]) {
+      await expect(page.locator(`button#${id}`)).toHaveAttribute("aria-expanded", "false");
+    }
+    await expect(page.locator("#work-story article")).toHaveCount(0);
+
+    const tile = page.locator("button#okr");
+    await tile.click();
+    await expect(tile).toHaveAttribute("aria-expanded", "true");
+    const article = page.locator("#work-story article");
+    await expect(article).toBeVisible();
+    expect((await article.getByRole("heading", { level: 3 }).innerText()).trim().length).toBeGreaterThan(0);
+    expect(await page.evaluate(() => location.hash)).toBe("#okr");
+
+    await tile.click();
+    await expect(tile).toHaveAttribute("aria-expanded", "false");
+    await expect(page.locator("#work-story article")).toHaveCount(0);
+    expect(await page.evaluate(() => location.hash)).toBe("#work");
+  });
+
+  test("arriving at /#scripting opens the scripting story", async ({ page }) => {
+    await page.goto("/#scripting");
+    await expect(page.locator("button#scripting")).toHaveAttribute("aria-expanded", "true");
+    await expect(page.locator("#work-story article")).toBeVisible();
+    await expect(page.locator('#work button[aria-expanded="true"]')).toHaveCount(1);
+  });
+
+  test("How I work has three steps", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator("#how").getByRole("heading", { level: 2, name: "How I work" })).toBeVisible();
+    await expect(page.locator("#how ol > li")).toHaveCount(3);
+  });
+
+  test("Contact shows the quote, email and links", async ({ page }) => {
+    await page.goto("/");
+    const quote = page.locator("#contact blockquote");
+    await expect(quote).toBeVisible();
+    expect((await quote.innerText()).trim().length).toBeGreaterThan(0);
+    await expect(page.locator('#contact a[href^="mailto:"]')).toBeVisible();
+    await expect(page.locator("#contact").getByRole("link", { name: "Projects" })).toHaveAttribute("href", "/building/");
+  });
+
+  test("/building/ lists three projects, each with a Read the project link", async ({ page }) => {
+    await page.goto("/building/");
+    await expect(page.locator("main article, article")).toHaveCount(3);
+    const reads = page.getByRole("link", { name: "Read the project →" });
+    await expect(reads).toHaveCount(3);
+    for (const href of await reads.evaluateAll((els) => els.map((e) => e.getAttribute("href")))) {
+      expect(href).toMatch(/^\/building\/[^/]+\/$/);
+    }
+  });
 });

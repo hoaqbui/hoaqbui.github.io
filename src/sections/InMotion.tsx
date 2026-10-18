@@ -157,14 +157,18 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
   const showVideos = allowed && loaded;
 
   return (
-    <section id="in-motion" ref={ref} className="w-full py-20 md:py-24 text-text">
+    <section id="now" ref={ref} className="w-full border-t border-border py-20 md:py-24 text-text">
       <div className="mx-auto max-w-[1240px] px-4 sm:px-6">
-        <header className="mb-6 flex flex-wrap items-baseline justify-between gap-4">
-          <div>
-            <SectionLabel as="h2">AI</SectionLabel>
-            <p className="mt-3 max-w-[640px] text-base text-muted">
-              Six seconds after the shutter. I wrote each photograph a shot — a subject, what happens to it, the camera, the
-              sound — and Compo, my intent-to-video pipeline, rendered it on LTX 2.5.
+        <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <div className="max-w-[720px]">
+            <SectionLabel as="h2">Now, with AI</SectionLabel>
+            <p className="mt-4 text-[clamp(1.5rem,3vw,2rem)] font-medium leading-[1.2] tracking-[-0.025em]">
+              Now I’m the creator and the toolmaker.
+            </p>
+            <p className="mt-4 text-[17px] leading-relaxed text-muted">
+              I wrote a shot for each of my travel photographs: a subject, what happens to it, the camera, the sound.
+              Compo, my intent-to-video pipeline on ComfyUI and LTX, rendered it. Building it end to end shows me where
+              generative video still breaks for the people using it.
             </p>
             {allowed && <p className="mt-3 font-mono text-xs text-muted">Drag each frame to compare the photograph with its shot.</p>}
           </div>
@@ -196,13 +200,31 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
           <p className="font-mono text-[12px] text-muted">
             LTX 2.5 · 480p → 720p · 6.1 s each · sound from the model, or scored from the frames
           </p>
-          <Link
-            href="/building/intent-to-video/"
-            className="inline-flex min-h-[44px] items-center text-sm font-medium text-teal hover:underline"
-          >
-            How each shot is made → Intent-to-video
-          </Link>
+          <div className="flex flex-wrap gap-x-6">
+            <Link
+              href="/building/intent-to-video/"
+              className="inline-flex min-h-[44px] items-center text-sm font-medium text-teal hover:underline"
+            >
+              How each shot is made →
+            </Link>
+            <Link
+              href="/photos/"
+              className="inline-flex min-h-[44px] items-center text-sm font-medium text-teal hover:underline"
+            >
+              All photographs →
+            </Link>
+          </div>
         </footer>
+
+        <div data-also-building className="mt-10 flex flex-wrap items-baseline gap-x-6 gap-y-2 rounded-2xl border border-border bg-surface px-6 py-5 text-[15px]">
+          <span className="font-medium">Also building</span>
+          <span className="min-w-0 flex-[1_1_420px] text-muted">
+            <Link href="/building/parti/" className="font-medium text-teal hover:underline">Parti</Link>, a multi-agent
+            system on my own hardware, so one person can run a team of AI collaborators. And{" "}
+            <Link href="/building/himmelcam/" className="font-medium text-teal hover:underline">HimmelCam</Link>, a dog-cam
+            that keeps Himmel in view with a vision model.
+          </span>
+        </div>
       </div>
     </section>
   );

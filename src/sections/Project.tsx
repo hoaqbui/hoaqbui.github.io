@@ -32,10 +32,10 @@ export default function Project({ id }: { id: string }) {
       {/* Top row */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-12">
         <Link
-          href="/#building"
+          href="/#now"
           className="inline-flex min-h-[44px] items-center text-sm font-medium text-muted hover:text-text transition-colors"
         >
-          ← Building
+          ← Now
         </Link>
         <div className="flex flex-wrap items-center gap-3">
           <Link

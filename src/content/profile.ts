@@ -1,18 +1,20 @@
-export type Profile = { name: string; roleLine: string; headline: string; subLine: string; email: string; linkedin: string; resumePath: string; ogImage: { url: string; width: number; height: number; alt: string }; vcardPath: string; openTo: string; industries: string[]; searchTerms: string[]; quote: { text: string; by: string } };
+export type Profile = { name: string; roleLine: string; headline: string; subLine: string; latest: { label: string; value: string }; email: string; linkedin: string; resumePath: string; ogImage: { url: string; width: number; height: number; alt: string }; vcardPath: string; openTo: string; industries: string[]; searchTerms: string[]; quote: { text: string; by: string } };
 const email = "hoaqbui@gmail.com";
 const linkedin = "https://www.linkedin.com/in/hoaqbui/";
 
 export const profile: Profile = {
   name: "Hoa Bui",
   roleLine: "Technical Product Manager & Producer · AI creative tools · Los Angeles",
-  headline: "AI and creative tools that put more in people’s hands.",
-  subLine: "18 years of pipelines and tools at Lucasfilm, Pixar and Riot Games.",
+  headline: "I get new tools working inside creative production.",
+  subLine: "18 years in film and games: pipelines at Lucasfilm and Pixar, then 12 years leading tools teams at Riot Games. Now I do it with AI.",
+  // the one proof point in the hero; the full stories are in Work
+  latest: { label: "League map prototyping", value: "3 months → under an hour" },
   email,
   linkedin,
   // the public 2-page Doc: always current, readable on a phone
   resumePath: "https://docs.google.com/document/d/1s-OGEpBgFRViEk3mBTeSgL9CHzl-wdsOQKxoBNQtU7s/view",
   // link-preview card for every page (pages that set their own openGraph must repeat it)
-  ogImage: { url: "/og.png", width: 1200, height: 630, alt: "Hoa Bui — AI and creative tools that put more in people’s hands." },
+  ogImage: { url: "/og.png", width: 1200, height: 630, alt: "Hoa Bui — I get new tools working inside creative production." },
   vcardPath: "/hoa-bui.vcf",
   openTo: "Open to hands-on TPM and producer roles in AI video and creative tools, including forward deployed teams. Los Angeles.",
   // shown under the proof numbers

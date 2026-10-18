@@ -1,8 +1,7 @@
 import { ViewTransition } from "react";
 import Hero from "@/sections/Hero";
-import Building from "@/sections/Building";
+import HowIWork from "@/sections/HowIWork";
 import Work from "@/sections/Work";
-import Photos from "@/sections/Photos";
 import InMotion from "@/sections/InMotion";
 import { photos } from "@/content/photos";
 import Dusk from "@/fx/Dusk";
@@ -18,14 +17,13 @@ const motionPhotos = photos.flatMap((photo) => {
 export default function Home() {
   return (
     <ViewTransition>
-      {/* clip, not hidden: no sideways scroll from the tilted Building cards, and shadows are
-          only cut at the screen edge (a wrapper that clipped them showed a hard grey box) */}
+      {/* clip, not hidden: no sideways scroll, and shadows are only cut at the screen edge */}
       <main className="overflow-x-clip">
         <Hero />
-        <Building />
+        {/* the story, top to bottom: the claim, the proof, the pattern, the pattern now with AI */}
         <Work />
+        <HowIWork />
         <Dusk>
-          <Photos band />
           <InMotion takes={motionPhotos} />
         </Dusk>
         <Contact />

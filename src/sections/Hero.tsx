@@ -3,75 +3,61 @@
 import { useMotion } from "@/fx/useMotion";
 import HeroBackground from "@/fx/HeroBackground";
 import { profile } from "@/content/profile";
-import { proof, proofLabel } from "@/content/proof";
 
 import Parallax from "@/fx/Parallax";
-import Reveal from "@/fx/Reveal";
 
+// The 3-second story: who, the one claim, one line of history and one proof point.
+// The numbers and their stories live in Work, so they appear once.
 export default function Hero() {
   const { ref, running } = useMotion<HTMLElement>();
 
   return (
-    <>
-      <section
-        id="top"
-        ref={ref}
-        className="relative flex flex-col items-center justify-center overflow-hidden min-h-0 pt-16 pb-6 md:min-h-[640px] md:pt-0 md:pb-0"
-      >
-        <HeroBackground running={running} />
-        <Parallax className="relative z-10 max-w-3xl px-6 text-center">
-          <p className="text-lg font-semibold">{profile.name}</p>
-          <p className="mt-2 font-mono text-[13px] text-muted">
-            {profile.roleLine}
-          </p>
-          <h1 className="mt-5 text-[clamp(2rem,6vw,3.5rem)] font-medium leading-[1.08] tracking-[-0.035em]">
-            {profile.headline}
-          </h1>
-          <p className="mt-4 max-w-xl mx-auto text-[15px] md:text-base text-muted">
-            {profile.subLine}
-          </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-6">
-            <a
-              href={profile.resumePath}
-              target="_blank"
-              rel="noopener"
-              className="inline-flex min-h-[44px] items-center font-medium text-teal"
-            >
-              Résumé →
-            </a>
-            <a
-              href={profile.linkedin}
-              target="_blank"
-              rel="noopener"
-              className="inline-flex min-h-[44px] items-center font-medium text-teal"
-            >
-              LinkedIn →
-            </a>
-          </div>
-        </Parallax>
-      </section>
-
-      <Reveal>
-        <section
-          aria-label="Proof"
-          className="mx-auto max-w-[1120px] border-t border-border px-6 pt-8 pb-16 md:py-16"
+    <section
+      id="top"
+      ref={ref}
+      className="relative flex flex-col items-center justify-center overflow-hidden min-h-0 pt-16 pb-16 md:min-h-[680px] md:pt-0 md:pb-0"
+    >
+      <HeroBackground running={running} />
+      <Parallax className="relative z-10 max-w-3xl px-6 text-center">
+        <p className="text-lg font-semibold">{profile.name}</p>
+        <p className="mt-2 font-mono text-[13px] text-muted">
+          {profile.roleLine}
+        </p>
+        <h1 className="mt-5 text-[clamp(2rem,6vw,3.5rem)] font-medium leading-[1.08] tracking-[-0.035em]">
+          {profile.headline}
+        </h1>
+        <p className="mt-4 max-w-xl mx-auto text-[15px] md:text-[17px] text-muted">
+          {profile.subLine}
+        </p>
+        <a
+          href="#greybox"
+          data-latest
+          className="mt-7 inline-flex min-h-[44px] flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-full border border-border bg-surface px-5 py-2 text-[15px] text-text"
         >
-          <p className="font-mono text-[12px] text-muted mb-4 md:mb-6">{proofLabel}</p>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-8">
-            {proof.map((item, index) => (
-              <div key={index}>
-                <div className="text-sm text-muted">{item.label}</div>
-                <div className="mt-1.5 text-4xl font-medium tracking-[-0.03em]">
-                  {item.value}
-                </div>
-              </div>
-            ))}
-          </div>
-          <p data-industries className="mt-8 md:mt-10 font-mono text-[12px] text-muted">
-            {profile.industries.join(" · ")}
-          </p>
-        </section>
-      </Reveal>
-    </>
+          <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted">Latest</span>
+          <span>
+            {profile.latest.label}: <strong className="font-semibold">{profile.latest.value}</strong>
+          </span>
+        </a>
+        <div className="mt-6 flex flex-wrap justify-center gap-6">
+          <a
+            href={profile.resumePath}
+            target="_blank"
+            rel="noopener"
+            className="inline-flex min-h-[44px] items-center font-medium text-teal"
+          >
+            Résumé →
+          </a>
+          <a
+            href={profile.linkedin}
+            target="_blank"
+            rel="noopener"
+            className="inline-flex min-h-[44px] items-center font-medium text-teal"
+          >
+            LinkedIn →
+          </a>
+        </div>
+      </Parallax>
+    </section>
   );
 }

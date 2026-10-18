@@ -51,7 +51,7 @@ export default function Dusk({ children }: { children: ReactNode }) {
   useMotionValueEvent(scrollY, "change", update);
   useEffect(() => {
     const onJump = (e: Event) => {
-      if ((e as CustomEvent<string>).detail === "photos") return;
+      if ((e as CustomEvent<string>).detail === "now") return;
       jumping.current = true;
       last.current = 0;
       document.documentElement.style.removeProperty("--dusk");

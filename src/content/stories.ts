@@ -3,6 +3,8 @@ import type { FlowRow } from "@/ui/Flow";
 // paragraph on how (with the moment that decided it), one line on what it was worth, one picture.
 export type Story = {
   id: string; talent: string; years: string; title: string;
+  // the tile: a number, its caption, and one line on how
+  num: string; numNote: string; how: string;
   body: string; worth: string; quote?: { text: string; by: string }; role: string;
   vizLabel: string;
   flow?: FlowRow[]; grid?: { count: number; caption: string };
@@ -11,6 +13,7 @@ export type Story = {
 };
 export const stories: Story[] = [
   { id: "greybox", talent: "Fixing painful workflows", years: "2024–26",
+    num: "<1 hr", numNote: "League map prototyping, down from 3 months", how: "Reworked an old tool so designers draw the ground themselves.",
     title: "Cut League of Legends map prototyping from about 3 months to under an hour.",
     body: "A new map used to bounce between designers, engineers and artists for months before anyone could play it. Sitting with the designers showed the real problem: they couldn’t shape the ground themselves, so everything waited on someone else. Instead of a new tool, I had the team rework the old one so designers draw the terrain directly, tried it with a few of them, and fixed what they hit the same week. It’s now how every League map starts.",
     worth: "That’s roughly 1.5 to 6 person-years a year back to the studio.",
@@ -22,6 +25,7 @@ export const stories: Story[] = [
     ],
     vizLabel: "Before: a map went designer to engineering to art and back, about 3 months. After: the designer alone, under an hour." },
   { id: "scripting", talent: "Saying no when the math says no", years: "2022–24",
+    num: "3+ yrs", numNote: "of conversion work kept off League’s designers", how: "Did the math on 165 champions and said no. The engine team owned it.",
     title: "Kept a multi-year engine migration off League’s designers.",
     body: "A new scripting engine promised to make designers’ lives easier, but adopting it meant converting 165 champions’ worth of content: a week each at best, so over three years of work. The team proposing it promised automation. I asked them to show it. They couldn’t. So the answer was no: the old system stayed supported, the engine team took on the conversion, and designers kept shipping.",
     worth: "Saying no cost nothing, and kept 10–20 designers on content instead of a migration.",
@@ -30,6 +34,7 @@ export const stories: Story[] = [
     pictureFirst: true,
     vizLabel: "A grid of 165 squares, one per champion, each a week of conversion work at best: more than 3 years in total." },
   { id: "okr", talent: "Making a plan the team can believe", years: "2022",
+    num: "50+", numNote: "people, 4–5 countries, on milestones that held", how: "A 3-week slice proved the plan; weekly velocity vs OKRs kept it honest.",
     title: "Got a 50-person team across 4–5 countries onto milestones that held.",
     body: "The project had a plan, but the people doing the work couldn’t see themselves in it or tell, week to week, whether it was on track. I ran a three-week prototype that built one character and its gameplay end to end, which showed what could actually land. Leadership re-planned around that, and weekly velocity against numeric targets let everyone see progress. The delivery lead kept the system after I moved on.",
     worth: "That was a $1–5M external budget on milestones people could trust.",
@@ -41,6 +46,7 @@ export const stories: Story[] = [
     ],
     vizLabel: "Before: a plan the teams couldn’t see themselves in. Prove it: a 3-week prototype, then a re-planned scope. Track it: numeric OKR targets, weekly velocity against them, milestones that held." },
   { id: "cosmetics", talent: "Finding the right partner", years: "2019–22",
+    num: "~100", numNote: "League skins a year from one partner studio", how: "Trialed 4–5 studios on a real skin; Virtuos Sparx won.",
     title: "Set up the partner studio that now makes about 100 League skins a year.",
     body: "League needed more skins than its team could make. Rather than pick a vendor on a pitch, I ran a paid trial: 4–5 studios each built a real skin inside League’s pipeline and were scored on quality, speed, cost, fit, operations and how they grow talent. Virtuos Sparx won. Within two years they made about half of League’s skins.",
     worth: "That’s about 30–40 artists’ worth of work a year.",

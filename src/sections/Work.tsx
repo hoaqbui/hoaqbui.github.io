@@ -17,7 +17,7 @@ export default function Work() {
           Work
         </SectionLabel>
         <p className="max-w-[640px] flex-[1_1_420px] text-[clamp(1.5rem,3vw,2rem)] font-medium leading-[1.2] tracking-[-0.025em]">
-          Four problems at Riot, four different fixes. Each one was the move with the most impact on the table.
+          Four problems at Riot, four different fixes. Each one was the fix with the most impact, not the obvious one.
         </p>
       </div>
 

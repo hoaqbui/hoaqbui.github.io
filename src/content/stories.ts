@@ -19,7 +19,7 @@ export const stories: Story[] = [
     role: "Manager, Technical Product Management · Creator Workflows", team: "4 internal and 4 external developers, plus outsourcing",
     stuck: "Designers scripted in a mix of text scripts and engineer-written code: slow to test, hard to debug, and often blocked on an engineer. A new scripting engine was meant to fix that, but adoption had stalled on missing features, low trust, no owner and the cost of converting existing content.",
     did: "Short pulse surveys showed which features were missing and why designers didn’t trust the new engine. I did the capacity math for converting every champion, asked to see the promised automation (it couldn’t be shown), and brought gameplay and engineering leadership to the same view.",
-    adoption: "The core engine team took on the conversion itself. Designers kept shipping, my team’s roadmap stayed on what designers asked for, a release stayed on schedule, and tool requests went from weeks to days.",
+    adoption: "The old system stayed supported, not deprecated, and the core engine team took on the conversion itself. Designers kept shipping on what worked, my team’s roadmap stayed on what designers asked for, a release stayed on schedule, and tool requests went from weeks to days.",
     bars: [{ label: "Conversion work on designers’ plates", before: "3+ years, best case", beforeWidth: "100%", after: "none: owned by the engine team", afterWidth: "2%" }],
     vizNote: "Best case: about 165 champions at 1 week each, with automated conversion plus QA.",
     vizLabel: "Conversion work on designers went from more than 3 years, best case, to none; the engine team owned it." },

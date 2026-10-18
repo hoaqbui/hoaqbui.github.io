@@ -53,7 +53,7 @@ export const stories: Story[] = [
     num: "~100", numNote: "League skins a year from one partner studio", how: "Trialed 4–5 studios on a real skin; Virtuos Sparx won.",
     role: "TPM, PIE Tooling (League content) · tools team 2 → 12 engineers, plus Virtuos Sparx",
     flow: [
-      { steps: [{ text: "4–5 studios", sub: "paid trial, a real skin each" }, { text: "Virtuos Sparx", sub: "chosen on a scored trial", strong: true }, { text: "Half of League’s skins", sub: "within 2 years" }, { text: "~100 skins a year", sub: "today, without hiring" }] },
+      { steps: [{ text: "4–5 studios", sub: "paid trial, a real skin each" }, { text: "Virtuos Sparx", sub: "chosen on a scored trial", strong: true }, { text: "Half of League’s skins", sub: "within 2 years" }, { text: "~100 skins a year", sub: "today" }] },
     ],
     vizLabel: "From a paid trial of 4 to 5 studios, to Virtuos Sparx, to half of League’s skins within two years, to about 100 skins a year today." },
 ];

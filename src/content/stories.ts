@@ -46,11 +46,11 @@ export const stories: Story[] = [
     ],
     vizLabel: "Before: a plan the teams couldn’t see themselves in. Prove it: a 3-week prototype, then a re-planned scope. Track it: numeric OKR targets, weekly velocity against them, milestones that held." },
   { id: "cosmetics", kind: "Trial", who: "League skin artists", years: "2019–22",
-    title: "The skins team got about 100 skins a year without hiring",
+    title: "League gets about 100 skins a year from a partner studio",
     problem: "League needed more skins than its team could make.",
     call: "Trial 4–5 studios on a real skin inside League’s pipeline. Pick the best.",
     result: "Virtuos Sparx makes about half of League’s skins. Tools team grew 2 → 12.",
-    num: "~100", numNote: "League skins a year, without hiring", how: "Trialed 4–5 studios on a real skin; Virtuos Sparx won.",
+    num: "~100", numNote: "League skins a year from one partner studio", how: "Trialed 4–5 studios on a real skin; Virtuos Sparx won.",
     role: "TPM, PIE Tooling (League content) · tools team 2 → 12 engineers, plus Virtuos Sparx",
     flow: [
       { steps: [{ text: "4–5 studios", sub: "paid trial, a real skin each" }, { text: "Virtuos Sparx", sub: "chosen on a scored trial", strong: true }, { text: "Half of League’s skins", sub: "within 2 years" }, { text: "~100 skins a year", sub: "today, without hiring" }] },

@@ -8,10 +8,10 @@ export type Story = {
   vizLabel: string; bars?: Bar[]; vizNote?: string; reach?: { from: string[]; to: string[] };
 };
 export const stories: Story[] = [
-  { id: "greybox", kind: "Tool", who: "League level designers", years: "2024–26",
+  { id: "greybox", kind: "Workflow", who: "League level designers", years: "2024–26",
     title: "Level designers got from idea to playable map in under an hour",
     problem: "A new map took about 3 months. Terrain waited on art.",
-    call: "Let designers draw the ground themselves. Pilot with a few, then roll out.",
+    call: "No new tool. Rework the old one’s workflow so designers draw the ground themselves. Pilot, then roll out.",
     result: "The studio default, used by 10–25 designers.",
     num: "<1 hr", numNote: "per map prototype, down from about 3 months",
     role: "Sr. TPM, League of Legends tools · 9-person engineering team",

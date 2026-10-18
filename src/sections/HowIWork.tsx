@@ -31,7 +31,7 @@ export default function HowIWork() {
             <SectionLabel as="h2" className="flex-[0_0_200px]">
               How I work
             </SectionLabel>
-            <p className="max-w-[640px] flex-[1_1_420px] text-title font-medium">
+            <p className="max-w-[640px] flex-[1_1_420px] text-title font-semibold">
               {em("The same **three moves**, in film, games, and now AI.")}
             </p>
           </div>
@@ -54,7 +54,7 @@ export default function HowIWork() {
             ))}
           </ol>
           <div data-career-timeline className="mt-12 border-t border-border pt-8">
-            <p className="text-label uppercase tracking-[0.1em] text-muted">Same moves, every stop</p>
+            <p className="text-label text-muted">Same moves, every stop</p>
             <ol className="m-0 mt-5 grid list-none grid-cols-2 gap-x-6 gap-y-6 p-0 md:grid-cols-4">
               {stops.map((stop) => {
                 const logo = profile.logos.find((l) => l.name === stop.logo);

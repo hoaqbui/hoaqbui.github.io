@@ -88,7 +88,7 @@ export default function Project({ id }: { id: string }) {
               </span>
             </div>
           )}
-          <h1 className="text-title font-medium text-text">
+          <h1 className="text-title font-semibold text-text">
             {project.title}
           </h1>
           {Diagram && (
@@ -196,7 +196,7 @@ function ShotsLayout({
             </span>
           </div>
         )}
-        <h1 className="text-title font-medium text-text">{project.title}</h1>
+        <h1 className="text-title font-semibold text-text">{project.title}</h1>
         <p className="max-w-[720px] text-lead text-text">{project.body}</p>
         {project.tryUrl && <TryIt href={project.tryUrl} />}
         {shots.hero && (

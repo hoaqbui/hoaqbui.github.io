@@ -16,7 +16,7 @@ export default function ProjectsIndex() {
       </Link>
       <div className="mt-8 max-w-[720px]">
         <SectionLabel as="h1">Projects</SectionLabel>
-        <p className="mt-4 text-title font-medium">
+        <p className="mt-4 text-title font-semibold">
           What I’m building with AI.
         </p>
         <p className="mt-4 text-lead text-muted">

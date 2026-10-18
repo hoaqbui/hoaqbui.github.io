@@ -27,10 +27,10 @@
      Sizes are fluid where a phone and a desktop need different ones. */
   --text-display: clamp(2rem, 6vw, 3.5rem);
   --text-display--line-height: 1.06;
-  --text-display--letter-spacing: -0.035em;
+  --text-display--letter-spacing: -0.04em;
   --text-stat: clamp(3.5rem, 7vw, 4rem);
   --text-stat--line-height: 1;
-  --text-stat--letter-spacing: -0.04em;
+  --text-stat--letter-spacing: -0.045em;
   --text-title: clamp(1.625rem, 3.5vw, 2.25rem);
   --text-title--line-height: 1.15;
   --text-title--letter-spacing: -0.03em;

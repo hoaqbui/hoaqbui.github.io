@@ -58,11 +58,12 @@ export default function Work() {
                   isOpen ? "border-teal bg-surface" : "border-border bg-surface hover:border-teal/60"
                 }`}
               >
-                <span className="text-label text-muted">
-                  <span className="text-teal">{story.talent}</span> · {story.years}
+                <span className="flex items-baseline justify-between gap-4 text-label text-muted">
+                  <span>{story.talent}</span>
+                  <span>{story.years}</span>
                 </span>
                 <span className="flex flex-col gap-2.5 md:flex-row md:items-end md:gap-4">
-                  <span className="shrink-0 text-stat font-medium text-teal">{story.num}</span>
+                  <span className="shrink-0 text-stat font-semibold text-teal">{story.num}</span>
                   <span className="text-heading font-medium text-text">{story.numNote}</span>
                 </span>
                 <span className="mt-auto flex flex-col gap-3.5 pt-1.5 text-body">
@@ -79,9 +80,9 @@ export default function Work() {
         {open && (
           <article className="mt-5 rounded-[20px] border border-teal bg-surface p-6 md:p-8">
             <p className="text-label text-muted">
-              <span className="text-teal">{open.talent}</span> · {open.years}
+              <span>{open.talent}</span> <span className="ml-2 opacity-70">{open.years}</span>
             </p>
-            <h3 className="mt-2 max-w-[820px] text-title font-medium text-text">
+            <h3 className="mt-2 max-w-[820px] text-title font-semibold text-text">
               {em(open.title)}
             </h3>
             <div className="mt-6 flex flex-col gap-6">

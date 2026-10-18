@@ -27,14 +27,14 @@ export default function Hero() {
           <p className="mt-2 text-body text-muted">
             {profile.roleLine.split(" · ").map((part, i, all) => (
               <Fragment key={part}>
-                <span className={`whitespace-nowrap ${i === 0 ? "text-teal" : ""}`}>
+                <span className={`whitespace-nowrap ${i === 0 ? "font-medium text-text" : ""}`}>
                   {part}
-                  {i < all.length - 1 && <span aria-hidden="true"> ·</span>}
+                  {i < all.length - 1 && <span aria-hidden="true" className="opacity-40"> ·</span>}
                 </span>{" "}
               </Fragment>
             ))}
           </p>
-          <h1 className="mt-5 text-balance text-display font-medium">
+          <h1 className="mt-5 text-balance text-display font-semibold">
             {em(profile.headline)}
           </h1>
           <div

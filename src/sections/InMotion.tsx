@@ -163,7 +163,7 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
         <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-[720px]">
             <SectionLabel as="h2">Now, with AI</SectionLabel>
-            <p className="mt-4 text-title font-medium">
+            <p className="mt-4 text-title font-semibold">
               {em("The latest problem: **consistent video** out of generative models, tested on my own photographs.")}
             </p>
             <p className="mt-4 text-lead text-muted">

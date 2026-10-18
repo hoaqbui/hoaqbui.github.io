@@ -26,7 +26,6 @@ export default function Work() {
           const fields = [
             { label: "What was slowing them down", value: story.stuck },
             { label: "The fix", value: story.did },
-            { label: "Why this fix", value: story.why },
             { label: "What changed", value: story.adoption },
           ];
           return (
@@ -56,6 +55,10 @@ export default function Work() {
                     </div>
                   ))}
                 </dl>
+                <p className="mt-6 flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-xl bg-well px-5 py-4 text-[15px]">
+                  <span className="font-mono text-xs text-muted">Why this fix</span>
+                  <span className="text-text">{story.why}</span>
+                </p>
                 <div className="mt-6 flex flex-wrap items-baseline gap-x-4 gap-y-1 border-t border-border pt-6">
                   <span className="text-[40px] font-medium leading-none tracking-[-0.03em] text-teal">{story.num}</span>
                   <span className="text-[15px] text-muted">{story.numNote}</span>

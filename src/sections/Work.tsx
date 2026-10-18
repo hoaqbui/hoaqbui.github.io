@@ -61,7 +61,7 @@ export default function Work() {
                   <span className="text-teal">{story.talent}</span> · {story.years}
                 </span>
                 <span className="text-[56px] font-medium leading-none tracking-[-0.04em] text-teal md:text-[64px]">{story.num}</span>
-                <span className="pl-[4ch] text-[19px] font-medium leading-[1.25] tracking-[-0.015em] text-text">{story.numNote}</span>
+                <span className="pl-[2ch] text-[19px] font-medium leading-[1.25] tracking-[-0.015em] text-text">{story.numNote}</span>
                 <span className="mt-auto text-[15px] leading-snug text-muted">
                   {story.how}{" "}
                   <span className="whitespace-nowrap font-medium text-teal">{isOpen ? "Close ↑" : "The story →"}</span>

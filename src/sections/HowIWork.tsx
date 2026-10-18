@@ -4,8 +4,8 @@ import { profile } from "@/content/profile";
 
 const steps = [
   { title: "Start with the people doing the work.", body: "Sit with artists and designers, watch how the work actually flows, and listen for what they’ve stopped asking for." },
-  { title: "Decide what’s worth doing.", body: "Find the real problem, do the math on the options, and pick the one with the most impact, even when the answer is no." },
-  { title: "Get it delivered, and used.", body: "Bring engineering, art, and leadership to the same plan, ship in small steps, and measure who uses it, not just what shipped." },
+  { title: "Name the right problem.", body: "It’s rarely the one on the ticket. A handoff. A migration nobody should take on. A plan the team can’t see itself in. A team at capacity." },
+  { title: "Solve it, then see it through.", body: "Sometimes that’s a rework, sometimes a no, sometimes a prototype, sometimes a partner. Then stay until the team is actually using it." },
 ];
 
 // The thread that ties film, Riot and the AI work together.

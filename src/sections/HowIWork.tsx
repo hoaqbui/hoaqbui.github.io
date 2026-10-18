@@ -13,7 +13,7 @@ const steps = [
     "A handoff. A migration nobody should take on. A plan the team can’t see itself in. A team at capacity.",
   ] },
   { title: "See it through.", lines: [
-    "A rework, a no, a prototype, a partner.",
+    "Rework, prototype, partner, or say no.",
     "Leave a process the team runs itself.",
     "Short surveys. Regular show-and-tells of what the tools can do.",
   ] },

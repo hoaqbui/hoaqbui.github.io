@@ -7,9 +7,9 @@ import Reveal from "@/fx/Reveal";
 const steps = [
   { title: "Start with the people.", line: "Talk to them. Watch them work.",
     icon: <><circle cx="9" cy="8" r="3.2" /><circle cx="16.5" cy="9" r="2.6" /><path d="M3 19c.6-3.3 3-5 6-5s5.4 1.7 6 5M14.5 14.2c2.6-.3 5 1 5.5 4.8" /></> },
-  { title: "Identify the right problem.", line: "The real problem is rarely the one on the ticket.",
+  { title: "Identify the right problem.", line: "Focus on the work that will have the right impact.",
     icon: <><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="4" /><circle cx="12" cy="12" r="0.8" fill="currentColor" /></> },
-  { title: "See it through.", line: "Ship it, then leave a process that runs without me.",
+  { title: "See it through.", line: "Test, release, drive adoption, and set up long-term lifecycle management.",
     icon: <path d="M5 21V4M5 4h11l-2 4 2 4H5" /> },
 ];
 

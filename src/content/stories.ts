@@ -1,11 +1,13 @@
-export type Bar = { label: string; before: string; beforeWidth: string; after: string; afterWidth: string };
+import type { FlowRow } from "@/ui/Flow";
 // Each story is one slide: a kicker, a title that states the result, three one-line beats
 // (the problem, the call, the result), one number, one chart. Nothing longer than a line.
 export type Story = {
   id: string; kind: string; who: string; years: string; title: string;
   problem: string; call: string; result: string;
   num: string; numNote: string; role: string;
-  vizLabel: string; bars?: Bar[]; vizNote?: string; reach?: { from: string[]; to: string[] };
+  vizLabel: string;
+  // one of: a flow of steps (one row, or before/after rows), or a grid of work units
+  flow?: FlowRow[]; grid?: { count: number; caption: string };
 };
 export const stories: Story[] = [
   { id: "greybox", kind: "Workflow", who: "League level designers", years: "2024–26",
@@ -15,9 +17,11 @@ export const stories: Story[] = [
     result: "The studio default, used by 10–25 designers.",
     num: "<1 hr", numNote: "per map prototype, down from about 3 months",
     role: "Sr. TPM, League of Legends tools · 9-person engineering team",
-    bars: [{ label: "Idea → playable map", before: "about 3 months", beforeWidth: "100%", after: "under 1 hour", afterWidth: "3%" }],
-    vizNote: "Concept, not to scale.",
-    vizLabel: "Time from map idea to playable greybox: about 3 months before, under one hour after." },
+    flow: [
+      { label: "Before", steps: [{ text: "Designer" }, { text: "Art", sub: "waits" }, { text: "Engineering", sub: "waits" }, { text: "Designer" }], note: "about 3 months" },
+      { label: "After", steps: [{ text: "Designer", sub: "draws the ground", strong: true }], note: "under 1 hour" },
+    ],
+    vizLabel: "Before: a map went designer to art to engineering and back, about 3 months. After: the designer alone, under an hour." },
   { id: "scripting", kind: "Decision", who: "League gameplay and level designers", years: "2022–24",
     title: "Designers kept shipping instead of converting 165 champions",
     problem: "A new scripting engine had stalled. Converting old content meant years of work.",
@@ -25,18 +29,19 @@ export const stories: Story[] = [
     result: "Designers kept shipping. Tool requests went from weeks to days.",
     num: "3+ yrs", numNote: "of best-case conversion work kept off designers: ~165 champions × at least 1 week each",
     role: "Manager, Technical Product Management · Creator Workflows · 8 developers, plus outsourcing",
-    bars: [{ label: "Conversion work on designers’ plates", before: "3+ years, best case", beforeWidth: "100%", after: "none: owned by the engine team", afterWidth: "2%" }],
-    vizNote: "Best case: about 165 champions at 1 week each, with automated conversion plus QA.",
-    vizLabel: "Conversion work on designers went from more than 3 years, best case, to none; the engine team owned it." },
+    grid: { count: 165, caption: "165 champions. Each square is a week of conversion, best case, with automated conversion plus QA. 165 weeks is more than 3 years of team time." },
+    vizLabel: "A grid of 165 squares, one per champion, each a week of conversion work at best: more than 3 years in total." },
   { id: "okr", kind: "Prototype", who: "Art, audio and graphics teams", years: "2022",
     title: "A 50-person team got a plan it could actually hit",
     problem: "A plan nobody believed, and no way to see if it was on track.",
     call: "Build a real slice in 3 weeks. Track velocity against OKRs every week.",
     result: "Leadership re-planned. Milestones held. The delivery lead kept the system.",
     num: "50+", numNote: "people across 4–5 countries, on reliable milestones",
-    role: "Technical Product Manager · Lead Producer role, unannounced project · 4 partner studios",
-    reach: { from: ["One objective", "Key results"], to: ["rigging", "animation", "VFX", "rendering", "audio", "art engineering"] },
-    vizLabel: "One objective and its key results, set across rigging, animation, VFX, rendering, audio and art engineering." },
+    role: "Technical Product Manager · Lead Producer role, unannounced project, since canceled · 4 partner studios",
+    flow: [
+      { steps: [{ text: "Plan nobody believed", sub: "no weekly signal" }, { text: "3-week prototype", sub: "character + gameplay", strong: true }, { text: "Scope re-planned" }, { text: "Velocity vs OKRs", sub: "every week" }, { text: "Milestones held" }] },
+    ],
+    vizLabel: "From a plan nobody believed, through a 3-week prototype, to a re-planned scope, weekly velocity against OKR targets, and milestones that held." },
   { id: "cosmetics", kind: "Trial", who: "League skin artists", years: "2019–22",
     title: "The skins team got about 100 skins a year without hiring",
     problem: "League needed more skins than its team could make.",
@@ -44,10 +49,8 @@ export const stories: Story[] = [
     result: "Virtuos Sparx makes about half of League’s skins. Tools team grew 2 → 12.",
     num: "~100", numNote: "League skins a year from the partnership today",
     role: "TPM, PIE Tooling (League content) · tools team 2 → 12 engineers, plus Virtuos Sparx",
-    bars: [
-      { label: "Share of League skins from Sparx", before: "none", beforeWidth: "2%", after: "about half, within 2 years", afterWidth: "50%" },
-      { label: "Tools team", before: "2 engineers", beforeWidth: "16.7%", after: "12 engineers", afterWidth: "100%" },
+    flow: [
+      { steps: [{ text: "4–5 studios", sub: "paid trial, a real skin each" }, { text: "Virtuos Sparx", sub: "chosen on a scored trial", strong: true }, { text: "Half of League’s skins", sub: "within 2 years" }, { text: "~100 skins a year", sub: "today, without hiring" }] },
     ],
-    vizNote: "Approximate.",
-    vizLabel: "Sparx went from none to about half of League’s skins within two years; the tools team grew from 2 to 12 engineers." },
+    vizLabel: "From a paid trial of 4 to 5 studios, to Virtuos Sparx, to half of League’s skins within two years, to about 100 skins a year today." },
 ];

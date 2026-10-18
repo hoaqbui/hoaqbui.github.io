@@ -1,6 +1,6 @@
 import SectionLabel from "@/ui/SectionLabel";
-import Bars from "@/ui/Bars";
-import ReachChips from "@/ui/ReachChips";
+import Flow from "@/ui/Flow";
+import WeekGrid from "@/ui/WeekGrid";
 import { stories } from "@/content/stories";
 import Reveal from "@/fx/Reveal";
 
@@ -50,13 +50,13 @@ export default function Work() {
                   </div>
                 </div>
 
-                {story.bars ? (
+                {story.flow ? (
                   <div className="mt-8">
-                    <Bars bars={story.bars} note={story.vizNote} label={story.vizLabel} />
+                    <Flow rows={story.flow} label={story.vizLabel} />
                   </div>
-                ) : story.reach ? (
+                ) : story.grid ? (
                   <div className="mt-8">
-                    <ReachChips from={story.reach.from} to={story.reach.to} label={story.vizLabel} />
+                    <WeekGrid count={story.grid.count} caption={story.grid.caption} label={story.vizLabel} />
                   </div>
                 ) : null}
                 <p className="mt-5 font-mono text-[12px] text-muted">{story.role}</p>

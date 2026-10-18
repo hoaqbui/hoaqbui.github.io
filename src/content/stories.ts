@@ -18,10 +18,10 @@ export const stories: Story[] = [
     num: "<1 hr", numNote: "per map prototype, down from about 3 months",
     role: "Sr. TPM, League of Legends tools · 9-person engineering team",
     flow: [
-      { label: "Before", steps: [{ text: "Designer" }, { text: "Art", sub: "waits" }, { text: "Engineering", sub: "waits" }, { text: "Designer" }], note: "about 3 months" },
+      { label: "Before", steps: [{ text: "Designer" }, { text: "Engineering", sub: "waits" }, { text: "Art", sub: "waits" }, { text: "Designer" }], note: "about 3 months" },
       { label: "After", steps: [{ text: "Designer", sub: "draws the ground", strong: true }], note: "under 1 hour" },
     ],
-    vizLabel: "Before: a map went designer to art to engineering and back, about 3 months. After: the designer alone, under an hour." },
+    vizLabel: "Before: a map went designer to engineering to art and back, about 3 months. After: the designer alone, under an hour." },
   { id: "scripting", kind: "Decision", who: "League gameplay and level designers", years: "2022–24",
     title: "Designers kept shipping instead of converting 165 champions",
     problem: "A new scripting engine had stalled. Converting old content meant years of work.",

@@ -3,9 +3,20 @@ import Reveal from "@/fx/Reveal";
 import { profile } from "@/content/profile";
 
 const steps = [
-  { title: "Start with the people doing the work.", body: "Sit with artists and designers, watch how the work actually flows, and listen for what they’ve stopped asking for." },
-  { title: "Name the right problem.", body: "It’s rarely the one on the ticket. A handoff. A migration nobody should take on. A plan the team can’t see itself in. A team at capacity." },
-  { title: "Solve it, then see it through.", body: "Sometimes that’s a rework, sometimes a no, sometimes a prototype, sometimes a partner. Then stay until the team is actually using it." },
+  { title: "Start with the people doing the work.", lines: [
+    "Talk to them directly. Check the data.",
+    "Watch them work. Use the same tools.",
+    "Talk to the people who support those tools.",
+  ] },
+  { title: "Name the right problem.", lines: [
+    "It’s rarely the one on the ticket.",
+    "A handoff. A migration nobody should take on. A plan the team can’t see itself in. A team at capacity.",
+  ] },
+  { title: "Solve it, then see it through.", lines: [
+    "A rework, a no, a prototype, a partner: whatever it needs.",
+    "Leave behind a process the team runs itself.",
+    "Follow up with short surveys. Show the team, regularly, what the tools can do now.",
+  ] },
 ];
 
 // The thread that ties film, Riot and the AI work together.
@@ -27,7 +38,14 @@ export default function HowIWork() {
               <li key={s.title} className="flex flex-col gap-2">
                 <span className="font-mono text-[13px] text-muted">0{i + 1}</span>
                 <span className="text-xl font-medium tracking-[-0.015em]">{s.title}</span>
-                <span className="text-base leading-relaxed text-muted">{s.body}</span>
+                <ul className="m-0 flex list-none flex-col gap-1.5 p-0 text-[15px] leading-snug text-muted">
+                  {s.lines.map((line) => (
+                    <li key={line} className="flex gap-2">
+                      <span aria-hidden="true" className="mt-[0.55em] h-1 w-1 shrink-0 rounded-full bg-teal" />
+                      <span>{line}</span>
+                    </li>
+                  ))}
+                </ul>
               </li>
             ))}
           </ol>

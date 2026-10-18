@@ -17,7 +17,7 @@ export default function Work() {
           Work
         </SectionLabel>
         <p className="max-w-[640px] flex-[1_1_420px] text-[clamp(1.5rem,3vw,2rem)] font-medium leading-[1.2] tracking-[-0.025em]">
-          Three times I got something new working inside a creative team at Riot.
+          Three times I found what was slowing a creative team at Riot down, and fixed it.
         </p>
       </div>
 
@@ -76,6 +76,10 @@ export default function Work() {
           );
         })}
       </div>
+      <p data-also className="mt-8 text-[15px] text-muted">
+        Also at Riot: set up the outside-studio partnership with Virtuos Sparx that now delivers about 100 League skins a year,
+        and grew its embedded tools team from 2 to 12 engineers.
+      </p>
     </section>
   );
 }

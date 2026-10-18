@@ -4,8 +4,8 @@ import { profile } from "@/content/profile";
 
 const steps = [
   { title: "Sit with the creators.", body: "Map how artists and designers actually work, end to end, before deciding what to build." },
-  { title: "Find the real bottleneck.", body: "Usually it isn’t the tech. It’s a handoff, a wait, or a worry about what the tool replaces." },
-  { title: "Drive adoption, not just shipping.", body: "Pilot with a few people, fix what they hit the same week, measure who uses it, then roll out." },
+  { title: "Find the real bottleneck.", body: "Usually it isn’t the tech. It’s a handoff, a wait, or work nobody should be doing. Sometimes the fix is saying no, with the math." },
+  { title: "Prototype the fix, then ship it.", body: "Put a working version in front of a few people, fix what they hit the same week, measure who uses it, then roll out." },
 ];
 
 // The thread that ties film, Riot and the AI work together.

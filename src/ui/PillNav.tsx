@@ -142,7 +142,7 @@ export default function PillNav({
 
       <nav
         aria-label="Sections"
-        className="fixed z-50 left-1/2 -translate-x-1/2 max-md:bottom-[calc(16px+env(safe-area-inset-bottom))] md:top-4"
+        className="fixed z-50 left-1/2 -translate-x-1/2 w-max max-w-[calc(100vw-16px)] max-md:bottom-[calc(16px+env(safe-area-inset-bottom))] md:top-4"
       >
         <motion.div
           className={`flex items-center rounded-full p-1 transition-colors duration-300 ${
@@ -184,7 +184,7 @@ export default function PillNav({
                 aria-current={isActive ? (isHome ? "true" : "page") : undefined}
                 className={`relative ${
                   isResume ? "hidden md:inline-flex" : "inline-flex"
-                } min-h-[44px] items-center px-2.5 md:px-3.5 text-[13px] md:text-sm transition-colors duration-300 ease-in-out motion-reduce:transition-none ${
+                } min-h-[44px] items-center whitespace-nowrap px-2 md:px-3.5 text-[13px] md:text-sm transition-colors duration-300 ease-in-out motion-reduce:transition-none ${
                   index === 0 ? "font-semibold" : ""
                 } ${textColor}`}
               >

@@ -163,7 +163,7 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
           <div className="max-w-[720px]">
             <SectionLabel as="h2">Now, with AI</SectionLabel>
             <p className="mt-4 text-[clamp(1.5rem,3vw,2rem)] font-medium leading-[1.2] tracking-[-0.025em]">
-              The latest problem is consistent video out of generative models, worked on my own photographs.
+              The latest problem is getting consistent video out of generative models, tested on my own photographs.
             </p>
             <p className="mt-4 text-[17px] leading-relaxed text-muted">
               I wrote a shot for each of my travel photographs: a subject, what happens to it, the camera, the sound.
@@ -220,7 +220,7 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
           <span className="font-medium">Also building</span>
           <span className="min-w-0 flex-[1_1_420px] text-muted">
             <Link href="/building/parti/" className="font-medium text-teal hover:underline">Parti</Link>, a multi-agent
-            system on my own hardware, so one person can run a team of AI collaborators. And{" "}
+            system on my own hardware, so one person can run a team of AI collaborators, and{" "}
             <Link href="/building/himmelcam/" className="font-medium text-teal hover:underline">HimmelCam</Link>, a dog-cam
             that keeps Himmel in view with a vision model.
           </span>

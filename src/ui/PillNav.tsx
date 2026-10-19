@@ -184,7 +184,7 @@ export default function PillNav({
                 aria-current={isActive ? (isHome ? "true" : "page") : undefined}
                 className={`relative ${
                   isResume ? "hidden md:inline-flex" : "inline-flex"
-                } min-h-[44px] items-center whitespace-nowrap px-2 md:px-3.5 text-[13px] md:text-sm transition-colors duration-300 ease-in-out motion-reduce:transition-none ${
+                } min-h-[44px] items-center whitespace-nowrap px-1.5 min-[360px]:px-2 md:px-3.5 text-[13px] md:text-sm transition-colors duration-300 ease-in-out motion-reduce:transition-none ${
                   index === 0 ? "font-semibold" : ""
                 } ${textColor}`}
               >

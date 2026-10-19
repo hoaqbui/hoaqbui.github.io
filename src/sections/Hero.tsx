@@ -76,7 +76,7 @@ export default function Hero() {
               LinkedIn →
             </a>
             <a href="#work" className="inline-flex min-h-[44px] items-center font-medium text-teal">
-              Work →
+              Impact →
             </a>
           </div>
         </div>

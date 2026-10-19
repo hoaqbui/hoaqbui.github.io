@@ -41,7 +41,7 @@ export default function Work() {
 
   return (
     <section id="work" className="mx-auto max-w-[1120px] px-6 py-20">
-      <SectionLabel as="h2">Work</SectionLabel>
+      <SectionLabel as="h2">Impact</SectionLabel>
 
       <Reveal>
         <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">

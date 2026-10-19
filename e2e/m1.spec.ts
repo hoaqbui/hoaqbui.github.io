@@ -150,7 +150,7 @@ test.describe("Homepage redesign", () => {
   test("nav lists the five sections", async ({ page }) => {
     await page.goto("/");
     const links = page.getByRole("navigation", { name: "Sections" }).getByRole("link");
-    await expect(links).toHaveText(["About", "Work", "How I work", "Now", "Contact"]);
+    await expect(links).toHaveText(["About", "Impact", "How I work", "Now", "Contact"]);
     await expect(links).toHaveCount(5);
   });
 

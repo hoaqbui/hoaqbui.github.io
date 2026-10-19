@@ -61,7 +61,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <PillNav
           items={[
             { id: "top", label: "About", href: "/#top" },
-            { id: "work", label: "Work", href: "/#work" },
+            { id: "work", label: "Impact", href: "/#work" },
             { id: "how", label: "How I work", href: "/#how" },
             { id: "now", label: "Now", href: "/#now" },
             { id: "contact", label: "Contact", href: "/#contact" },

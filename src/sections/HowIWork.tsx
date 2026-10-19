@@ -60,7 +60,7 @@ export default function HowIWork() {
                 const logo = profile.logos.find((l) => l.name === stop.logo);
                 return (
                   <li key={stop.caption} className="flex flex-col gap-2">
-                    <span className="flex h-8 items-center text-muted opacity-85">
+                    <span className="flex h-8 items-center text-muted opacity-85 [[data-theme=dark]_&]:opacity-100">
                       {logo ? (
                         <span
                           role="img"

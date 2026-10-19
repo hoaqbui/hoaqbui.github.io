@@ -165,7 +165,9 @@ test.describe("Home navigation", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
     await page.getByRole("navigation", { name: "Sections" }).getByRole("link", { name: "Contact" }).click();
-    // wait for the smooth scroll to finish
+    // wait for the smooth scroll to start, then to finish (it can take ~300 ms to start, and
+    // a still page before that isn't "settled" — the cause of this test's old flakiness)
+    await expect.poll(() => page.evaluate(() => scrollY), { intervals: [50] }).toBeGreaterThan(0);
     let last = -1;
     await expect.poll(async () => {
       const y = await page.evaluate(() => scrollY);

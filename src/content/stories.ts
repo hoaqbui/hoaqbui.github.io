@@ -30,7 +30,7 @@ export const stories: Story[] = [
     vizLabel: "Before: a map went designer to engineering to art and back, about 3 months. After: the designer alone, under an hour." },
   { id: "scripting", talent: "Saying no when the math says no", years: "2022–24",
     impact: "Effort avoided",
-    num: "3+ yrs", numNote: "of migration work kept off League’s designers", how: "Did the math on 165 champions and said no. The engine team owned it.",
+    num: "3+ yrs", numNote: "of estimated migration effort kept off League’s designers", how: "Did the math on 165 champions and said no. The engine team owned it.",
     tile: { kind: "squares", count: 165, caption: "165 champions × a week each" },
     title: "**Three years of migration work**, kept off League’s designers.",
     body: "Adopting a new scripting engine meant converting 165 champions’ worth of content: a week each at best, over three years of work. The team proposing it promised automation. I asked to see it. They couldn’t show it. So: no. The old system stayed supported, the engine team took the conversion, and designers kept shipping.",

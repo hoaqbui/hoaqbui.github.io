@@ -29,30 +29,14 @@ export default function Project({ id }: { id: string }) {
 
   return (
     <section className="mx-auto max-w-[1120px] px-6 pt-28 pb-32">
-      {/* Top row */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-12">
+      {/* Top row: back to the list; previous / next wait at the bottom, after the project */}
+      <div className="mb-12">
         <Link
           href="/building/"
           className="inline-flex min-h-[44px] items-center text-body font-medium text-muted hover:text-text transition-colors"
         >
           ← All projects
         </Link>
-        <div className="flex flex-wrap items-center gap-3">
-          <Link
-            href={`/building/${prevProject.id}/`}
-            aria-label={`Previous project: ${prevProject.title}`}
-            className="inline-flex min-h-[44px] items-center rounded-full border border-border bg-surface px-4 text-body text-text hover:border-text transition-colors"
-          >
-            ← {prevProject.title}
-          </Link>
-          <Link
-            href={`/building/${nextProject.id}/`}
-            aria-label={`Next project: ${nextProject.title}`}
-            className="inline-flex min-h-[44px] items-center rounded-full bg-text px-4 text-body text-surface hover:opacity-90 transition-opacity"
-          >
-            {nextProject.title} →
-          </Link>
-        </div>
       </div>
 
       {project.shots ? (
@@ -91,6 +75,8 @@ export default function Project({ id }: { id: string }) {
           <h1 className="text-title font-semibold text-text">
             {project.title}
           </h1>
+          {/* what it is, right under the name, before the diagram explains how */}
+          <p className="text-lead text-text">{project.body}</p>
           {Diagram && (
             <div
               style={{ viewTransitionName: `card-${project.id}` }}
@@ -112,13 +98,6 @@ export default function Project({ id }: { id: string }) {
 
         {/* Right column */}
         <div className="flex flex-col gap-8">
-          <div>
-            <h2 className="text-label text-muted">What it is</h2>
-            <p className="mt-2.5 text-lead text-text">
-              {project.body}
-            </p>
-          </div>
-
           {validSteps.length > 0 && (
             <div>
               <h2 className="text-label text-muted">How it works</h2>
@@ -165,6 +144,23 @@ export default function Project({ id }: { id: string }) {
       </div>
         </>
       )}
+
+      <nav aria-label="More projects" className="mt-20 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-8">
+        <Link
+          href={`/building/${prevProject.id}/`}
+          aria-label={`Previous project: ${prevProject.title}`}
+          className="inline-flex min-h-[44px] items-center rounded-full border border-border bg-surface px-4 text-body text-text hover:border-text transition-colors"
+        >
+          ← {prevProject.title}
+        </Link>
+        <Link
+          href={`/building/${nextProject.id}/`}
+          aria-label={`Next project: ${nextProject.title}`}
+          className="inline-flex min-h-[44px] items-center rounded-full bg-text px-4 text-body text-surface hover:opacity-90 transition-opacity"
+        >
+          {nextProject.title} →
+        </Link>
+      </nav>
     </section>
   );
 }

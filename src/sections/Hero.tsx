@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment } from "react";
+import Link from "next/link";
 import { useMotion } from "@/fx/useMotion";
 import HeroBackground from "@/fx/HeroBackground";
 import { profile } from "@/content/profile";
@@ -18,7 +19,7 @@ export default function Hero() {
     <section
       id="top"
       ref={ref}
-      className="relative flex flex-col items-center justify-center overflow-hidden min-h-0 pt-16 pb-16 md:min-h-[680px] md:pt-0 md:pb-0"
+      className="relative flex flex-col items-center justify-center overflow-hidden min-h-0 pt-16 pb-4 md:min-h-[540px] md:pt-0 md:pb-0"
     >
       <HeroBackground running={running} />
       <Parallax className="relative z-10 w-full max-w-[1120px] px-6">
@@ -40,7 +41,7 @@ export default function Hero() {
           <div
             role="list"
             aria-label="Studios"
-            className="mt-8 flex items-center gap-x-6 text-muted opacity-75 md:gap-x-12"
+            className="mt-8 flex items-center gap-x-6 text-muted opacity-75 md:gap-x-12 [[data-theme=dark]_&]:opacity-95"
           >
             {profile.logos.map((logo) => (
               <span
@@ -79,6 +80,13 @@ export default function Hero() {
               Impact →
             </a>
           </div>
+          {/* the AI work is far down the page; point at it from the first screen (Codex UX pass) */}
+          <Link
+            href="/building/intent-to-video/"
+            className="mt-2 inline-flex min-h-[44px] items-center text-body text-muted hover:text-text"
+          >
+            Now building&nbsp;<span className="font-medium text-teal">Compo</span>, an AI video workflow →
+          </Link>
         </div>
       </Parallax>
     </section>

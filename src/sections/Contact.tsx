@@ -18,7 +18,7 @@ export default function Contact() {
         <p className="text-body text-muted">{profile.openTo}</p>
         <a
           href={`mailto:${profile.email}`}
-          className="mt-4 inline-block text-title font-medium text-text break-all"
+          className="mt-4 inline-flex min-h-[44px] items-center text-title font-medium text-text break-all"
         >
           {profile.email}
         </a>

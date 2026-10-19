@@ -40,7 +40,7 @@ export default function Work() {
     : null;
 
   return (
-    <section id="work" className="mx-auto max-w-[1120px] px-6 py-20">
+    <section id="work" className="mx-auto max-w-[1120px] px-6 pt-10 pb-20 md:pt-14">
       <SectionLabel as="h2">Impact</SectionLabel>
 
       <Reveal>
@@ -91,6 +91,8 @@ export default function Work() {
                 <h3 className="mt-2 max-w-[820px] text-title font-semibold text-text">
                   {em(open.title)}
                 </h3>
+                {/* whose work it was, before how it went (Codex UX pass, 2026-10-19) */}
+                <p className="mt-2 text-label text-muted">{open.role}</p>
                 <div className="mt-6 flex flex-col gap-6">
                   {open.pictureFirst && picture}
                   <div className="flex max-w-[760px] flex-col gap-4">
@@ -105,7 +107,16 @@ export default function Work() {
                   </div>
                   {!open.pictureFirst && picture}
                 </div>
-                <p className="mt-5 text-label text-muted">{open.role}</p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    toggle(open.id);
+                    document.getElementById(open.id)?.scrollIntoView({ block: "nearest" });
+                  }}
+                  className="mt-6 inline-flex min-h-[44px] items-center font-medium text-teal"
+                >
+                  Close story ↑
+                </button>
               </article>
             )}
           </div>

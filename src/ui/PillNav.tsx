@@ -94,27 +94,28 @@ export default function PillNav({
     };
   }, [items, isHome]);
 
-  // Hold the highlight until the scroll settles (scrollend, or no movement for 150 ms, capped
-  // at 2 s), or the visitor scrolls by hand.
+  // Hold the highlight until the page has moved and then stopped (150 ms still, capped at 3 s),
+  // or the visitor scrolls by hand. A smooth scroll can take ~300 ms to start, so stillness
+  // before the first movement doesn't count.
   const holdHighlight = () => {
     jumpingRef.current?.();
     let lastY = window.scrollY;
+    let moved = false;
     let still = 0;
     const timer = window.setInterval(() => {
+      if (window.scrollY !== lastY) moved = true;
       still = window.scrollY === lastY ? still + 1 : 0;
       lastY = window.scrollY;
-      if (still >= 3) release();
+      if (moved && still >= 3) release();
     }, 50);
-    const cap = window.setTimeout(() => release(), 2000);
+    const cap = window.setTimeout(() => release(), 3000);
     const userInput = ["wheel", "touchstart", "keydown"];
     function release() {
       window.clearInterval(timer);
       window.clearTimeout(cap);
-      window.removeEventListener("scrollend", release);
       userInput.forEach((t) => window.removeEventListener(t, release));
       jumpingRef.current = null;
     }
-    window.addEventListener("scrollend", release, { once: true });
     userInput.forEach((t) => window.addEventListener(t, release, { passive: true, once: true }));
     jumpingRef.current = release;
   };

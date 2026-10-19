@@ -191,17 +191,21 @@ test("a long nav jump highlights only the target, then follows the scroll again"
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   const nav = page.getByRole("navigation", { name: "Sections" });
+  // the load-time highlight lands asynchronously; record only what changes after the click
+  await expect(nav.locator("a[aria-current]")).toHaveCount(1);
+  await page.waitForTimeout(300);
   await page.evaluate(() => {
     const w = window as unknown as { __seq: string[] };
-    w.__seq = [];
+    const now = () => document.querySelector('nav[aria-label="Sections"] a[aria-current]')?.textContent ?? "-";
+    w.__seq = [now()];
     setInterval(() => {
-      const v = document.querySelector('nav[aria-label="Sections"] a[aria-current]')?.textContent ?? "-";
+      const v = now();
       if (w.__seq.at(-1) !== v) w.__seq.push(v);
     }, 30);
   });
   await nav.getByRole("link", { name: "Now", exact: true }).click();
   await page.waitForTimeout(2500);
-  const seq = await page.evaluate(() => (window as unknown as { __seq: string[] }).__seq.filter((v) => v !== "-"));
+  const seq = await page.evaluate(() => (window as unknown as { __seq: string[] }).__seq.slice(1).filter((v) => v !== "-"));
   expect(seq.filter((v) => v !== "About")).toEqual(["Now"]);
   // scrolling by hand afterwards still moves the highlight
   await page.evaluate(() => document.getElementById("how")!.scrollIntoView());

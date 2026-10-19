@@ -61,7 +61,7 @@ export default function Work() {
                 }`}
               >
                 <span className="flex items-baseline justify-between gap-4 text-label text-muted">
-                  <span>{story.talent}</span>
+                  <span>{story.impact}</span>
                   <span>{story.years}</span>
                 </span>
                 <span className="flex flex-col gap-2.5 md:flex-row md:items-end md:gap-4">

@@ -130,7 +130,7 @@ function Take({
 const PIPELINE = [
   { name: "Photo", sub: "my travel frames" },
   { name: "Shot", sub: "subject, action, camera, sound" },
-  { name: "Compo", sub: "my pipeline on ComfyUI + LTX", strong: true },
+  { name: "Compo", sub: "my pipeline on MLX‑Gen, Wan, LTX and PyTorch", strong: true },
   { name: "Clip", sub: "6 s, to see where it breaks" },
 ];
 

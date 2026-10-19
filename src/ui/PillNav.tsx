@@ -69,14 +69,14 @@ function DockAction({
   );
 }
 
-type ContactInfo = { availability: string; email: string; resumePath: string; linkedin: string };
+type ContactInfo = { email: string; resumePath: string; linkedin: string };
 
 export default function PillNav({
   items,
   contact,
 }: {
   items: { id: string; label: string; href: string }[];
-  // with it, the Contact item opens a sheet: availability, email, résumé, LinkedIn (user, 2026-10-19)
+  // with it, the Contact item opens a sheet: Email, Résumé, LinkedIn (user, 2026-10-19)
   contact?: ContactInfo;
 }) {
   // trailingSlash: true serves "/photos/"; compare without the slash.
@@ -351,16 +351,9 @@ export default function PillNav({
               transition={{ duration: 0.18, ease: "easeOut" }}
               className="absolute left-1/2 w-[min(360px,calc(100vw-24px))] -translate-x-1/2 rounded-3xl border border-border bg-surface p-5 text-text shadow-[0_2px_6px_rgba(20,24,26,.08),0_24px_56px_rgba(20,24,26,.18)] max-md:bottom-full max-md:mb-3 md:top-full md:mt-3"
             >
-              <p className="flex items-center gap-2 text-label text-muted">
-                <span aria-hidden="true" className="relative flex size-2.5 shrink-0">
-                  <span className="absolute inline-flex size-full rounded-full bg-teal opacity-60 motion-safe:animate-ping" />
-                  <span className="relative size-2.5 rounded-full bg-teal" />
-                </span>
-                {contact.availability}
-              </p>
               {/* three big targets, one word each (user, 2026-10-19: visual, few words) */}
               <div
-                className="mt-4 grid grid-cols-3 gap-2"
+                className="grid grid-cols-3 gap-2"
                 onPointerMove={(e) => e.pointerType === "mouse" && dockX.set(e.clientX)}
                 onPointerLeave={() => dockX.set(Infinity)}
               >
@@ -368,16 +361,6 @@ export default function PillNav({
                 <DockAction mouseX={dockX} label="Résumé" href={contact.resumePath} icon={<ResumeIcon size={26} />} tone="bg-amber text-[#1f2326]" external />
                 <DockAction mouseX={dockX} label="LinkedIn" href={contact.linkedin} icon={<LinkedInIcon size={26} />} tone="bg-[#0a66c2] text-white" external />
               </div>
-              <Link
-                href="/#contact"
-                onClick={(e) => {
-                  setSheetOpen(false);
-                  handleClick(e, "/#contact", "contact");
-                }}
-                className="mt-3 flex min-h-[44px] items-center justify-center text-label text-muted hover:text-text"
-              >
-                Save contact · Projects ↓
-              </Link>
             </motion.div>
           )}
         </AnimatePresence>

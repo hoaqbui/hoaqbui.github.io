@@ -1,4 +1,4 @@
-export type Profile = { name: string; roleLine: string; headline: string; logos: { name: string; src: string; height: number; ratio: number }[]; email: string; linkedin: string; resumePath: string; ogImage: { url: string; width: number; height: number; alt: string }; vcardPath: string; openTo: string; availability: string; industries: string[]; searchTerms: string[]; quote: { text: string; by: string } };
+export type Profile = { name: string; roleLine: string; headline: string; logos: { name: string; src: string; height: number; ratio: number }[]; email: string; linkedin: string; resumePath: string; ogImage: { url: string; width: number; height: number; alt: string }; vcardPath: string; openTo: string; industries: string[]; searchTerms: string[]; quote: { text: string; by: string } };
 const email = "hoaqbui@gmail.com";
 const linkedin = "https://www.linkedin.com/in/hoaqbui/";
 
@@ -19,8 +19,6 @@ export const profile: Profile = {
   // link-preview card for every page (pages that set their own openGraph must repeat it)
   ogImage: { url: "/og.png", width: 1200, height: 630, alt: "Hoa Bui — Empowering creative teams to do their best work." },
   vcardPath: "/hoa-bui.vcf",
-  // one line for the nav contact sheet; `openTo` is the full sentence in Contact
-  availability: "Open to TPM & producer roles · AI creative tools · Los Angeles",
   openTo: "Open to hands-on technical product manager and producer roles in AI video and creative tools, including forward deployed teams. Los Angeles.",
   // shown under the proof numbers
   industries: ["Film & VFX", "Animation", "Live-service games", "Generative AI", "Creative software"],

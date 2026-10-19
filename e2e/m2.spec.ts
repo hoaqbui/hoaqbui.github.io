@@ -164,9 +164,11 @@ test.describe("Home navigation", () => {
   test("jumping to Contact doesn't shift the page", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
-    const nav = page.getByRole("navigation", { name: "Sections" });
-    await nav.getByRole("button", { name: "Contact" }).click();
-    await nav.getByRole("link", { name: /Save contact/ }).click();
+    // the nav's Contact opens a sheet now, so jump with the browser's own anchor scroll
+    await page.evaluate(() => {
+      window.dispatchEvent(new CustomEvent("nav-jump", { detail: "contact" }));
+      document.getElementById("contact")!.scrollIntoView({ behavior: "smooth" });
+    });
     // wait for the smooth scroll to start, then to finish (it can take ~300 ms to start, and
     // a still page before that isn't "settled" — the cause of this test's old flakiness)
     await expect.poll(() => page.evaluate(() => scrollY), { intervals: [50] }).toBeGreaterThan(0);
@@ -216,7 +218,6 @@ test("Contact in the nav opens a sheet with email, résumé and LinkedIn", async
   const sheet = page.getByRole("dialog", { name: "Contact" });
   await expect(sheet).toBeVisible();
   await expect(button).toHaveAttribute("aria-expanded", "true");
-  await expect(sheet).toContainText("Open to");
   await expect(sheet.getByRole("link", { name: "Email", exact: true })).toHaveAttribute("href", "mailto:hoaqbui@gmail.com");
   await expect(sheet.getByRole("link", { name: "Résumé" })).toHaveAttribute("href", /docs\.google\.com\/document\/d\/.+\/view/);
   await expect(sheet.getByRole("link", { name: "LinkedIn" })).toHaveAttribute("href", "https://www.linkedin.com/in/hoaqbui/");

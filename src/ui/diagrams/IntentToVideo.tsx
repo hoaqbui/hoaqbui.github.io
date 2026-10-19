@@ -5,7 +5,7 @@ export default function IntentToVideo() {
     <svg
       viewBox="0 0 560 220"
       role="img"
-      aria-label="Creative intent becomes character orthos in ComfyUI, then an image with render profiles, then video in LTX, kept consistent by a continuity ledger"
+      aria-label="Creative intent becomes character orthos, then an image with render profiles, then video in LTX, kept consistent by a continuity ledger"
       style={{ width: "100%", height: "auto", display: "block" }}
     >
       <defs>
@@ -72,7 +72,7 @@ export default function IntentToVideo() {
           Intent
         </text>
 
-        {/* Stage 2: Character orthos · ComfyUI */}
+        {/* Stage 2: Character orthos */}
         <rect
           x="136"
           y="54"
@@ -84,8 +84,7 @@ export default function IntentToVideo() {
           strokeWidth="1"
         />
         <text x="196" y="82">
-          <tspan x="196" dy="0">Character orthos</tspan>
-          <tspan x="196" dy="16" fill="var(--color-muted)" fontSize="10">ComfyUI</tspan>
+          <tspan x="196" dy="8">Character orthos</tspan>
         </text>
 
         {/* Stage 3: Image · render profiles */}
@@ -131,10 +130,10 @@ export default function IntentToVideo() {
 
 export const portrait: PortraitSpec = {
   id: "i2v",
-  aria: "Creative intent becomes character orthos in ComfyUI, then an image with render profiles, then video in LTX, kept consistent by a continuity ledger",
+  aria: "Creative intent becomes character orthos, then an image with render profiles, then video in LTX, kept consistent by a continuity ledger",
   steps: [
     { label: "Intent" },
-    { label: "Character orthos", sub: "ComfyUI" },
+    { label: "Character orthos" },
     { label: "Image", sub: "render profiles" },
     { label: "Video", sub: "LTX" },
   ],

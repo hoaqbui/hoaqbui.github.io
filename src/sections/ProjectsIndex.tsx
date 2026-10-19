@@ -20,7 +20,7 @@ export default function ProjectsIndex() {
           What I’m building with AI.
         </p>
         <p className="mt-4 text-lead text-muted">
-          Each one is a tool I use myself, built hands-on with Claude Code and ComfyUI, to learn where AI helps the
+          Each one is a tool I use myself, built hands-on with Claude Code, to learn where AI helps the
           people making things and where it still breaks.
         </p>
       </div>

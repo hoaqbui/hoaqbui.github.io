@@ -11,11 +11,11 @@ export type Project = { id: string; title: string; body: string; status: string;
   shots?: { card: Shot; hero?: Shot; clips?: Clip[]; stepsTitle?: string; steps: { shot: Shot; caption: string }[] } };
 export const projects: Project[] = [
   { id: "intent-to-video", title: "Intent-to-video pipeline",
-    body: "Turns creative intent into images, then video, on ComfyUI and LTX, with character orthos, render profiles, and a continuity ledger for shot-to-shot consistency.",
+    body: "Turns creative intent into images, then video, on MLX‑Gen, Wan and LTX, with character orthos, render profiles, and a continuity ledger for shot-to-shot consistency.",
     status: "runs end to end · hardening", live: true, photoShots: true,
-    steps: ["Intent", "Character orthos · ComfyUI", "Image · render profiles", "Video · LTX", "Continuity ledger"],
+    steps: ["Intent", "Character orthos", "Image · render profiles", "Video · LTX", "Continuity ledger"],
     why: "Removing the friction between a creative’s intent and what they make. Building it end to end shows where generative video still breaks.",
-    chips: ["Generative video", "Diffusion", "Human-in-the-loop", "ComfyUI", "LTX"],
+    chips: ["Generative video", "Diffusion", "Human-in-the-loop", "MLX‑Gen", "Wan", "LTX"],
     // Compo, the app the pipeline runs in, against mocked demo data; the clips are real takes.
     shots: {
       card: { src: "/projects/intent-to-video/card", width: 1170, height: 741, themed: false, scale: 3, alt: "Compo’s Library: a paper lantern drifting over a lake at night, and waves rolling onto a beach at sunset, both done" },

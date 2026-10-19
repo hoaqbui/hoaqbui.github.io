@@ -13,14 +13,14 @@ const geist = Geist({
 
 
 const DESCRIPTION =
-  "Technical Product Manager and producer in Los Angeles for AI creative tools: generative video and agentic AI, after 18 years of film, animation and game pipelines at Lucasfilm, Pixar and Riot Games.";
+  "Technical Product Manager in Los Angeles for AI creative tools: generative video and agentic AI, after 18 years of film, animation and game pipelines at Lucasfilm, Pixar and Riot Games.";
 
 // schema.org Person for search engines; nothing on screen
 const PERSON = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: profile.name,
-  jobTitle: "Technical Product Manager & Producer",
+  jobTitle: "Technical Product Manager",
   url: "https://hoa.flamme.us",
   sameAs: [profile.linkedin],
   address: { "@type": "PostalAddress", addressLocality: "Los Angeles", addressRegion: "CA", addressCountry: "US" },
@@ -29,7 +29,7 @@ const PERSON = {
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hoa.flamme.us"),
-  title: "Hoa Bui — Technical Product Manager & Producer, AI creative tools",
+  title: "Hoa Bui — Technical Product Manager, AI creative tools",
   description: DESCRIPTION,
   keywords: profile.searchTerms,
   openGraph: {

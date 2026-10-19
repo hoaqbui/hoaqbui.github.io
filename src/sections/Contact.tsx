@@ -1,3 +1,4 @@
+import { LinkedInIcon, ResumeIcon, SaveContactIcon } from "@/ui/Icons";
 import { profile } from "@/content/profile";
 import Link from "next/link";
 import Reveal from "@/fx/Reveal";
@@ -22,31 +23,35 @@ export default function Contact() {
         >
           {profile.email}
         </a>
-        <div className="mt-8 flex flex-wrap gap-x-8 gap-y-2">
-          <a
-            href={profile.linkedin}
-            target="_blank"
-            rel="noopener"
-            className="inline-flex min-h-[44px] items-center font-medium text-teal"
-          >
-            LinkedIn
-          </a>
-          <a
-            href={profile.vcardPath}
-            download="hoa-bui.vcf"
-            className="inline-flex min-h-[44px] items-center font-medium text-teal"
-          >
-            Save contact
-          </a>
+        <div className="mt-8 flex flex-wrap items-center gap-3">
           <a
             href={profile.resumePath}
             target="_blank"
             rel="noopener"
-            className="inline-flex min-h-[44px] items-center font-medium text-teal"
+            className="inline-flex min-h-[48px] items-center gap-2 rounded-full bg-teal px-5 font-medium text-surface shadow-sm transition-transform motion-safe:hover:scale-[1.03]"
           >
+            <ResumeIcon />
             Résumé
           </a>
-          <Link href="/building/" className="inline-flex min-h-[44px] items-center font-medium text-teal">
+          <a
+            href={profile.linkedin}
+            target="_blank"
+            rel="noopener"
+            aria-label="LinkedIn"
+            className="inline-flex size-12 items-center justify-center rounded-full bg-[#0a66c2] text-white shadow-sm transition-transform motion-safe:hover:scale-[1.06]"
+          >
+            <LinkedInIcon size={22} />
+          </a>
+          <a
+            href={profile.vcardPath}
+            download="hoa-bui.vcf"
+            aria-label="Save contact"
+            title="Save contact"
+            className="inline-flex size-12 items-center justify-center rounded-full border border-border bg-surface text-text shadow-sm transition-transform motion-safe:hover:scale-[1.06]"
+          >
+            <SaveContactIcon size={22} />
+          </a>
+          <Link href="/building/" className="ml-2 inline-flex min-h-[44px] items-center font-medium text-teal">
             Projects
           </Link>
         </div>

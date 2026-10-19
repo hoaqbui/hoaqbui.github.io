@@ -66,7 +66,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             { id: "now", label: "Now", href: "/#now" },
             { id: "contact", label: "Contact", href: "/#contact" },
           ]}
-          contact={{ openTo: profile.openTo, email: profile.email, resumePath: profile.resumePath, linkedin: profile.linkedin }}
+          contact={{ availability: profile.availability, email: profile.email, resumePath: profile.resumePath, linkedin: profile.linkedin }}
         />
         {children}
       </body>

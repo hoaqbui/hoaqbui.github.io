@@ -2,6 +2,7 @@
 
 import { Fragment } from "react";
 import Link from "next/link";
+import { LinkedInIcon, ResumeIcon } from "@/ui/Icons";
 import { useMotion } from "@/fx/useMotion";
 import HeroBackground from "@/fx/HeroBackground";
 import { profile } from "@/content/profile";
@@ -59,25 +60,28 @@ export default function Hero() {
               />
             ))}
           </div>
-          <div className="mt-8 flex flex-wrap gap-6">
+          {/* actions as shapes, not words (user, 2026-10-19): Résumé leads, then LinkedIn's mark */}
+          <div className="mt-8 flex flex-wrap items-center gap-3">
             <a
               href={profile.resumePath}
               target="_blank"
               rel="noopener"
-              className="inline-flex min-h-[44px] items-center font-medium text-teal"
+              className="inline-flex min-h-[48px] items-center gap-2 rounded-full bg-teal px-5 font-medium text-surface shadow-sm transition-transform motion-safe:hover:scale-[1.03]"
             >
-              Résumé →
+              <ResumeIcon />
+              Résumé
             </a>
             <a
               href={profile.linkedin}
               target="_blank"
               rel="noopener"
-              className="inline-flex min-h-[44px] items-center font-medium text-teal"
+              aria-label="LinkedIn"
+              className="inline-flex size-12 items-center justify-center rounded-full bg-[#0a66c2] text-white shadow-sm transition-transform motion-safe:hover:scale-[1.06]"
             >
-              LinkedIn →
+              <LinkedInIcon size={22} />
             </a>
-            <a href="#work" className="inline-flex min-h-[44px] items-center font-medium text-teal">
-              Impact →
+            <a href="#work" className="ml-2 inline-flex min-h-[44px] items-center font-medium text-teal">
+              Impact ↓
             </a>
           </div>
           {/* the AI work is far down the page; point at it from the first screen (Codex UX pass) */}

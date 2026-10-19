@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import ThemeToggle from "@/ui/ThemeToggle";
+import { LinkedInIcon, MailIcon, ResumeIcon } from "@/ui/Icons";
 
 const SPRING_TRANSITION = {
   type: "spring" as const,
@@ -17,7 +18,7 @@ const BASE_SHADOW =
 const SCROLLED_SHADOW =
   "0 2px 6px rgba(20,24,26,.08), 0 24px 56px rgba(20,24,26,.18)";
 
-type ContactInfo = { openTo: string; email: string; resumePath: string; linkedin: string };
+type ContactInfo = { availability: string; email: string; resumePath: string; linkedin: string };
 
 export default function PillNav({
   items,
@@ -298,33 +299,34 @@ export default function PillNav({
               transition={{ duration: 0.18, ease: "easeOut" }}
               className="absolute left-1/2 w-[min(360px,calc(100vw-24px))] -translate-x-1/2 rounded-3xl border border-border bg-surface p-5 text-text shadow-[0_2px_6px_rgba(20,24,26,.08),0_24px_56px_rgba(20,24,26,.18)] max-md:bottom-full max-md:mb-3 md:top-full md:mt-3"
             >
-              <p className="text-body text-muted">{contact.openTo}</p>
-              <a href={`mailto:${contact.email}`} className="mt-2 inline-flex min-h-[44px] items-center text-heading font-medium break-all">
-                {contact.email}
-              </a>
-              <div className="mt-2 grid grid-cols-3 gap-2">
-                <a
-                  href={`mailto:${contact.email}`}
-                  className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-teal px-3 text-body font-medium text-surface"
-                >
-                  Email
-                </a>
-                <a
-                  href={contact.resumePath}
-                  target="_blank"
-                  rel="noopener"
-                  className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-border px-3 text-body font-medium"
-                >
-                  Résumé
-                </a>
-                <a
-                  href={contact.linkedin}
-                  target="_blank"
-                  rel="noopener"
-                  className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-border px-3 text-body font-medium"
-                >
-                  LinkedIn
-                </a>
+              <p className="flex items-center gap-2 text-label text-muted">
+                <span aria-hidden="true" className="relative flex size-2.5 shrink-0">
+                  <span className="absolute inline-flex size-full rounded-full bg-teal opacity-60 motion-safe:animate-ping" />
+                  <span className="relative size-2.5 rounded-full bg-teal" />
+                </span>
+                {contact.availability}
+              </p>
+              {/* three big targets, one word each (user, 2026-10-19: visual, few words) */}
+              <div className="mt-4 grid grid-cols-3 gap-2">
+                {[
+                  { label: "Email", href: `mailto:${contact.email}`, icon: <MailIcon size={26} />, tone: "bg-teal text-surface" },
+                  { label: "Résumé", href: contact.resumePath, icon: <ResumeIcon size={26} />, tone: "bg-amber text-[#1f2326]", external: true },
+                  { label: "LinkedIn", href: contact.linkedin, icon: <LinkedInIcon size={26} />, tone: "bg-[#0a66c2] text-white", external: true },
+                ].map((action) => (
+                  <a
+                    key={action.label}
+                    href={action.href}
+                    {...(action.external ? { target: "_blank", rel: "noopener" } : {})}
+                    className="group flex flex-col items-center gap-1.5 rounded-2xl py-1"
+                  >
+                    <span
+                      className={`flex size-16 items-center justify-center rounded-full shadow-md transition-transform motion-safe:group-hover:scale-105 ${action.tone}`}
+                    >
+                      {action.icon}
+                    </span>
+                    <span className="text-label font-medium text-text">{action.label}</span>
+                  </a>
+                ))}
               </div>
               <Link
                 href="/#contact"
@@ -332,7 +334,7 @@ export default function PillNav({
                   setSheetOpen(false);
                   handleClick(e, "/#contact", "contact");
                 }}
-                className="mt-2 inline-flex min-h-[44px] items-center text-label text-muted hover:text-text"
+                className="mt-3 flex min-h-[44px] items-center justify-center text-label text-muted hover:text-text"
               >
                 Save contact · Projects ↓
               </Link>

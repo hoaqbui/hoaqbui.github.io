@@ -26,7 +26,30 @@ export default function Hero() {
       <HeroBackground running={running} />
       <Parallax className="relative z-10 w-full max-w-[1120px] px-6">
         <div className="max-w-3xl">
-          <p className="text-heading font-semibold">{profile.name}</p>
+          {/* the name, with Résumé and LinkedIn right beside it (user, 2026-10-19: move them up) */}
+          <div className="flex items-center justify-between gap-3 md:justify-start md:gap-6">
+            <p className="text-heading font-semibold">{profile.name}</p>
+            <div className="flex items-center gap-2">
+              <a
+                href={profile.resumePath}
+                target="_blank"
+                rel="noopener"
+                className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-teal px-4 text-body font-medium text-surface shadow-sm transition-[transform,box-shadow] motion-safe:hover:scale-[1.03] ${magic.shimmer}`}
+              >
+                <ResumeIcon size={18} />
+                Résumé
+              </a>
+              <a
+                href={profile.linkedin}
+                target="_blank"
+                rel="noopener"
+                aria-label="LinkedIn"
+                className="inline-flex size-11 items-center justify-center rounded-full bg-[#0a66c2] text-white shadow-sm transition-transform motion-safe:hover:scale-[1.06]"
+              >
+                <LinkedInIcon size={20} />
+              </a>
+            </div>
+          </div>
           <p className="mt-2 text-body text-muted">
             {profile.roleLine.split(" · ").map((part, i, all) => (
               <Fragment key={part}>
@@ -61,34 +84,10 @@ export default function Hero() {
               />
             ))}
           </div>
-          {/* actions as shapes, not words (user, 2026-10-19): Résumé leads, then LinkedIn's mark */}
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <a
-              href={profile.resumePath}
-              target="_blank"
-              rel="noopener"
-              className={`inline-flex min-h-[48px] items-center gap-2 rounded-full bg-teal px-5 font-medium text-surface shadow-sm transition-[transform,box-shadow] motion-safe:hover:scale-[1.03] ${magic.shimmer}`}
-            >
-              <ResumeIcon />
-              Résumé
-            </a>
-            <a
-              href={profile.linkedin}
-              target="_blank"
-              rel="noopener"
-              aria-label="LinkedIn"
-              className="inline-flex size-12 items-center justify-center rounded-full bg-[#0a66c2] text-white shadow-sm transition-transform motion-safe:hover:scale-[1.06]"
-            >
-              <LinkedInIcon size={22} />
-            </a>
-            <a href="#work" className="ml-2 inline-flex min-h-[44px] items-center font-medium text-teal">
-              Impact ↓
-            </a>
-          </div>
           {/* the AI work is far down the page; point at it from the first screen (Codex UX pass) */}
           <Link
             href="/building/intent-to-video/"
-            className="mt-2 inline-flex min-h-[44px] items-center text-body text-muted hover:text-text"
+            className="mt-6 inline-flex min-h-[44px] items-center text-body text-muted hover:text-text"
           >
             Now building&nbsp;<span className="font-medium text-teal">Compo</span>, an AI video workflow →
           </Link>

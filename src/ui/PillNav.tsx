@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
@@ -33,6 +33,9 @@ export default function PillNav({
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const [isDesktop, setIsDesktop] = useState<boolean>(false);
   const shouldReduceMotion = useReducedMotion();
+  // While a tap scrolls the page, the sections it passes must not take the highlight
+  // (user bug report, 2026-10-19: About → Now flashed Impact and How I work on the way).
+  const jumpingRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     const media = window.matchMedia("(min-width: 768px)");
@@ -72,6 +75,7 @@ export default function PillNav({
 
     const observer = new IntersectionObserver(
       (entries) => {
+        if (jumpingRef.current) return;
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setActiveId(entry.target.id);
@@ -90,6 +94,31 @@ export default function PillNav({
     };
   }, [items, isHome]);
 
+  // Hold the highlight until the scroll settles (scrollend, or no movement for 150 ms, capped
+  // at 2 s), or the visitor scrolls by hand.
+  const holdHighlight = () => {
+    jumpingRef.current?.();
+    let lastY = window.scrollY;
+    let still = 0;
+    const timer = window.setInterval(() => {
+      still = window.scrollY === lastY ? still + 1 : 0;
+      lastY = window.scrollY;
+      if (still >= 3) release();
+    }, 50);
+    const cap = window.setTimeout(() => release(), 2000);
+    const userInput = ["wheel", "touchstart", "keydown"];
+    function release() {
+      window.clearInterval(timer);
+      window.clearTimeout(cap);
+      window.removeEventListener("scrollend", release);
+      userInput.forEach((t) => window.removeEventListener(t, release));
+      jumpingRef.current = null;
+    }
+    window.addEventListener("scrollend", release, { once: true });
+    userInput.forEach((t) => window.addEventListener(t, release, { passive: true, once: true }));
+    jumpingRef.current = release;
+  };
+
   const handleClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string,
@@ -105,6 +134,7 @@ export default function PillNav({
     ).matches;
 
     if (target) {
+      holdHighlight();
       // let sections and the page fade know this is a jump, not a read-through
       window.dispatchEvent(new CustomEvent("nav-jump", { detail: id }));
       target.scrollIntoView({

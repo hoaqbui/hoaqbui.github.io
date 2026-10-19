@@ -180,6 +180,28 @@ test.describe("Home navigation", () => {
   });
 });
 
+test("a long nav jump highlights only the target, then follows the scroll again", async ({ page }) => {
+  // user bug report, 2026-10-19: About → Now flashed Impact and How I work on the way
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  const nav = page.getByRole("navigation", { name: "Sections" });
+  await page.evaluate(() => {
+    const w = window as unknown as { __seq: string[] };
+    w.__seq = [];
+    setInterval(() => {
+      const v = document.querySelector('nav[aria-label="Sections"] a[aria-current]')?.textContent ?? "-";
+      if (w.__seq.at(-1) !== v) w.__seq.push(v);
+    }, 30);
+  });
+  await nav.getByRole("link", { name: "Now", exact: true }).click();
+  await page.waitForTimeout(2500);
+  const seq = await page.evaluate(() => (window as unknown as { __seq: string[] }).__seq.filter((v) => v !== "-"));
+  expect(seq.filter((v) => v !== "About")).toEqual(["Now"]);
+  // scrolling by hand afterwards still moves the highlight
+  await page.evaluate(() => document.getElementById("how")!.scrollIntoView());
+  await expect(nav.locator("a[aria-current]")).toHaveText("How I work");
+});
+
 test("the nav pill goes dark on the /photos page", async ({ page }) => {
   await page.goto("/photos/");
   const nav = page.getByRole("navigation", { name: "Sections" });

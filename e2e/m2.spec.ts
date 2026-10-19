@@ -164,7 +164,9 @@ test.describe("Home navigation", () => {
   test("jumping to Contact doesn't shift the page", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
-    await page.getByRole("navigation", { name: "Sections" }).getByRole("link", { name: "Contact" }).click();
+    const nav = page.getByRole("navigation", { name: "Sections" });
+    await nav.getByRole("button", { name: "Contact" }).click();
+    await nav.getByRole("link", { name: /Save contact/ }).click();
     // wait for the smooth scroll to start, then to finish (it can take ~300 ms to start, and
     // a still page before that isn't "settled" — the cause of this test's old flakiness)
     await expect.poll(() => page.evaluate(() => scrollY), { intervals: [50] }).toBeGreaterThan(0);
@@ -202,6 +204,33 @@ test("a long nav jump highlights only the target, then follows the scroll again"
   // scrolling by hand afterwards still moves the highlight
   await page.evaluate(() => document.getElementById("how")!.scrollIntoView());
   await expect(nav.locator("a[aria-current]")).toHaveText("How I work");
+});
+
+test("Contact in the nav opens a sheet with email, résumé and LinkedIn", async ({ page }) => {
+  // user, 2026-10-19: "navbar should take care of availability, email, résumé and LinkedIn"
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  const nav = page.getByRole("navigation", { name: "Sections" });
+  const button = nav.getByRole("button", { name: "Contact" });
+  await button.click();
+  const sheet = page.getByRole("dialog", { name: "Contact" });
+  await expect(sheet).toBeVisible();
+  await expect(button).toHaveAttribute("aria-expanded", "true");
+  await expect(sheet).toContainText("Open to");
+  await expect(sheet.getByRole("link", { name: "Email", exact: true })).toHaveAttribute("href", "mailto:hoaqbui@gmail.com");
+  await expect(sheet.getByRole("link", { name: "Résumé" })).toHaveAttribute("href", /docs\.google\.com\/document\/d\/.+\/view/);
+  await expect(sheet.getByRole("link", { name: "LinkedIn" })).toHaveAttribute("href", "https://www.linkedin.com/in/hoaqbui/");
+  // the sheet fits the screen
+  const box = (await sheet.boundingBox())!;
+  expect(box.x).toBeGreaterThanOrEqual(0);
+  expect(box.x + box.width).toBeLessThanOrEqual(390);
+  expect(box.y).toBeGreaterThanOrEqual(0);
+  await page.keyboard.press("Escape");
+  await expect(sheet).toHaveCount(0);
+  await button.click();
+  await expect(sheet).toBeVisible();
+  await page.mouse.click(20, 200);
+  await expect(sheet).toHaveCount(0);
 });
 
 test("the nav pill goes dark on the /photos page", async ({ page }) => {
@@ -388,7 +417,7 @@ test("a nav click scrolls without starting a page transition", async ({ page }) 
   });
   await page.goto("/");
   await page.waitForTimeout(500);
-  for (const name of ["Contact", "How I work", "Now", "About"]) {
+  for (const name of ["Impact", "How I work", "Now", "About"]) {
     await page.getByRole("navigation", { name: "Sections" }).getByRole("link", { name }).click();
     await page.waitForTimeout(400);
   }

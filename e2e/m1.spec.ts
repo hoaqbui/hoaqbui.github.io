@@ -149,9 +149,11 @@ test.describe("Homepage redesign", () => {
 
   test("nav lists the five sections", async ({ page }) => {
     await page.goto("/");
-    const links = page.getByRole("navigation", { name: "Sections" }).getByRole("link");
-    await expect(links).toHaveText(["About", "Impact", "How I work", "Now", "Contact"]);
-    await expect(links).toHaveCount(5);
+    const nav = page.getByRole("navigation", { name: "Sections" });
+    const links = nav.getByRole("link");
+    await expect(links).toHaveText(["About", "Impact", "How I work", "Now"]);
+    // Contact opens the contact sheet instead of scrolling (user, 2026-10-19)
+    await expect(nav.getByRole("button", { name: "Contact" })).toHaveAttribute("aria-haspopup", "dialog");
   });
 
   test("hero has a headline, no stats row and no pause-motion button", async ({ page }) => {

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import ThemeToggle from "@/ui/ThemeToggle";
 
 const SPRING_TRANSITION = {
@@ -17,10 +17,15 @@ const BASE_SHADOW =
 const SCROLLED_SHADOW =
   "0 2px 6px rgba(20,24,26,.08), 0 24px 56px rgba(20,24,26,.18)";
 
+type ContactInfo = { openTo: string; email: string; resumePath: string; linkedin: string };
+
 export default function PillNav({
   items,
+  contact,
 }: {
   items: { id: string; label: string; href: string }[];
+  // with it, the Contact item opens a sheet: availability, email, résumé, LinkedIn (user, 2026-10-19)
+  contact?: ContactInfo;
 }) {
   // trailingSlash: true serves "/photos/"; compare without the slash.
   const pathname = usePathname().replace(/(.)\/$/, "$1");
@@ -36,6 +41,23 @@ export default function PillNav({
   // While a tap scrolls the page, the sections it passes must not take the highlight
   // (user bug report, 2026-10-19: About → Now flashed Impact and How I work on the way).
   const jumpingRef = useRef<(() => void) | null>(null);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const navRef = useRef<HTMLElement | null>(null);
+
+  // the sheet closes on Escape or a tap outside the nav
+  useEffect(() => {
+    if (!sheetOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setSheetOpen(false);
+    const onDown = (e: PointerEvent) => {
+      if (!navRef.current?.contains(e.target as Node)) setSheetOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("pointerdown", onDown);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("pointerdown", onDown);
+    };
+  }, [sheetOpen]);
 
   useEffect(() => {
     const media = window.matchMedia("(min-width: 768px)");
@@ -172,6 +194,7 @@ export default function PillNav({
       </div>
 
       <nav
+        ref={navRef}
         aria-label="Sections"
         className="fixed z-50 left-1/2 -translate-x-1/2 w-max max-w-[calc(100vw-16px)] max-md:bottom-[calc(16px+env(safe-area-inset-bottom))] md:top-4"
       >
@@ -205,6 +228,38 @@ export default function PillNav({
 
             const isExternal = item.href.startsWith("http") || item.href.endsWith(".pdf");
             const LinkComponent = isExternal ? "a" : Link;
+            const itemClass = `relative ${
+              isResume ? "hidden md:inline-flex" : "inline-flex"
+            } min-h-[44px] items-center whitespace-nowrap px-1.5 min-[360px]:px-2 md:px-3.5 text-[13px] md:text-sm transition-colors duration-300 ease-in-out motion-reduce:transition-none ${
+              index === 0 ? "font-semibold" : ""
+            } ${textColor}`;
+            const highlight = isActive && (
+              <motion.span
+                layoutId="pill-active-highlight"
+                className={`absolute inset-0 rounded-full ${isPhotos ? "bg-[#3cc9b4]" : "bg-text"}`}
+                transition={highlightTransition}
+              />
+            );
+
+            if (item.id === "contact" && contact) {
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  aria-haspopup="dialog"
+                  aria-expanded={sheetOpen}
+                  aria-controls="contact-sheet"
+                  aria-current={isActive ? "true" : undefined}
+                  onClick={() => setSheetOpen((open) => !open)}
+                  className={`${itemClass} cursor-pointer`}
+                >
+                  {highlight}
+                  <span className={`relative z-10 ${sheetOpen && !isActive ? "underline decoration-2 underline-offset-4" : ""}`}>
+                    {item.label}
+                  </span>
+                </button>
+              );
+            }
 
             return (
               <LinkComponent
@@ -213,21 +268,9 @@ export default function PillNav({
                 {...(item.href.startsWith("http") ? { target: "_blank", rel: "noopener" } : {})}
                 onClick={(e) => handleClick(e, item.href, item.id)}
                 aria-current={isActive ? (isHome ? "true" : "page") : undefined}
-                className={`relative ${
-                  isResume ? "hidden md:inline-flex" : "inline-flex"
-                } min-h-[44px] items-center whitespace-nowrap px-1.5 min-[360px]:px-2 md:px-3.5 text-[13px] md:text-sm transition-colors duration-300 ease-in-out motion-reduce:transition-none ${
-                  index === 0 ? "font-semibold" : ""
-                } ${textColor}`}
+                className={itemClass}
               >
-                {isActive && (
-                  <motion.span
-                    layoutId="pill-active-highlight"
-                    className={`absolute inset-0 rounded-full ${
-                      isPhotos ? "bg-[#3cc9b4]" : "bg-text"
-                    }`}
-                    transition={highlightTransition}
-                  />
-                )}
+                {highlight}
                 <span className="relative z-10">{item.label}</span>
               </LinkComponent>
             );
@@ -242,6 +285,60 @@ export default function PillNav({
             <ThemeToggle />
           </div>
         </motion.div>
+
+        <AnimatePresence>
+          {contact && sheetOpen && (
+            <motion.div
+              id="contact-sheet"
+              role="dialog"
+              aria-label="Contact"
+              initial={shouldReduceMotion ? false : { opacity: 0, y: isDesktop ? -8 : 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={shouldReduceMotion ? { opacity: 0, transition: { duration: 0 } } : { opacity: 0, y: isDesktop ? -8 : 8 }}
+              transition={{ duration: 0.18, ease: "easeOut" }}
+              className="absolute left-1/2 w-[min(360px,calc(100vw-24px))] -translate-x-1/2 rounded-3xl border border-border bg-surface p-5 text-text shadow-[0_2px_6px_rgba(20,24,26,.08),0_24px_56px_rgba(20,24,26,.18)] max-md:bottom-full max-md:mb-3 md:top-full md:mt-3"
+            >
+              <p className="text-body text-muted">{contact.openTo}</p>
+              <a href={`mailto:${contact.email}`} className="mt-2 inline-flex min-h-[44px] items-center text-heading font-medium break-all">
+                {contact.email}
+              </a>
+              <div className="mt-2 grid grid-cols-3 gap-2">
+                <a
+                  href={`mailto:${contact.email}`}
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-teal px-3 text-body font-medium text-surface"
+                >
+                  Email
+                </a>
+                <a
+                  href={contact.resumePath}
+                  target="_blank"
+                  rel="noopener"
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-border px-3 text-body font-medium"
+                >
+                  Résumé
+                </a>
+                <a
+                  href={contact.linkedin}
+                  target="_blank"
+                  rel="noopener"
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-full border border-border px-3 text-body font-medium"
+                >
+                  LinkedIn
+                </a>
+              </div>
+              <Link
+                href="/#contact"
+                onClick={(e) => {
+                  setSheetOpen(false);
+                  handleClick(e, "/#contact", "contact");
+                }}
+                className="mt-2 inline-flex min-h-[44px] items-center text-label text-muted hover:text-text"
+              >
+                Save contact · Projects ↓
+              </Link>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
     </>
   );

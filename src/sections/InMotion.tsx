@@ -126,6 +126,14 @@ function Take({
   );
 }
 
+// Photo → shot → render → clip: what the four comparisons below went through.
+const PIPELINE = [
+  { name: "Photo", sub: "my travel frames" },
+  { name: "Shot", sub: "subject, action, camera, sound" },
+  { name: "Compo", sub: "my pipeline on ComfyUI + LTX", strong: true },
+  { name: "Clip", sub: "6 s, to see where it breaks" },
+];
+
 export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
   // fx owns reduced motion and the pause state. Its onScreen starts true until its observer
   // reports, so this section keeps its own in-view state: nothing loads before it is seen.
@@ -166,10 +174,27 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
             <p className="mt-4 text-title font-semibold">
               {em("The latest problem: **consistent video** out of generative models, tested on my own photographs.")}
             </p>
-            <p className="mt-4 text-lead text-muted">
-              Each travel photo got a shot: a subject, what happens, the camera, the sound. Compo, my intent-to-video
-              pipeline on ComfyUI and LTX, rendered it. Building it end to end shows where generative video still breaks.
-            </p>
+            {/* how each shot is made, as four steps instead of a paragraph (card 93) */}
+            <ol data-shot-pipeline className="m-0 mt-6 grid list-none grid-cols-2 gap-2 p-0 md:flex md:items-stretch md:gap-0">
+              {PIPELINE.map((step, i) => (
+                <li key={step.name} className="flex md:flex-1">
+                  <span
+                    className={`flex w-full flex-col gap-1 rounded-2xl border px-4 py-3 ${
+                      step.strong ? "border-teal" : "border-border"
+                    }`}
+                  >
+                    <span className={`text-heading font-medium ${step.strong ? "text-teal" : ""}`}>
+                      <span className="mr-2 text-label text-muted">{i + 1}</span>
+                      {step.name}
+                    </span>
+                    <span className="text-label text-muted">{step.sub}</span>
+                  </span>
+                  {i < PIPELINE.length - 1 && (
+                    <span aria-hidden="true" className="hidden self-center px-2 text-teal md:block">→</span>
+                  )}
+                </li>
+              ))}
+            </ol>
             {allowed && <p className="mt-3 text-label text-muted">Drag each frame to compare the photograph with its shot.</p>}
           </div>
           {allowed && (

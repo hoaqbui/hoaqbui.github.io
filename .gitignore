@@ -43,3 +43,6 @@ yarn-error.log*
 next-env.d.ts
 .review/
 /_retired/
+
+# local outputs (tailored résumés and the like) never go in this public repo
+/Claude outputs/

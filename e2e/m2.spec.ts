@@ -767,7 +767,7 @@ test.describe("magic UI touches (card 99)", () => {
     await page.goto("/");
     const anim = (sel: string, pseudo: string) =>
       page.locator(sel).first().evaluate((el, p) => getComputedStyle(el, p).animationName, pseudo);
-    expect(await anim("#top a[href*='docs.google.com']", "::after")).not.toBe("none");
+    expect(await anim("#contact a[href*='docs.google.com']", "::after")).not.toBe("none");
     await page.locator("#work button#greybox").click();
     expect(await anim("#work-story article", "::before")).not.toBe("none");
   });
@@ -777,7 +777,7 @@ test.describe("magic UI touches (card 99)", () => {
     await page.goto("/");
     await expect(page.locator("#okr .tabular-nums")).toHaveText("50");
     await expect(page.locator("[data-shot-pipeline] li > span:first-child").nth(3)).not.toHaveClass(/opacity-35/);
-    const shimmer = await page.locator("#top a[href*='docs.google.com']").first()
+    const shimmer = await page.locator("#contact a[href*='docs.google.com']").first()
       .evaluate((el) => getComputedStyle(el, "::after").animationName);
     expect(shimmer).toBe("none");
   });

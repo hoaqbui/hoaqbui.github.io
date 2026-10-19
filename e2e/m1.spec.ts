@@ -9,8 +9,9 @@ test.describe("M1 P0 steps", () => {
     const who = top.getByText("Hoa Bui").first();
     const role = top.getByText("Technical Product Manager").first();
     const linkedinLink = top.locator('a[href="https://www.linkedin.com/in/hoaqbui/"]').first();
-    // Résumé opens the public Doc itself, never an email draft (tester, 2026-10-16).
-    const resumeLink = top.locator('a[href="https://docs.google.com/document/d/1s-OGEpBgFRViEk3mBTeSgL9CHzl-wdsOQKxoBNQtU7s/view"]').first();
+    // The hero keeps LinkedIn; Résumé moved to the nav Contact sheet (user, 2026-10-19),
+    // still the public Doc itself, never an email draft (tester, 2026-10-16).
+    const resumeLink = page.getByRole("navigation", { name: "Sections" }).getByRole("button", { name: "Contact" });
 
     for (const locator of [who, role, linkedinLink, resumeLink]) {
       await expect(locator).toBeVisible();

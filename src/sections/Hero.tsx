@@ -1,9 +1,8 @@
 "use client";
 
-import { magic } from "@/fx/magic";
 import { Fragment } from "react";
 import Link from "next/link";
-import { LinkedInIcon, ResumeIcon } from "@/ui/Icons";
+import { LinkedInIcon } from "@/ui/Icons";
 import { useMotion } from "@/fx/useMotion";
 import HeroBackground from "@/fx/HeroBackground";
 import { profile } from "@/content/profile";
@@ -26,19 +25,10 @@ export default function Hero() {
       <HeroBackground running={running} />
       <Parallax className="relative z-10 w-full max-w-[1120px] px-6">
         <div className="max-w-3xl">
-          {/* the name, with Résumé and LinkedIn right beside it (user, 2026-10-19: move them up) */}
+          {/* the name, with LinkedIn's mark beside it; Résumé lives in the nav Contact sheet (user, 2026-10-19) */}
           <div className="flex items-center justify-between gap-3 md:justify-start md:gap-6">
             <p className="text-heading font-semibold">{profile.name}</p>
             <div className="flex items-center gap-2">
-              <a
-                href={profile.resumePath}
-                target="_blank"
-                rel="noopener"
-                className={`inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-teal px-4 text-body font-medium text-surface shadow-sm transition-[transform,box-shadow] motion-safe:hover:scale-[1.03] ${magic.shimmer}`}
-              >
-                <ResumeIcon size={18} />
-                Résumé
-              </a>
               <a
                 href={profile.linkedin}
                 target="_blank"

@@ -2,27 +2,34 @@
 
 import { Fragment } from "react";
 import Link from "next/link";
-import { useMotion } from "@/fx/useMotion";
-import HeroBackground from "@/fx/HeroBackground";
 import { profile } from "@/content/profile";
+import { photos } from "@/content/photos";
 import { em } from "@/ui/em";
+import HeroShot, { type HeroTake } from "@/ui/HeroShot";
 
-import Parallax from "@/fx/Parallax";
+// the hero's take: the Prague weir, whose moving water shows the photo → shot change best
+const weir = photos.find((p) => p.id === "cz-prague-weir")!;
+const take: HeroTake = {
+  id: weir.id,
+  src: weir.src,
+  small: `/photos/${weir.id}-800.webp`,
+  width: weir.width,
+  alt: weir.alt,
+  webm: weir.shot!.webm,
+  mp4: weir.shot!.mp4,
+};
 
-// The 3-second story: who and what (the strip), the mission, where (the logos).
+// The 3-second story: who and what (the strip), the mission, where (the logos), and the
+// Still → Shot frame beside it (user, 2026-10-19; replaces the random network background).
 // The proof numbers live in Work; the Latest chip left the hero (user, 2026-10-18).
 // The numbers and their stories live in Work, so they appear once.
 export default function Hero() {
-  const { ref, running } = useMotion<HTMLElement>();
-
   return (
     <section
       id="top"
-      ref={ref}
-      className="relative flex flex-col items-center justify-center overflow-hidden min-h-0 pt-16 pb-4 md:min-h-[540px] md:pt-0 md:pb-0"
+      className="relative flex flex-col items-center justify-center pt-16 pb-6 md:min-h-[540px] md:pt-24 md:pb-12"
     >
-      <HeroBackground running={running} />
-      <Parallax className="relative z-10 w-full max-w-[1120px] px-6">
+      <div className="grid w-full max-w-[1120px] items-center gap-7 px-6 md:grid-cols-[1fr_1.05fr] md:gap-10">
         <div className="max-w-3xl">
           <p className="text-heading font-semibold">{profile.name}</p>
           <p className="mt-2 text-body text-muted">
@@ -67,7 +74,8 @@ export default function Hero() {
             Now building&nbsp;<span className="font-medium text-teal">Compo</span>, an AI video workflow →
           </Link>
         </div>
-      </Parallax>
+        <HeroShot take={take} />
+      </div>
     </section>
   );
 }

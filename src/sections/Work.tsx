@@ -4,7 +4,7 @@ import SectionLabel from "@/ui/SectionLabel";
 import Flow from "@/ui/Flow";
 import WeekGrid from "@/ui/WeekGrid";
 import TileFigure from "@/ui/TileFigure";
-import NumberTicker from "@/fx/NumberTicker";
+import MorphNumber from "@/fx/MorphNumber";
 import { magic } from "@/fx/magic";
 import { stories } from "@/content/stories";
 import { em } from "@/ui/em";
@@ -67,7 +67,7 @@ export default function Work() {
                   <span>{story.years}</span>
                 </span>
                 <span className="flex flex-col gap-2.5 md:flex-row md:items-end md:gap-4">
-                  <NumberTicker value={story.num} className="shrink-0 text-stat font-semibold text-teal" />
+                  <MorphNumber before={story.numBefore} value={story.num} className="shrink-0 text-stat font-semibold text-teal" />
                   <span className="text-heading font-medium text-text">{story.numNote}</span>
                 </span>
                 <span className="mt-auto flex flex-col gap-3.5 pt-1.5 text-body">

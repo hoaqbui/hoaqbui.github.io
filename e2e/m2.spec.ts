@@ -263,26 +263,45 @@ test.describe("Photos page is dark", () => {
   });
 });
 
-test("clicking empty hero space swaps the background; links don't", async ({ page }) => {
+test("the hero scans its photograph, then the Compo shot wipes in, plays once and holds", async ({ page }) => {
+  // user, 2026-10-19: Still → Shot hero, replacing the random network background
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("/");
-  const bg = page.locator("[data-hero-bg]");
-  await expect(bg).toBeAttached();
-  await page.waitForTimeout(300);
-  for (let i = 0; i < 3; i++) {
-    const before = await bg.getAttribute("data-hero-bg");
-    const box = (await page.locator("#top").boundingBox())!;
-    await page.mouse.click(box.x + 30, box.y + box.height - 30);
-    await expect(bg).not.toHaveAttribute("data-hero-bg", before!);
-  }
-  const before = await bg.getAttribute("data-hero-bg");
-  const [popup] = await Promise.all([
-    page.context().waitForEvent("page", { timeout: 5000 }).catch(() => null),
-    // the hero's one link (Compo), opened in a new tab so this page stays to be checked
-    page.locator("#top a").first().click({ modifiers: [process.platform === "darwin" ? "Meta" : "Control"] }),
-  ]);
-  await popup?.close();
-  await expect(bg).toHaveAttribute("data-hero-bg", before!);
+  const frame = page.locator("[data-hero-frame]");
+  const take = await frame.getAttribute("data-take");
+  expect(take).toBe("cz-prague-weir");
+  await expect(frame.locator("img").first()).toHaveAttribute("src", `/photos/${take}.webp`);
+  await expect(frame).toHaveAttribute("data-hero-frame", "ready", { timeout: 8000 });
+  // the server's photo is the first of the four fetched and the one shown
+  // (the Now section's lazy photos may follow; Chrome loads them early on a fast link)
+  const first = await page.evaluate(() =>
+    performance.getEntriesByType("resource").map((e) => e.name).find((n) => /\/photos\/(cz-34|cz-17|jp-28|cz-prague-weir)(-800)?\.webp/.test(n)),
+  );
+  expect(first).toContain(`/photos/${take}`);
+  expect(await frame.locator("img").first().evaluate((i: HTMLImageElement) => i.currentSrc)).toContain(`/photos/${take}`);
+  const video = frame.locator("video");
+  expect(await video.evaluate((v: HTMLVideoElement) => v.loop || !v.muted)).toBe(false);
+  // plays once, holds its last frame; the hero has no pause button
+  // (headless Chrome plays slower than real time, so jump to the last half second)
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => !v.paused && v.duration > 0)).toBe(true);
+  await video.evaluate((v: HTMLVideoElement) => (v.currentTime = v.duration - 0.4));
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.ended), { timeout: 8000 }).toBe(true);
+  await expect(page.locator("#top").getByRole("button", { name: /pause/i })).toHaveCount(0);
+  // the wipe moves with the keyboard, and letting go replays the shot
+  const range = frame.getByRole("slider", { name: /compare/i });
+  await range.focus();
+  const v0 = Number(await range.inputValue());
+  await page.keyboard.press("ArrowRight");
+  expect(Number(await range.inputValue())).toBe(v0 + 1);
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.ended)).toBe(false);
+});
+
+test("at the top of the page on a phone, nothing past About is highlighted", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await page.waitForTimeout(800);
+  const current = page.getByRole("navigation", { name: "Sections" }).locator("a[aria-current]");
+  expect(["About", null]).toContain(await current.count() ? await current.textContent() : null);
 });
 
 test("project diagrams read at normal size on a phone", async ({ page }) => {
@@ -537,7 +556,9 @@ test.describe("Now, with AI section", () => {
     const urls = shotRequests(page);
     await page.goto("/");
     await page.waitForTimeout(1000);
-    expect(urls).toEqual([]);
+    // the hero loads its own one take on purpose (2026-10-19); nothing else before #now
+    const take = await page.locator("[data-hero-frame]").getAttribute("data-take");
+    expect(urls.filter((u) => !u.includes(`/${take}.`))).toEqual([]);
     await page.locator("#now").scrollIntoViewIfNeeded();
     await expect.poll(() => urls.length).toBeGreaterThan(0);
   });
@@ -751,13 +772,17 @@ test.describe("From still to shot (card 73)", () => {
 });
 
 test.describe("magic UI touches (card 99)", () => {
-  test("magic: Impact numbers count up once the cards are on screen", async ({ page }) => {
+  test("magic: Impact numbers turn from before to after once the cards are on screen", async ({ page }) => {
+    // user, 2026-10-19: "1 plan" → "50+", replacing the count-up
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/");
-    const fifty = page.locator("#okr .tabular-nums");
-    await expect(fifty).toHaveText("0"); // armed below the fold
+    const stat = page.locator("#okr [data-morph]");
+    await expect(stat).toHaveAttribute("data-morph", "armed"); // below the fold: the before shows
+    await expect(stat.locator("[aria-hidden]")).toHaveText("1 plan");
     await page.locator("#okr").scrollIntoViewIfNeeded();
-    await expect(fifty).toHaveText("50", { timeout: 4000 });
+    await expect(stat).toHaveAttribute("data-morph", "play");
+    await expect(stat.locator("[data-morph-value]")).toHaveText("50+");
+    await expect.poll(() => stat.locator("[data-morph-value]").evaluate((el) => getComputedStyle(el).opacity), { timeout: 4000 }).toBe("1");
   });
 
   test("magic: the Now pipeline lights its steps in order", async ({ page }) => {
@@ -780,7 +805,9 @@ test.describe("magic UI touches (card 99)", () => {
   test("magic: reduced motion shows every end state at once", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/");
-    await expect(page.locator("#okr .tabular-nums")).toHaveText("50");
+    for (const [id, num] of [["greybox", "<1 hr"], ["scripting", "3+ yrs"], ["okr", "50+"], ["cosmetics", "~100"]]) {
+      await expect(page.locator(`#${id} [data-morph]`)).toHaveText(num); // the result alone, no before
+    }
     await expect(page.locator("[data-shot-pipeline] li > span:first-child").nth(3)).not.toHaveClass(/opacity-35/);
     const shimmer = await page.locator("#contact a[href*='docs.google.com']").first()
       .evaluate((el) => getComputedStyle(el, "::after").animationName);

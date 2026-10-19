@@ -40,8 +40,11 @@ test.describe("M1 P0 steps", () => {
     await page.goto("/");
     await page.waitForTimeout(500);
     expect(await page.evaluate(() => document.getAnimations().filter(a => a.playState === "running").length)).toBe(0);
+    // the hero shows its photograph and waits to be asked for the shot
+    await expect(page.locator("[data-hero-frame]")).toHaveAttribute("data-hero-frame", "photo");
+    await expect(page.getByRole("button", { name: "Play the shot" })).toBeVisible();
     const still = await page.evaluate(async () => {
-      const c = document.querySelector("[data-hero-bg] canvas") as HTMLCanvasElement | null;
+      const c = document.querySelector("[data-hero-shot-scan]") as HTMLCanvasElement | null;
       if (!c) return true;
       const before = c.toDataURL();
       await new Promise((r) => setTimeout(r, 1000));
@@ -53,19 +56,8 @@ test.describe("M1 P0 steps", () => {
   test("motion runs when allowed", async ({ page }) => {
     await page.goto("/");
     await page.waitForTimeout(600);
-    const moving = await page.evaluate(async () => {
-      if (document.getAnimations().some((a) => a.playState === "running")) return true;
-      const c = document.querySelector("[data-hero-bg] canvas") as HTMLCanvasElement | null;
-      if (!c) return false;
-      const before = c.toDataURL();
-      // Backgrounds drift slowly (half speed); poll for up to 2 s.
-      for (let i = 0; i < 10; i++) {
-        await new Promise((r) => setTimeout(r, 200));
-        if (c.toDataURL() !== before) return true;
-      }
-      return false;
-    });
-    expect(moving).toBe(true);
+    // the hero's pixel scan runs on its own once the frame is on screen
+    await expect(page.locator("[data-hero-shot-scan]")).toHaveAttribute("data-hero-shot-scan", "running");
   });
 
   test("no placeholder text ships", async ({ page }) => {

@@ -1,3 +1,7 @@
+"use client";
+
+import { useSequence } from "@/fx/useOnce";
+import { magic } from "@/fx/magic";
 import SectionLabel from "@/ui/SectionLabel";
 import { em } from "@/ui/em";
 import { profile } from "@/content/profile";
@@ -23,6 +27,7 @@ const stops = [
 
 // The thread that ties film, Riot and the AI work together.
 export default function HowIWork() {
+  const { ref: beamRef, active: beamAt } = useSequence<HTMLOListElement>(3, 450);
   return (
     <section id="how" className="scroll-mt-[155px] border-t border-border bg-well">
       <div className="mx-auto max-w-[1120px] px-6 py-20">
@@ -35,18 +40,31 @@ export default function HowIWork() {
               {em("The same **three moves**, in film, games, and now AI.")}
             </p>
           </div>
-          <ol className="m-0 mt-12 grid list-none gap-0 p-0 md:grid-cols-3 md:gap-8">
+          <ol ref={beamRef} className="m-0 mt-12 grid list-none gap-0 p-0 md:grid-cols-3 md:gap-8">
             {steps.map((s, i) => (
               <li key={s.title} className="flex gap-4 md:flex-col">
                 <span className="flex flex-col items-center md:items-start">
-                  <span className="flex size-12 shrink-0 items-center justify-center rounded-full border border-border bg-surface text-teal">
+                  <span
+                    className={`flex size-12 shrink-0 items-center justify-center rounded-full border border-border bg-surface text-teal transition-[opacity,transform,box-shadow] duration-500 ${
+                      beamAt < i ? "scale-75 opacity-30" : ""
+                    } ${beamAt === i ? magic.glow : ""}`}
+                  >
                     <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                       {s.icon}
                     </svg>
                   </span>
-                  {i < steps.length - 1 && <span aria-hidden="true" className="min-h-5 w-px flex-1 bg-border md:hidden" />}
+                  {i < steps.length - 1 && (
+                    <span aria-hidden="true" className="relative min-h-5 w-px flex-1 bg-border md:hidden">
+                      <span
+                        className="absolute inset-0 origin-top bg-teal transition-transform duration-500"
+                        style={{ transform: beamAt > i ? "scaleY(1)" : "scaleY(0)" }}
+                      />
+                    </span>
+                  )}
                 </span>
-                <span className="flex flex-col gap-1 pb-6 pt-2.5 md:p-0">
+                <span
+                  className={`flex flex-col gap-1 pb-6 pt-2.5 transition-opacity duration-500 md:p-0 ${beamAt < i ? "opacity-40" : ""}`}
+                >
                   <span className="text-heading font-medium">{s.title}</span>
                   <span className="text-body text-muted">{s.line}</span>
                 </span>

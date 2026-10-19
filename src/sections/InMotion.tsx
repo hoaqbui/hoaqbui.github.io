@@ -1,5 +1,7 @@
 "use client";
 
+import { useSequence } from "@/fx/useOnce";
+import { magic } from "@/fx/magic";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import SectionLabel from "@/ui/SectionLabel";
@@ -159,11 +161,14 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
     return () => observer.disconnect();
   }, []);
 
+  const { ref: beamRef, active: beamAt } = useSequence<HTMLOListElement>(PIPELINE.length);
+
   if (takes.length === 0) return null;
 
   const [lead, ...rest] = takes;
   const playing = allowed && !paused && inView;
   const showVideos = allowed && loaded;
+
 
   return (
     <section id="now" ref={ref} className="w-full border-t border-border py-20 md:py-24 text-text">
@@ -175,13 +180,18 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
               {em("The latest problem: **consistent video** out of generative models, tested on my own photographs.")}
             </p>
             {/* how each shot is made, as four steps instead of a paragraph (card 93) */}
-            <ol data-shot-pipeline className="m-0 mt-6 grid list-none grid-cols-2 gap-2 p-0 md:flex md:items-stretch md:gap-0">
+            <ol
+              ref={beamRef}
+              data-shot-pipeline
+              className="m-0 mt-6 grid list-none grid-cols-2 gap-2 p-0 md:flex md:items-stretch md:gap-0"
+            >
               {PIPELINE.map((step, i) => (
                 <li key={step.name} className="flex md:flex-1">
+                  {/* the beam reaches each step in turn: dim → lit, with a halo on arrival */}
                   <span
-                    className={`flex w-full flex-col gap-1 rounded-2xl border px-4 py-3 ${
+                    className={`flex w-full flex-col gap-1 rounded-2xl border px-4 py-3 transition-[opacity,transform,box-shadow] duration-500 ${
                       step.strong ? "border-teal" : "border-border"
-                    }`}
+                    } ${beamAt < i ? "translate-y-1 opacity-35" : ""} ${beamAt === i ? magic.glow : ""}`}
                   >
                     <span className={`text-heading font-medium ${step.strong ? "text-teal" : ""}`}>
                       <span className="mr-2 text-label text-muted">{i + 1}</span>
@@ -190,7 +200,14 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
                     <span className="text-label text-muted">{step.sub}</span>
                   </span>
                   {i < PIPELINE.length - 1 && (
-                    <span aria-hidden="true" className="hidden self-center px-2 text-teal md:block">→</span>
+                    <span
+                      aria-hidden="true"
+                      className={`hidden self-center px-2 text-teal transition-[opacity,transform] duration-300 md:block ${
+                        beamAt <= i ? "-translate-x-1 opacity-0" : ""
+                      }`}
+                    >
+                      →
+                    </span>
                   )}
                 </li>
               ))}

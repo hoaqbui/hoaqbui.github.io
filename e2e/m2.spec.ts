@@ -743,3 +743,41 @@ test.describe("From still to shot (card 73)", () => {
     }
   });
 });
+
+test.describe("magic UI touches (card 99)", () => {
+  test("magic: Impact numbers count up once the cards are on screen", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/");
+    const fifty = page.locator("#okr .tabular-nums");
+    await expect(fifty).toHaveText("0"); // armed below the fold
+    await page.locator("#okr").scrollIntoViewIfNeeded();
+    await expect(fifty).toHaveText("50", { timeout: 4000 });
+  });
+
+  test("magic: the Now pipeline lights its steps in order", async ({ page }) => {
+    await page.goto("/");
+    const steps = page.locator("[data-shot-pipeline] li > span:first-child");
+    await expect(steps.nth(3)).toHaveClass(/opacity-35/);
+    await page.locator("[data-shot-pipeline]").scrollIntoViewIfNeeded();
+    await expect(steps.nth(3)).not.toHaveClass(/opacity-35/, { timeout: 4000 });
+  });
+
+  test("magic: Résumé shimmers, an opened story traces its border, the sheet docks", async ({ page }) => {
+    await page.goto("/");
+    const anim = (sel: string, pseudo: string) =>
+      page.locator(sel).first().evaluate((el, p) => getComputedStyle(el, p).animationName, pseudo);
+    expect(await anim("#top a[href*='docs.google.com']", "::after")).not.toBe("none");
+    await page.locator("#work button#greybox").click();
+    expect(await anim("#work-story article", "::before")).not.toBe("none");
+  });
+
+  test("magic: reduced motion shows every end state at once", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/");
+    await expect(page.locator("#okr .tabular-nums")).toHaveText("50");
+    await expect(page.locator("[data-shot-pipeline] li > span:first-child").nth(3)).not.toHaveClass(/opacity-35/);
+    const shimmer = await page.locator("#top a[href*='docs.google.com']").first()
+      .evaluate((el) => getComputedStyle(el, "::after").animationName);
+    expect(shimmer).toBe("none");
+  });
+});

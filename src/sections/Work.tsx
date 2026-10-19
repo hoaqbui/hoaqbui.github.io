@@ -4,6 +4,8 @@ import SectionLabel from "@/ui/SectionLabel";
 import Flow from "@/ui/Flow";
 import WeekGrid from "@/ui/WeekGrid";
 import TileFigure from "@/ui/TileFigure";
+import NumberTicker from "@/fx/NumberTicker";
+import { magic } from "@/fx/magic";
 import { stories } from "@/content/stories";
 import { em } from "@/ui/em";
 import Reveal from "@/fx/Reveal";
@@ -65,7 +67,7 @@ export default function Work() {
                   <span>{story.years}</span>
                 </span>
                 <span className="flex flex-col gap-2.5 md:flex-row md:items-end md:gap-4">
-                  <span className="shrink-0 text-stat font-semibold text-teal">{story.num}</span>
+                  <NumberTicker value={story.num} className="shrink-0 text-stat font-semibold text-teal" />
                   <span className="text-heading font-medium text-text">{story.numNote}</span>
                 </span>
                 <span className="mt-auto flex flex-col gap-3.5 pt-1.5 text-body">
@@ -84,7 +86,7 @@ export default function Work() {
             style={{ "--story-at": openIndex * 2 + 1, "--story-at-md": (openIndex | 1) * 2 + 1 } as React.CSSProperties}
           >
             {open && (
-              <article className="rounded-[20px] border border-teal bg-surface p-6 md:p-8">
+              <article className={`rounded-[20px] border border-teal bg-surface p-6 md:p-8 ${magic.borderBeam}`}>
                 <p className="text-label text-muted">
                   <span>{open.talent}</span> <span className="ml-2 opacity-70">{open.years}</span>
                 </p>

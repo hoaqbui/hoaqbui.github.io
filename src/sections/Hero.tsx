@@ -1,5 +1,6 @@
 "use client";
 
+import { magic } from "@/fx/magic";
 import { Fragment } from "react";
 import Link from "next/link";
 import { LinkedInIcon, ResumeIcon } from "@/ui/Icons";
@@ -66,7 +67,7 @@ export default function Hero() {
               href={profile.resumePath}
               target="_blank"
               rel="noopener"
-              className="inline-flex min-h-[48px] items-center gap-2 rounded-full bg-teal px-5 font-medium text-surface shadow-sm transition-transform motion-safe:hover:scale-[1.03]"
+              className={`inline-flex min-h-[48px] items-center gap-2 rounded-full bg-teal px-5 font-medium text-surface shadow-sm transition-[transform,box-shadow] motion-safe:hover:scale-[1.03] ${magic.shimmer}`}
             >
               <ResumeIcon />
               Résumé

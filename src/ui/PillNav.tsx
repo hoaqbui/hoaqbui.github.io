@@ -3,7 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+  type MotionValue,
+} from "motion/react";
 import ThemeToggle from "@/ui/ThemeToggle";
 import { LinkedInIcon, MailIcon, ResumeIcon } from "@/ui/Icons";
 
@@ -17,6 +25,49 @@ const BASE_SHADOW =
   "0 1px 2px rgba(20,24,26,.06), 0 12px 32px rgba(20,24,26,.12)";
 const SCROLLED_SHADOW =
   "0 2px 6px rgba(20,24,26,.08), 0 24px 56px rgba(20,24,26,.18)";
+
+// One contact action in the sheet, macOS-Dock style (card 99): it swells as the pointer comes
+// near, and dips on press; with reduced motion it stays still.
+function DockAction({
+  mouseX,
+  label,
+  href,
+  icon,
+  tone,
+  external,
+}: {
+  mouseX: MotionValue<number>;
+  label: string;
+  href: string;
+  icon: React.ReactNode;
+  tone: string;
+  external?: boolean;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const reduce = useReducedMotion();
+  const distance = useTransform(mouseX, (x) => {
+    const box = ref.current?.getBoundingClientRect();
+    return box ? x - (box.left + box.width / 2) : Infinity;
+  });
+  const scale = useSpring(useTransform(distance, [-110, 0, 110], [1, 1.3, 1]), { stiffness: 380, damping: 26 });
+  return (
+    <a
+      href={href}
+      {...(external ? { target: "_blank", rel: "noopener" } : {})}
+      className="group flex flex-col items-center gap-1.5 rounded-2xl py-1"
+    >
+      <motion.span
+        ref={ref}
+        style={reduce ? undefined : { scale }}
+        whileTap={reduce ? undefined : { scale: 0.9 }}
+        className={`flex size-16 origin-bottom items-center justify-center rounded-full shadow-md ${tone}`}
+      >
+        {icon}
+      </motion.span>
+      <span className="text-label font-medium text-text">{label}</span>
+    </a>
+  );
+}
 
 type ContactInfo = { availability: string; email: string; resumePath: string; linkedin: string };
 
@@ -43,6 +94,7 @@ export default function PillNav({
   // (user bug report, 2026-10-19: About → Now flashed Impact and How I work on the way).
   const jumpingRef = useRef<(() => void) | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const dockX = useMotionValue(Infinity);
   const navRef = useRef<HTMLElement | null>(null);
 
   // the sheet closes on Escape or a tap outside the nav
@@ -307,26 +359,14 @@ export default function PillNav({
                 {contact.availability}
               </p>
               {/* three big targets, one word each (user, 2026-10-19: visual, few words) */}
-              <div className="mt-4 grid grid-cols-3 gap-2">
-                {[
-                  { label: "Email", href: `mailto:${contact.email}`, icon: <MailIcon size={26} />, tone: "bg-teal text-surface" },
-                  { label: "Résumé", href: contact.resumePath, icon: <ResumeIcon size={26} />, tone: "bg-amber text-[#1f2326]", external: true },
-                  { label: "LinkedIn", href: contact.linkedin, icon: <LinkedInIcon size={26} />, tone: "bg-[#0a66c2] text-white", external: true },
-                ].map((action) => (
-                  <a
-                    key={action.label}
-                    href={action.href}
-                    {...(action.external ? { target: "_blank", rel: "noopener" } : {})}
-                    className="group flex flex-col items-center gap-1.5 rounded-2xl py-1"
-                  >
-                    <span
-                      className={`flex size-16 items-center justify-center rounded-full shadow-md transition-transform motion-safe:group-hover:scale-105 ${action.tone}`}
-                    >
-                      {action.icon}
-                    </span>
-                    <span className="text-label font-medium text-text">{action.label}</span>
-                  </a>
-                ))}
+              <div
+                className="mt-4 grid grid-cols-3 gap-2"
+                onPointerMove={(e) => e.pointerType === "mouse" && dockX.set(e.clientX)}
+                onPointerLeave={() => dockX.set(Infinity)}
+              >
+                <DockAction mouseX={dockX} label="Email" href={`mailto:${contact.email}`} icon={<MailIcon size={26} />} tone="bg-teal text-surface" />
+                <DockAction mouseX={dockX} label="Résumé" href={contact.resumePath} icon={<ResumeIcon size={26} />} tone="bg-amber text-[#1f2326]" external />
+                <DockAction mouseX={dockX} label="LinkedIn" href={contact.linkedin} icon={<LinkedInIcon size={26} />} tone="bg-[#0a66c2] text-white" external />
               </div>
               <Link
                 href="/#contact"

@@ -195,6 +195,28 @@ test.describe("Homepage redesign", () => {
     await expect(page.locator('#work button[aria-expanded="true"]')).toHaveCount(1);
   });
 
+  test("a story opens right under its tile on a phone, under its row on desktop", async ({ page }) => {
+    // user bug report, 2026-10-18: the story opened below all four tiles
+    for (const [width, below] of [[390, ["cosmetics"]], [1280, []]] as const) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto("/");
+      await page.locator("#work button#okr").click();
+      const article = page.locator("#work-story article");
+      await expect(article).toBeVisible();
+      const gap = await page.evaluate(() =>
+        document.querySelector("#work-story article")!.getBoundingClientRect().top -
+        document.getElementById("okr")!.getBoundingClientRect().bottom);
+      expect(gap).toBeGreaterThanOrEqual(0);
+      expect(gap).toBeLessThan(40);
+      const after = await page.evaluate(() => {
+        const top = document.querySelector("#work-story article")!.getBoundingClientRect().top;
+        return [...document.querySelectorAll("#work button[aria-controls]")]
+          .filter((t) => t.getBoundingClientRect().top > top).map((t) => t.id);
+      });
+      expect(after).toEqual(below);
+    }
+  });
+
   test("How I work has three steps", async ({ page }) => {
     await page.goto("/");
     await expect(page.locator("#how").getByRole("heading", { level: 2, name: "How I work" })).toBeVisible();

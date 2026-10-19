@@ -4,7 +4,7 @@ const linkedin = "https://www.linkedin.com/in/hoaqbui/";
 
 export const profile: Profile = {
   name: "Hoa Bui",
-  roleLine: "Technical Product Manager · 18 years · Creative tools · AI workflows · Los Angeles",
+  roleLine: "Technical Product Manager · Los Angeles",
   headline: "Empowering **creative teams** to do their **best work**.",
   // studio marks under the headline, drawn in the text colour (height in px, ratio = width / height)
   logos: [

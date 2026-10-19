@@ -94,6 +94,7 @@ export default function PillNav({
   // (user bug report, 2026-10-19: About → Now flashed Impact and How I work on the way).
   const jumpingRef = useRef<(() => void) | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [tuckedAway, setTuckedAway] = useState(false);
   const dockX = useMotionValue(Infinity);
   const navRef = useRef<HTMLElement | null>(null);
 
@@ -125,8 +126,17 @@ export default function PillNav({
   }, []);
 
   useEffect(() => {
+    // The pill steps aside while the visitor reads down the page, and comes back on any scroll
+    // up, near the top or the end, and during a nav jump (user, 2026-10-19: less clutter).
+    let lastY = window.scrollY;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 24);
+      const y = window.scrollY;
+      setIsScrolled(y > 24);
+      const dy = y - lastY;
+      if (Math.abs(dy) < 6) return;
+      lastY = y;
+      const atEnd = y + window.innerHeight >= document.documentElement.scrollHeight - 40;
+      setTuckedAway(dy > 0 && y > 120 && !atEnd && !jumpingRef.current);
     };
 
     handleScroll();
@@ -227,8 +237,10 @@ export default function PillNav({
     ? { duration: 0 }
     : SPRING_TRANSITION;
 
+  const hidden = tuckedAway && !sheetOpen;
   const pillAnimate = {
-    y: shouldReduceMotion ? 0 : isScrolled ? (isDesktop ? -2 : 0) : 0,
+    // off the screen edge it sits on: below on phones, above on desktop
+    y: hidden ? (isDesktop ? -96 : 120) : shouldReduceMotion ? 0 : isScrolled ? (isDesktop ? -2 : 0) : 0,
     scale: shouldReduceMotion ? 1 : isScrolled ? 1.02 : 1,
     boxShadow: isScrolled ? SCROLLED_SHADOW : BASE_SHADOW,
   };
@@ -249,6 +261,7 @@ export default function PillNav({
       <nav
         ref={navRef}
         aria-label="Sections"
+        onFocusCapture={() => setTuckedAway(false)}
         className="fixed z-50 left-1/2 -translate-x-1/2 w-max max-w-[calc(100vw-16px)] max-md:bottom-[calc(16px+env(safe-area-inset-bottom))] md:top-4"
       >
         <motion.div

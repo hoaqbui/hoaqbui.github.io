@@ -2,7 +2,6 @@
 
 import { Fragment } from "react";
 import Link from "next/link";
-import { LinkedInIcon } from "@/ui/Icons";
 import { useMotion } from "@/fx/useMotion";
 import HeroBackground from "@/fx/HeroBackground";
 import { profile } from "@/content/profile";
@@ -25,21 +24,7 @@ export default function Hero() {
       <HeroBackground running={running} />
       <Parallax className="relative z-10 w-full max-w-[1120px] px-6">
         <div className="max-w-3xl">
-          {/* the name, with LinkedIn's mark beside it; Résumé lives in the nav Contact sheet (user, 2026-10-19) */}
-          <div className="flex items-center justify-between gap-3 md:justify-start md:gap-6">
-            <p className="text-heading font-semibold">{profile.name}</p>
-            <div className="flex items-center gap-2">
-              <a
-                href={profile.linkedin}
-                target="_blank"
-                rel="noopener"
-                aria-label="LinkedIn"
-                className="inline-flex size-11 items-center justify-center rounded-full bg-[#0a66c2] text-white shadow-sm transition-transform motion-safe:hover:scale-[1.06]"
-              >
-                <LinkedInIcon size={20} />
-              </a>
-            </div>
-          </div>
+          <p className="text-heading font-semibold">{profile.name}</p>
           <p className="mt-2 text-body text-muted">
             {profile.roleLine.split(" · ").map((part, i, all) => (
               <Fragment key={part}>
@@ -56,7 +41,7 @@ export default function Hero() {
           <div
             role="list"
             aria-label="Studios"
-            className="mt-8 flex items-center gap-x-6 text-muted opacity-75 md:gap-x-12 [[data-theme=dark]_&]:opacity-95"
+            className="mt-9 flex items-center gap-x-6 text-muted opacity-55 md:gap-x-12 [[data-theme=dark]_&]:opacity-80"
           >
             {profile.logos.map((logo) => (
               <span
@@ -77,7 +62,7 @@ export default function Hero() {
           {/* the AI work is far down the page; point at it from the first screen (Codex UX pass) */}
           <Link
             href="/building/intent-to-video/"
-            className="mt-6 inline-flex min-h-[44px] items-center text-body text-muted hover:text-text"
+            className="mt-7 inline-flex min-h-[44px] items-center text-body text-muted hover:text-text"
           >
             Now building&nbsp;<span className="font-medium text-teal">Compo</span>, an AI video workflow →
           </Link>

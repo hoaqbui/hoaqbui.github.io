@@ -8,12 +8,11 @@ test.describe("M1 P0 steps", () => {
     const top = page.locator("#top");
     const who = top.getByText("Hoa Bui").first();
     const role = top.getByText("Technical Product Manager").first();
-    const linkedinLink = top.locator('a[href="https://www.linkedin.com/in/hoaqbui/"]').first();
-    // The hero keeps LinkedIn; Résumé moved to the nav Contact sheet (user, 2026-10-19),
-    // still the public Doc itself, never an email draft (tester, 2026-10-16).
-    const resumeLink = page.getByRole("navigation", { name: "Sections" }).getByRole("button", { name: "Contact" });
+    // Résumé, LinkedIn and email all live in the nav Contact sheet (user, 2026-10-19);
+    // Résumé is still the public Doc itself, never an email draft (tester, 2026-10-16).
+    const contact = page.getByRole("navigation", { name: "Sections" }).getByRole("button", { name: "Contact" });
 
-    for (const locator of [who, role, linkedinLink, resumeLink]) {
+    for (const locator of [who, role, contact]) {
       await expect(locator).toBeVisible();
       const box = await locator.boundingBox();
       expect(box).not.toBeNull();

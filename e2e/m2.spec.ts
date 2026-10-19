@@ -273,8 +273,9 @@ test("clicking empty hero space swaps the background; links don't", async ({ pag
   }
   const before = await bg.getAttribute("data-hero-bg");
   const [popup] = await Promise.all([
-    page.waitForEvent("popup").catch(() => null),
-    page.locator("#top").getByRole("link", { name: /LinkedIn/ }).click(),
+    page.context().waitForEvent("page", { timeout: 5000 }).catch(() => null),
+    // the hero's one link (Compo), opened in a new tab so this page stays to be checked
+    page.locator("#top a").first().click({ modifiers: [process.platform === "darwin" ? "Meta" : "Control"] }),
   ]);
   await popup?.close();
   await expect(bg).toHaveAttribute("data-hero-bg", before!);
@@ -781,4 +782,16 @@ test.describe("magic UI touches (card 99)", () => {
       .evaluate((el) => getComputedStyle(el, "::after").animationName);
     expect(shimmer).toBe("none");
   });
+});
+
+test("the nav pill tucks away while scrolling down and returns on scroll up", async ({ page }) => {
+  // user, 2026-10-19: the pill floating over content read as clutter
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  const pill = page.locator('nav[aria-label="Sections"] > div').first();
+  const top = async () => (await pill.boundingBox())!.y;
+  await page.mouse.wheel(0, 900);
+  await expect.poll(top).toBeGreaterThan(844);
+  await page.mouse.wheel(0, -200);
+  await expect.poll(top).toBeLessThan(844);
 });

@@ -25,7 +25,7 @@ export default function ProjectsIndex() {
         </p>
       </div>
 
-      <ul className="mt-12 grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-6">
+      <ul className="mt-12 grid grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] gap-6">
         {projects.map((project) => (
           <li key={project.id} className="flex">
             <article id={project.id} className="flex w-full flex-col rounded-3xl border border-border bg-surface p-6">

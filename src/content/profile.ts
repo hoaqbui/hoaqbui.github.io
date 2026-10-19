@@ -9,7 +9,7 @@ export const profile: Profile = {
   // studio marks under the headline, drawn in the text colour (height in px, ratio = width / height)
   logos: [
     { name: "Lucasfilm", src: "/logos/lucasfilm.svg", height: 30, ratio: 1000 / 328.8 },
-    { name: "Pixar", src: "/logos/pixar.svg", height: 22, ratio: 667 / 108 },
+    { name: "Pixar", src: "/logos/pixar.svg", height: 16, ratio: 467 / 64 },
     { name: "Riot Games", src: "/logos/riot.svg", height: 32, ratio: 264.6 / 117.6 },
   ],
   email,

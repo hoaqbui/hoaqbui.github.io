@@ -42,7 +42,7 @@ export default function Work() {
     : null;
 
   return (
-    <section id="work" className="mx-auto max-w-[1120px] px-6 pt-10 pb-20 md:pt-14">
+    <section id="work" className="mx-auto max-w-[1120px] px-6 pt-16 pb-20 md:pt-24">
       <SectionLabel as="h2">Impact</SectionLabel>
 
       <Reveal>

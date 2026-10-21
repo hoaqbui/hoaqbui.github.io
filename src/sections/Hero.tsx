@@ -23,11 +23,13 @@ const take: HeroTake = {
 // Still → Shot frame beside it (user, 2026-10-19; replaces the random network background).
 // The proof numbers live in Work; the Latest chip left the hero (user, 2026-10-18).
 // The numbers and their stories live in Work, so they appear once.
+// The landing owns the whole first screen, content centered, nothing of the next section
+// peeking in (user, 2026-10-20: more white space; reverses the Codex "tighter hero" fix).
 export default function Hero() {
   return (
     <section
       id="top"
-      className="relative flex flex-col items-center justify-center pt-16 pb-6 md:min-h-[540px] md:pt-24 md:pb-12"
+      className="relative flex min-h-[100svh] flex-col items-center justify-center pt-20 pb-24 md:pt-28 md:pb-20"
     >
       <div className="grid w-full max-w-[1120px] items-center gap-7 px-6 md:grid-cols-[1fr_1.05fr] md:gap-10">
         <div className="max-w-3xl">

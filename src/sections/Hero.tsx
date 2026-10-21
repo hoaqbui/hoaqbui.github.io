@@ -5,6 +5,7 @@ import Link from "next/link";
 import { profile } from "@/content/profile";
 import { photos } from "@/content/photos";
 import { em } from "@/ui/em";
+import { LinkedInIcon } from "@/ui/Icons";
 import HeroShot, { type HeroTake } from "@/ui/HeroShot";
 
 // the hero's take: the Prague weir, whose moving water shows the photo → shot change best
@@ -31,6 +32,17 @@ export default function Hero() {
       id="top"
       className="relative flex min-h-[100svh] flex-col items-center justify-center pt-20 pb-24 md:pt-28 md:pb-20"
     >
+      {/* LinkedIn at the landing's top right (user, 2026-10-20); on phones it sits left of the
+          theme toggle, which owns the corner. It scrolls away with the landing. */}
+      <a
+        href={profile.linkedin}
+        target="_blank"
+        rel="noopener"
+        aria-label="LinkedIn"
+        className="absolute right-[68px] top-[calc(12px+env(safe-area-inset-top))] z-20 inline-flex size-11 items-center justify-center rounded-full bg-[#0a66c2] text-white shadow-sm transition-transform motion-safe:hover:scale-[1.06] md:right-6 md:top-5"
+      >
+        <LinkedInIcon size={20} />
+      </a>
       <div className="grid w-full max-w-[1120px] items-center gap-7 px-6 md:grid-cols-[1fr_1.05fr] md:gap-10">
         <div className="max-w-3xl">
           <p className="text-heading font-semibold">{profile.name}</p>

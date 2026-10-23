@@ -26,7 +26,7 @@ function Caption({ photo }: { photo: Photo }) {
   return (
     <div data-photo-caption className="mt-4 text-center">
       <p className="text-label text-amber-text">{photo.place}</p>
-      <h2 className="mt-1 text-heading font-medium text-text">{photo.title}</h2>
+      <h2 className="mt-1 text-heading text-text">{photo.title}</h2>
     </div>
   );
 }

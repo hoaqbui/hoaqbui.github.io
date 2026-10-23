@@ -12,7 +12,7 @@ export default function Contact() {
         className="mx-auto min-h-[70svh] max-w-[1120px] border-t border-border px-6 pt-24 pb-32 md:pb-24"
       >
         <blockquote className="mb-16 max-w-[720px]">
-          <p className="text-title font-medium text-text">
+          <p className="text-title text-text">
             “{profile.quote.text}”
           </p>
           <footer className="mt-3 text-label text-muted">{profile.quote.by}, on the map tools</footer>
@@ -20,7 +20,7 @@ export default function Contact() {
         <p className="text-body text-muted">{profile.openTo}</p>
         <a
           href={`mailto:${profile.email}`}
-          className="mt-4 inline-flex min-h-[44px] items-center text-title font-medium text-text break-all"
+          className="mt-4 inline-flex min-h-[44px] items-center text-title text-text break-all"
         >
           {profile.email}
         </a>
@@ -29,7 +29,7 @@ export default function Contact() {
             href={profile.resumePath}
             target="_blank"
             rel="noopener"
-            className={`inline-flex min-h-[48px] items-center gap-2 rounded-full bg-teal px-5 font-medium text-surface shadow-sm transition-[transform,box-shadow] motion-safe:hover:scale-[1.03] ${magic.shimmer}`}
+            className={`inline-flex min-h-[48px] items-center gap-2 rounded-full bg-teal px-5 text-body font-medium text-surface shadow-sm transition-[transform,box-shadow] motion-safe:hover:scale-[1.03] ${magic.shimmer}`}
           >
             <ResumeIcon />
             Résumé
@@ -52,7 +52,7 @@ export default function Contact() {
           >
             <SaveContactIcon size={22} />
           </a>
-          <Link href="/building/" className="ml-2 inline-flex min-h-[44px] items-center font-medium text-teal">
+          <Link href="/building/" className="ml-2 inline-flex min-h-[44px] items-center text-body font-medium text-teal">
             Projects
           </Link>
         </div>

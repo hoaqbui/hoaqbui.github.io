@@ -38,7 +38,7 @@ export default function HowIWork() {
             <SectionLabel as="h2" className="flex-[0_0_200px]">
               How I work
             </SectionLabel>
-            <p className="max-w-[640px] flex-[1_1_420px] text-title font-semibold">
+            <p className="max-w-[640px] flex-[1_1_420px] text-title">
               {em("The same **three moves**, in film, games, and now AI.")}
             </p>
           </div>
@@ -67,7 +67,7 @@ export default function HowIWork() {
                 <span
                   className={`flex flex-col gap-1 pb-6 pt-2.5 transition-opacity duration-500 md:p-0 ${beamAt < i ? "opacity-40" : ""}`}
                 >
-                  <span className="text-heading font-medium">{s.title}</span>
+                  <span className="text-heading">{s.title}</span>
                   <span className="text-body text-muted">{s.line}</span>
                 </span>
               </li>
@@ -102,7 +102,7 @@ export default function HowIWork() {
                           }}
                         />
                       ) : (
-                        <span className="text-heading font-medium text-teal">AI</span>
+                        <span className="text-heading text-teal">AI</span>
                       )}
                     </span>
                     <span className="text-label text-muted">{stop.caption}</span>

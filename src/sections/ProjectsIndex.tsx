@@ -16,7 +16,7 @@ export default function ProjectsIndex() {
       </Link>
       <div className="mt-8 max-w-[720px]">
         <SectionLabel as="h1">Projects</SectionLabel>
-        <p className="mt-4 text-title font-semibold">
+        <p className="mt-4 text-title">
           What I’m building with AI.
         </p>
         <p className="mt-4 text-lead text-muted">
@@ -40,7 +40,7 @@ export default function ProjectsIndex() {
                   {project.status}
                 </span>
               )}
-              <h2 className="mt-4 text-heading font-medium text-text">{project.title}</h2>
+              <h2 className="mt-4 text-heading text-text">{project.title}</h2>
               <p className="mt-2 text-body text-muted">{project.body}</p>
               {project.why && !project.why.startsWith("[") && (
                 <p className="mt-3 text-body text-muted">Why: {project.why}</p>

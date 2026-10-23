@@ -39,7 +39,7 @@ export default function StillToShot({ takes }: { takes: Take[] }) {
   return (
     <section ref={ref} data-still-to-shot className="w-full text-text">
       <h2 className="text-label text-muted">From still to shot</h2>
-      <h3 className="mt-3 text-title font-semibold">
+      <h3 className="mt-3 text-title">
         My photographs, directed as six-second shots.
       </h3>
       <p className="mt-3 max-w-[680px] text-lead">

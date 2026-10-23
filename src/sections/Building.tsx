@@ -67,7 +67,7 @@ export default function Building() {
         <div className="flex flex-wrap gap-12 items-center">
         <div className="flex-[1_1_340px] max-w-[420px] min-w-0">
           <SectionLabel>Building</SectionLabel>
-          <h2 className="mt-4 text-title font-semibold">
+          <h2 className="mt-4 text-title">
             Three things I’m building with agents.
           </h2>
           <p className="mt-4 text-lead text-muted">
@@ -152,7 +152,7 @@ export default function Building() {
                     </span>
                   </div>
                 )}
-                <h3 className="mt-4 text-heading font-medium text-text">
+                <h3 className="mt-4 text-heading text-text">
                   {project.title}
                 </h3>
                 <p className="mt-2 text-body text-muted">

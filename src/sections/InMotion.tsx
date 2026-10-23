@@ -98,7 +98,7 @@ function Take({
               className="pointer-events-none absolute top-1/2 flex size-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#0d0f10] shadow-lg"
               style={{ left: `clamp(22px, ${wipe}%, calc(100% - 22px))` }}
             >
-              <span className="text-base leading-none">↔</span>
+              <span className="text-body leading-none">↔</span>
             </div>
             <input
               type="range"
@@ -176,7 +176,7 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
         <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-[720px]">
             <SectionLabel as="h2">Now, with AI</SectionLabel>
-            <p className="mt-4 text-title font-semibold">
+            <p className="mt-4 text-title">
               {em("The latest problem: **consistent video** out of generative models, tested on my own photographs.")}
             </p>
             {/* how each shot is made, as four steps instead of a paragraph (card 93) */}
@@ -193,7 +193,7 @@ export default function InMotion({ takes }: { takes: MotionPhoto[] }) {
                       step.strong ? "border-teal" : "border-border"
                     } ${beamAt < i ? "translate-y-1 opacity-35" : ""} ${beamAt === i ? magic.glow : ""}`}
                   >
-                    <span className={`text-heading font-medium ${step.strong ? "text-teal" : ""}`}>
+                    <span className={`text-heading ${step.strong ? "text-teal" : ""}`}>
                       <span className="mr-2 text-label text-muted">{i + 1}</span>
                       {step.name}
                     </span>

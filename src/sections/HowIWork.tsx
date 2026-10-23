@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { useSequence } from "@/fx/useOnce";
 import { magic } from "@/fx/magic";
 import SectionLabel from "@/ui/SectionLabel";
@@ -71,6 +73,14 @@ export default function HowIWork() {
               </li>
             ))}
           </ol>
+          <div className="mt-8">
+            <Link
+              href="/prototyping/"
+              className="text-body font-medium text-teal hover:underline"
+            >
+              See it on one build: 53 mockups in 4 days →
+            </Link>
+          </div>
           <div data-career-timeline className="mt-12 border-t border-border pt-8">
             <p className="text-label text-muted">Same moves, every stop</p>
             <ol className="m-0 mt-5 grid list-none grid-cols-2 gap-x-6 gap-y-6 p-0 md:grid-cols-4">

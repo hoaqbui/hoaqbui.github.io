@@ -273,7 +273,7 @@ export default function PillNav({
           animate={pillAnimate}
           transition={pillTransition}
         >
-          {items.map((item, index) => {
+          {items.map((item) => {
             const isHash = item.href.startsWith("#") || item.href.startsWith("/#");
             const isActive = isHome
               ? isHash && activeId === item.id
@@ -296,9 +296,7 @@ export default function PillNav({
             const LinkComponent = isExternal ? "a" : Link;
             const itemClass = `relative ${
               isResume ? "hidden md:inline-flex" : "inline-flex"
-            } min-h-[44px] items-center whitespace-nowrap px-1.5 min-[360px]:px-2 md:px-3.5 text-[13px] md:text-sm transition-colors duration-300 ease-in-out motion-reduce:transition-none ${
-              index === 0 ? "font-semibold" : ""
-            } ${textColor}`;
+            } min-h-[44px] items-center whitespace-nowrap px-1.5 min-[360px]:px-2 md:px-3.5 text-label font-medium transition-colors duration-300 ease-in-out motion-reduce:transition-none ${textColor}`;
             const highlight = isActive && (
               <motion.span
                 layoutId="pill-active-highlight"

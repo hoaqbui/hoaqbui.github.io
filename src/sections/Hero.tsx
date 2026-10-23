@@ -45,7 +45,7 @@ export default function Hero() {
       </a>
       <div className="grid w-full max-w-[1120px] items-center gap-7 px-6 md:grid-cols-[1fr_1.05fr] md:gap-10">
         <div className="max-w-3xl">
-          <p className="text-heading font-semibold">{profile.name}</p>
+          <p className="text-heading">{profile.name}</p>
           <p className="mt-2 text-body text-muted">
             {profile.roleLine.split(" · ").map((part, i, all) => (
               <Fragment key={part}>
@@ -56,7 +56,7 @@ export default function Hero() {
               </Fragment>
             ))}
           </p>
-          <h1 className="mt-5 text-balance text-display font-semibold">
+          <h1 className="mt-5 text-balance text-display">
             {em(profile.headline)}
           </h1>
           <div

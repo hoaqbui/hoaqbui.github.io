@@ -67,8 +67,8 @@ export default function Work() {
                   <span>{story.years}</span>
                 </span>
                 <span className="flex flex-col gap-2.5 md:flex-row md:items-end md:gap-4">
-                  <MorphNumber before={story.numBefore} value={story.num} className="shrink-0 text-stat font-semibold text-teal" />
-                  <span className="text-heading font-medium text-text">{story.numNote}</span>
+                  <MorphNumber before={story.numBefore} value={story.num} className="shrink-0 text-stat text-teal" />
+                  <span className="text-heading text-text">{story.numNote}</span>
                 </span>
                 <span className="mt-auto flex flex-col gap-3.5 pt-1.5 text-body">
                   <TileFigure fig={story.tile} label={story.how} />
@@ -90,7 +90,7 @@ export default function Work() {
                 <p className="text-label text-muted">
                   <span>{open.talent}</span> <span className="ml-2 opacity-70">{open.years}</span>
                 </p>
-                <h3 className="mt-2 max-w-[820px] text-title font-semibold text-text">
+                <h3 className="mt-2 max-w-[820px] text-title text-text">
                   {em(open.title)}
                 </h3>
                 {/* whose work it was, before how it went (Codex UX pass, 2026-10-19) */}
@@ -99,7 +99,7 @@ export default function Work() {
                   {open.pictureFirst && picture}
                   <div className="flex max-w-[760px] flex-col gap-4">
                     <p className="m-0 text-lead text-text">{open.body}</p>
-                    <p className="m-0 text-lead font-medium text-text">{open.worth}</p>
+                    <p className="m-0 text-lead text-text">{open.worth}</p>
                     {open.quote && (
                       <blockquote className="m-0 border-l-2 border-teal pl-4">
                         <p className="m-0 text-lead text-text">“{open.quote.text}”</p>

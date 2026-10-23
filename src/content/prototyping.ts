@@ -6,9 +6,26 @@ export type PrototypingFrame = {
   width: number;
   height: number;
   caption: string;
-  mark?: "kept" | "cut";
-  why?: string;
   hero?: boolean;
+};
+
+export type PrototypingDecisionMark = {
+  frame: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+};
+
+export type PrototypingDecision = {
+  id: string;
+  title: string;
+  when: string;
+  before: PrototypingFrame[];
+  after: PrototypingFrame[];
+  mark: PrototypingDecisionMark;
+  reason: string;
+  changed: string;
 };
 
 export type PrototypingRow = {
@@ -17,16 +34,16 @@ export type PrototypingRow = {
   title: string;
   when: string;
   decided: string;
-  callout?: string;
   frames: PrototypingFrame[];
 };
 
 export type PrototypingCopy = {
   title: string;
+  opening: string;
   thesis: string;
   count: string;
   intro: string;
-  callouts: Record<string, string>;
+  rows_intro: string;
   aura_intro: string;
   how: string[];
   close: {
@@ -46,26 +63,21 @@ export type PrototypingHeroImage = {
 
 export const copy: PrototypingCopy = {
   "title": "How I prototype",
+  "opening": "I like to work directly with AI.",
   "thesis": "AI made a mockup cost minutes, so the work moved from making ideas to choosing between them.",
   "count": "53 mockups · 4 days · live on a real Home Assistant",
-  "intro": "Homeboard is a dashboard for my house. These are its rounds, as a contact sheet: what I kept is circled, what I cut is struck, with the reason.",
-  "callouts": {
-    "finals": "The mockups changed the spec. Seeing a top-down concept made 3D + Top a requirement.",
-    "round4": "From here, rounds were scored. Five jobs, measured on screen: the layouts tied on three and split on two.",
-    "live": "The mockup became the product. Daylight runs on my real Home Assistant; demo mode stays the default."
-  },
+  "intro": "Homeboard is a dashboard for my house. Three decisions shaped it; every round behind them follows.",
+  "rows_intro": "All 53, round by round.",
   "aura_intro": "Aura is the tight loop: one concept image to a canonical look in about an hour.",
   "how": [
     "Options first: the agent lays out trade-offs and recommends; I pick.",
     "Finalists are frozen. A change is a new mockup, so rounds stay comparable.",
-    "Done means the check was re-run, never a worker's say-so.",
-    "A second model from another vendor reviews the first one's work.",
-    "When the change fits in one sentence, I skip all of this."
+    "Done means the check was re-run, never a worker's say-so."
   ],
   "close": {
     "heading": "Have an idea that needs fifty versions?",
     "email_subject": "How I prototype",
-    "back": "Back to Flamme"
+    "back": "Back to home"
   },
   "note": "The house in these frames is a placeholder. The UI and the rounds are real."
 };
@@ -76,6 +88,126 @@ export const heroImage: PrototypingHeroImage = {
   "height": 750,
   "alt": "m5 · the dogs, to scale, napping in the living room"
 };
+
+export const decisions: PrototypingDecision[] = [
+  {
+    "id": "d1",
+    "title": "Layout before looks",
+    "when": "Oct 18 23:30 → Oct 19 00:33",
+    "before": [
+      {
+        "id": "d1-a",
+        "src": "/prototyping/d1-a.webp",
+        "width": 960,
+        "height": 600,
+        "caption": "A: the map with tiles beside it"
+      }
+    ],
+    "after": [
+      {
+        "id": "d1-b",
+        "src": "/prototyping/d1-b.webp",
+        "width": 960,
+        "height": 600,
+        "caption": "B: the map full-screen, controls in a drawer"
+      }
+    ],
+    "mark": {
+      "frame": "d1-b",
+      "x": 1,
+      "y": 8,
+      "w": 27,
+      "h": 91
+    },
+    "reason": "I check the house from my phone as much as my desk. A put tiles next to the map, and on a phone the map lost. B keeps the house full-screen and pulls the controls up when I need them. Once that was settled, judging looks got easy.",
+    "changed": "Every later round kept the plan full-screen, so looks were compared on one layout."
+  },
+  {
+    "id": "d2",
+    "title": "The mockups rewrote the spec",
+    "when": "Oct 20, 16:08",
+    "before": [
+      {
+        "id": "d2-mini",
+        "src": "/prototyping/d2-mini.webp",
+        "width": 960,
+        "height": 600,
+        "caption": "Miniature: a house you look into"
+      },
+      {
+        "id": "d2-atlas",
+        "src": "/prototyping/d2-atlas.webp",
+        "width": 960,
+        "height": 600,
+        "caption": "Atlas: a house you look down on"
+      }
+    ],
+    "after": [
+      {
+        "id": "d2-top",
+        "src": "/prototyping/d2-top.webp",
+        "width": 960,
+        "height": 600,
+        "caption": "One model, 3D or Top, in the shipped look"
+      }
+    ],
+    "mark": {
+      "frame": "d2-top",
+      "x": 42,
+      "y": 88,
+      "w": 11,
+      "h": 8
+    },
+    "reason": "Another session handed me two pictures of a house: one you look into, one you look down on. I'd never have written 'both' in a spec. Seeing them side by side, I knew I wanted to find a room in 3D and check every room from above, in one model.",
+    "changed": "3D + Top became a requirement; the switch shipped in the next two mockups within 30 minutes."
+  },
+  {
+    "id": "d3",
+    "title": "The answer came from outside",
+    "when": "Oct 20 → Oct 21",
+    "before": [
+      {
+        "id": "d3-glass",
+        "src": "/prototyping/d3-glass.webp",
+        "width": 556,
+        "height": 896,
+        "caption": "Spatial glass"
+      },
+      {
+        "id": "d3-hud",
+        "src": "/prototyping/d3-hud.webp",
+        "width": 571,
+        "height": 892,
+        "caption": "Holographic HUD"
+      },
+      {
+        "id": "d3-ai",
+        "src": "/prototyping/d3-ai.webp",
+        "width": 960,
+        "height": 600,
+        "caption": "Ambient AI"
+      }
+    ],
+    "after": [
+      {
+        "id": "d3-live",
+        "src": "/prototyping/d3-live.webp",
+        "width": 960,
+        "height": 600,
+        "caption": "Daylight, running on my real Home Assistant (demo data shown)"
+      }
+    ],
+    "mark": {
+      "frame": "d3-live",
+      "x": 17,
+      "y": 36,
+      "w": 17,
+      "h": 20
+    },
+    "reason": "After fifty mockups the agents had given me plenty of options and none of them was mine. The look came from a set of reference images. I asked for a prototype of that, and it ran on my real house the same day.",
+    "changed": "The mockup became the product: Daylight drives my real Home Assistant, with demo mode as the default."
+  }
+];
 
 export const rows: PrototypingRow[] = [
   {
@@ -90,26 +222,21 @@ export const rows: PrototypingRow[] = [
         "src": "/prototyping/r0-plan.webp",
         "width": 465,
         "height": 640,
-        "caption": "Three clickable directions: plan, contact sheet, appliance",
-        "mark": "cut",
-        "why": "Felt like a utility panel, not a home"
+        "caption": "Three clickable directions: plan, contact sheet, appliance"
       },
       {
         "id": "r0-ios",
         "src": "/prototyping/r0-ios.webp",
         "width": 640,
         "height": 400,
-        "caption": "iOS-style: Home, Live Activity, Lock Screen",
-        "mark": "cut",
-        "why": "Borrowed iOS chrome; nothing of its own"
+        "caption": "iOS-style: Home, Live Activity, Lock Screen"
       },
       {
         "id": "r0-glass",
         "src": "/prototyping/r0-glass.webp",
         "width": 640,
         "height": 400,
-        "caption": "Glance and drill in Liquid Glass, with ⌘K",
-        "mark": "kept"
+        "caption": "Glance and drill in Liquid Glass, with ⌘K"
       }
     ]
   },
@@ -125,17 +252,14 @@ export const rows: PrototypingRow[] = [
         "src": "/prototyping/r0b-story.webp",
         "width": 640,
         "height": 400,
-        "caption": "Storybook: watercolor, comic panels, 8-bit, with a pup mascot",
-        "mark": "cut",
-        "why": "Charming once, tiring daily"
+        "caption": "Storybook: watercolor, comic panels, 8-bit, with a pup mascot"
       },
       {
         "id": "r0b-3d",
         "src": "/prototyping/r0b-3d.webp",
-        "width": 438,
+        "width": 441,
         "height": 640,
-        "caption": "The house in 3D: orbit, exploded, plan, rooms",
-        "mark": "kept"
+        "caption": "The house in 3D: orbit, exploded, plan, rooms"
       }
     ]
   },
@@ -151,17 +275,14 @@ export const rows: PrototypingRow[] = [
         "src": "/prototyping/r1-a.webp",
         "width": 384,
         "height": 325,
-        "caption": "A: map plus tiles",
-        "mark": "cut",
-        "why": "Tiles shrank the plan; B keeps it full-screen"
+        "caption": "A: map plus tiles"
       },
       {
         "id": "r1-b",
         "src": "/prototyping/r1-b.webp",
         "width": 312,
         "height": 640,
-        "caption": "B: map plus a drag-up drawer",
-        "mark": "kept"
+        "caption": "B: map plus a drag-up drawer"
       }
     ]
   },
@@ -177,35 +298,28 @@ export const rows: PrototypingRow[] = [
         "src": "/prototyping/r1b-night.webp",
         "width": 312,
         "height": 640,
-        "caption": "Night glass",
-        "mark": "cut",
-        "why": "Lost to visionOS glass, the owner's pick"
+        "caption": "Night glass"
       },
       {
         "id": "r1b-holo",
         "src": "/prototyping/r1b-holo.webp",
         "width": 312,
         "height": 640,
-        "caption": "Holo blueprint",
-        "mark": "cut",
-        "why": "Sci-fi read over a calm home"
+        "caption": "Holo blueprint"
       },
       {
         "id": "r1b-clay",
         "src": "/prototyping/r1b-clay.webp",
         "width": 312,
         "height": 640,
-        "caption": "Clay miniature",
-        "mark": "cut",
-        "why": "Lost to visionOS glass, the owner's pick"
+        "caption": "Clay miniature"
       },
       {
         "id": "r1b-vision",
         "src": "/prototyping/r1b-vision.webp",
         "width": 444,
         "height": 273,
-        "caption": "visionOS house with Replay, Ask and X-ray",
-        "mark": "kept"
+        "caption": "visionOS house with Replay, Ask and X-ray"
       }
     ]
   },
@@ -221,26 +335,21 @@ export const rows: PrototypingRow[] = [
         "src": "/prototyping/r2-hearth.webp",
         "width": 353,
         "height": 640,
-        "caption": "m2 · Hearth",
-        "mark": "cut",
-        "why": "Lost to Daylight in the same round"
+        "caption": "m2 · Hearth"
       },
       {
         "id": "r2-room",
         "src": "/prototyping/r2-room.webp",
         "width": 444,
         "height": 273,
-        "caption": "m2 · Room detail",
-        "mark": "cut",
-        "why": "A drill-down, not a home view"
+        "caption": "m2 · Room detail"
       },
       {
         "id": "r2-daylight",
         "src": "/prototyping/r2-daylight.webp",
         "width": 640,
         "height": 400,
-        "caption": "Daylight: a scale model in soft sun",
-        "mark": "kept"
+        "caption": "Daylight: a scale model in soft sun"
       }
     ]
   },
@@ -250,24 +359,20 @@ export const rows: PrototypingRow[] = [
     "title": "Finals, frozen",
     "when": "Oct 20, 14:40–16:43",
     "decided": "Five frozen finalists, among them Lanterns and Dollhouse from round 3; 3D + Top is required in whatever wins.",
-    "callout": "finals",
     "frames": [
       {
         "id": "f-1",
         "src": "/prototyping/f-1.webp",
         "width": 444,
         "height": 377,
-        "caption": "Mockup 1 · Liquid Glass",
-        "mark": "kept"
+        "caption": "Mockup 1 · Liquid Glass"
       },
       {
         "id": "f-5",
         "src": "/prototyping/f-5.webp",
         "width": 640,
         "height": 400,
-        "caption": "Mockup 5 · Atlas, another session's concept, a generic house",
-        "mark": "cut",
-        "why": "A fixed image, but its top-down view became a requirement"
+        "caption": "Mockup 5 · Atlas, another session's concept, a generic house"
       }
     ]
   },
@@ -283,35 +388,28 @@ export const rows: PrototypingRow[] = [
         "src": "/prototyping/r1e-spatial.webp",
         "width": 444,
         "height": 273,
-        "caption": "1b · Spatial depth: a lit room, not a void",
-        "mark": "cut",
-        "why": "Kept the light, not the room around it"
+        "caption": "1b · Spatial depth: a lit room, not a void"
       },
       {
         "id": "r1e-side-b",
         "src": "/prototyping/r1e-side-b.webp",
         "width": 324,
         "height": 546,
-        "caption": "1d · Sidecar B: an inspector",
-        "mark": "cut",
-        "why": "Lost to A: rooms are how people think"
+        "caption": "1d · Sidecar B: an inspector"
       },
       {
         "id": "r1e-side-c",
         "src": "/prototyping/r1e-side-c.webp",
         "width": 295,
         "height": 640,
-        "caption": "1d · Sidecar C: a stack of modules",
-        "mark": "cut",
-        "why": "Lost to A: rooms are how people think"
+        "caption": "1d · Sidecar C: a stack of modules"
       },
       {
         "id": "r1e-rail",
         "src": "/prototyping/r1e-rail.webp",
         "width": 323,
         "height": 640,
-        "caption": "1e · The Rooms rail",
-        "mark": "kept"
+        "caption": "1e · The Rooms rail"
       }
     ]
   },
@@ -321,42 +419,34 @@ export const rows: PrototypingRow[] = [
     "title": "Round 4 · Layout × look, scored",
     "when": "Oct 21, 01:32–04:34",
     "decided": "Bento and The day answer every job in one click or none.",
-    "callout": "round4",
     "frames": [
       {
         "id": "r4-car",
         "src": "/prototyping/r4-car.webp",
         "width": 418,
         "height": 640,
-        "caption": "Car split",
-        "mark": "cut",
-        "why": "One click where Bento needs none"
+        "caption": "Car split"
       },
       {
         "id": "r4-bento",
         "src": "/prototyping/r4-bento.webp",
         "width": 640,
         "height": 400,
-        "caption": "Bento: backups and the garage log, zero clicks",
-        "mark": "kept"
+        "caption": "Bento: backups and the garage log, zero clicks"
       },
       {
         "id": "r4-cmd",
         "src": "/prototyping/r4-cmd.webp",
         "width": 640,
         "height": 400,
-        "caption": "Sentence + ⌘K",
-        "mark": "cut",
-        "why": "One click where Bento needs none"
+        "caption": "Sentence + ⌘K"
       },
       {
         "id": "r4-day",
         "src": "/prototyping/r4-day.webp",
         "width": 640,
         "height": 400,
-        "caption": "The day: tied with Bento",
-        "mark": "cut",
-        "why": "Tied on the jobs; Bento scans faster"
+        "caption": "The day: tied with Bento"
       }
     ]
   },
@@ -372,44 +462,35 @@ export const rows: PrototypingRow[] = [
         "src": "/prototyping/r4ui-tahoe.webp",
         "width": 410,
         "height": 640,
-        "caption": "Tahoe Glass",
-        "mark": "kept"
+        "caption": "Tahoe Glass"
       },
       {
         "id": "r4ui-tesla",
         "src": "/prototyping/r4ui-tesla.webp",
         "width": 418,
         "height": 640,
-        "caption": "Tesla Studio",
-        "mark": "cut",
-        "why": "A car dashboard, not a home"
+        "caption": "Tesla Studio"
       },
       {
         "id": "r4ui-arch",
         "src": "/prototyping/r4ui-arch.webp",
         "width": 438,
         "height": 640,
-        "caption": "Architect's sheet",
-        "mark": "cut",
-        "why": "Beautiful plan, slow to act from"
+        "caption": "Architect's sheet"
       },
       {
         "id": "r4ui-ceramic",
         "src": "/prototyping/r4ui-ceramic.webp",
         "width": 418,
         "height": 640,
-        "caption": "Ceramic",
-        "mark": "cut",
-        "why": "Soft to the point of vague"
+        "caption": "Ceramic"
       },
       {
         "id": "r4ui-sunlit",
         "src": "/prototyping/r4ui-sunlit.webp",
         "width": 418,
         "height": 640,
-        "caption": "Sunlit",
-        "mark": "cut",
-        "why": "Its light came back as Daylight"
+        "caption": "Sunlit"
       }
     ]
   },
@@ -425,27 +506,21 @@ export const rows: PrototypingRow[] = [
         "src": "/prototyping/fx-glass.webp",
         "width": 397,
         "height": 640,
-        "caption": "Spatial glass",
-        "mark": "cut",
-        "why": "Review caught click targets that moved"
+        "caption": "Spatial glass"
       },
       {
         "id": "fx-hud",
         "src": "/prototyping/fx-hud.webp",
         "width": 410,
         "height": 640,
-        "caption": "Holographic HUD",
-        "mark": "cut",
-        "why": "Review caught made-up coordinates"
+        "caption": "Holographic HUD"
       },
       {
         "id": "fx-ai",
         "src": "/prototyping/fx-ai.webp",
         "width": 640,
         "height": 400,
-        "caption": "Ambient AI",
-        "mark": "cut",
-        "why": "Review caught a false 'AI active' claim"
+        "caption": "Ambient AI"
       }
     ]
   },
@@ -455,7 +530,6 @@ export const rows: PrototypingRow[] = [
     "title": "Live: Daylight on the real house",
     "when": "Oct 21, 12:25 → Oct 22, 14:34",
     "decided": "Homeboard today is Daylight, with the dogs.",
-    "callout": "live",
     "frames": [
       {
         "id": "live-daylight",

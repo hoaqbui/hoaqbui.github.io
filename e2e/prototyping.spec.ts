@@ -46,8 +46,9 @@ test.describe("/prototyping/ page", () => {
     }
   }
 
-  // Test 2: At 390×844, without scrolling: h1, [data-thesis], img[data-hero] and [data-count] are within viewport.
-  test("at 390x844 without scrolling: h1, [data-thesis], img[data-hero] and [data-count] are within viewport", async ({
+  // Test 2: At 390×844, without scrolling: h1, [data-opening], [data-thesis], img[data-hero] and [data-count] are within viewport.
+  // [data-opening] text is exactly "I like to work directly with AI."
+  test("at 390x844 without scrolling: h1, [data-opening], [data-thesis], img[data-hero] and [data-count] are within viewport", async ({
     page,
   }) => {
     await page.setViewportSize({ width: 390, height: 844 });
@@ -58,11 +59,14 @@ test.describe("/prototyping/ page", () => {
     await expect(h1).toHaveCount(1);
     await expect(h1).toHaveText("How I prototype");
 
+    const opening = page.locator("[data-opening]");
+    await expect(opening).toHaveText("I like to work directly with AI.");
+
     const thesis = page.locator("[data-thesis]");
     const heroImg = page.locator("img[data-hero]");
     const count = page.locator("[data-count]");
 
-    for (const locator of [h1, thesis, heroImg, count]) {
+    for (const locator of [h1, opening, thesis, heroImg, count]) {
       await expect(locator).toBeVisible();
       const box = await locator.boundingBox();
       expect(box).not.toBeNull();
@@ -90,9 +94,56 @@ test.describe("/prototyping/ page", () => {
     }
   });
 
-  // Test 4: Every [data-row] has >= 2 [data-frame]; every [data-row-type="round"] has exactly one [data-mark="kept"];
-  // every [data-mark="cut"] frame has a non-empty [data-why].
-  test("row and frame invariants: frames per row, kept mark in round rows, why in cut frames", async ({
+  // Decisions: exactly 3 [data-decision] elements, in the DOM before the first [data-row].
+  // Each has >= 2 [data-frame], exactly one [data-annotation], a non-empty [data-reason], and a non-empty [data-changed].
+  // Their [data-decision] attribute values are d1, d2, d3 in order.
+  test("decisions: exactly 3 before first row with frames, annotation, reason, changed, and d1..d3 in order", async ({
+    page,
+  }) => {
+    const res = await page.goto("/prototyping/");
+    expect(res?.status()).toBe(200);
+
+    const decisions = page.locator("[data-decision]");
+    await expect(decisions).toHaveCount(3);
+
+    const firstRow = page.locator("[data-row]").first();
+    await expect(firstRow).toBeAttached();
+
+    const isBefore = await page.evaluate(() => {
+      const decEls = Array.from(document.querySelectorAll("[data-decision]"));
+      const firstRowEl = document.querySelector("[data-row]");
+      if (!firstRowEl || decEls.length !== 3) return false;
+      return decEls.every(
+        (dec) => (dec.compareDocumentPosition(firstRowEl) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0
+      );
+    });
+    expect(isBefore).toBe(true);
+
+    const expectedIds = ["d1", "d2", "d3"];
+    for (let i = 0; i < 3; i++) {
+      const decision = decisions.nth(i);
+      await expect(decision).toHaveAttribute("data-decision", expectedIds[i]);
+
+      const frames = decision.locator("[data-frame]");
+      expect(await frames.count()).toBeGreaterThanOrEqual(2);
+
+      const annotation = decision.locator("[data-annotation]");
+      await expect(annotation).toHaveCount(1);
+
+      const reason = decision.locator("[data-reason]");
+      await expect(reason).toHaveCount(1);
+      const reasonText = await reason.innerText();
+      expect(reasonText.trim().length).toBeGreaterThan(0);
+
+      const changed = decision.locator("[data-changed]");
+      await expect(changed).toHaveCount(1);
+      const changedText = await changed.innerText();
+      expect(changedText.trim().length).toBeGreaterThan(0);
+    }
+  });
+
+  // Rows: >= 10 [data-row] elements; each has >= 2 [data-frame]; NO [data-mark] and NO [data-why] anywhere inside a [data-row].
+  test("rows: >= 10 rows, each has >= 2 frames, no data-mark and no data-why inside rows", async ({
     page,
   }) => {
     const res = await page.goto("/prototyping/");
@@ -100,32 +151,30 @@ test.describe("/prototyping/ page", () => {
 
     const rows = page.locator("[data-row]");
     const rowCount = await rows.count();
-    expect(rowCount).toBeGreaterThan(0);
+    expect(rowCount).toBeGreaterThanOrEqual(10);
 
     for (let i = 0; i < rowCount; i++) {
       const row = rows.nth(i);
       const frames = row.locator("[data-frame]");
       expect(await frames.count()).toBeGreaterThanOrEqual(2);
 
-      const rowType = await row.getAttribute("data-row-type");
-      if (rowType === "round") {
-        const keptMarks = row.locator('[data-mark="kept"]');
-        await expect(keptMarks).toHaveCount(1);
-      }
+      await expect(row.locator("[data-mark]")).toHaveCount(0);
+      await expect(row.locator("[data-why]")).toHaveCount(0);
     }
+  });
 
-    const cutMarks = page.locator('[data-mark="cut"]');
-    const cutCount = await cutMarks.count();
-    expect(cutCount).toBeGreaterThan(0);
+  // The Aura coda: a [data-coda] element with exactly 2 [data-frame].
+  test("the Aura coda: a [data-coda] element with exactly 2 [data-frame]", async ({
+    page,
+  }) => {
+    const res = await page.goto("/prototyping/");
+    expect(res?.status()).toBe(200);
 
-    for (let i = 0; i < cutCount; i++) {
-      const mark = cutMarks.nth(i);
-      const frame = mark.locator("xpath=ancestor-or-self::*[@data-frame]").first();
-      const why = frame.locator("[data-why]");
-      await expect(why).toBeVisible();
-      const text = await why.innerText();
-      expect(text.trim().length).toBeGreaterThan(0);
-    }
+    const coda = page.locator("[data-coda]");
+    await expect(coda).toHaveCount(1);
+
+    const frames = coda.locator("[data-frame]");
+    await expect(frames).toHaveCount(2);
   });
 
   // Test 5: Word count of main innerText <= 900 (count /[\w’'-]+/g matches).

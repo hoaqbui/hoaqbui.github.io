@@ -3,6 +3,10 @@ import type { PrototypingRow } from "@/content/prototyping";
 import DrawOnce from "@/fx/DrawOnce";
 
 export default function ContactRow({ row }: { row: PrototypingRow }) {
+  const frames = [...row.frames].sort((a, b) =>
+    a.mark === "kept" ? -1 : b.mark === "kept" ? 1 : 0
+  );
+
   return (
     <div
       data-row={row.id}
@@ -10,21 +14,24 @@ export default function ContactRow({ row }: { row: PrototypingRow }) {
       className="border-t border-border pt-8 pb-10"
     >
       <div className="mb-4 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h3 className="text-heading font-medium text-text">{row.title}</h3>
-        <span className="text-label font-mono text-muted">{row.when}</span>
+        <h3 className="text-heading text-text">{row.title}</h3>
+        <span className="text-label text-muted tabular-nums">{row.when}</span>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:gap-4">
-        {row.frames.map((frame) => {
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        {frames.map((frame) => {
           const isKept = frame.mark === "kept";
+          const isHero = frame.id === "live-m5";
+          const isWide = isKept || isHero;
+
           return (
             <figure
               key={frame.id}
               data-frame={frame.id}
               {...(frame.mark ? { "data-mark": frame.mark } : {})}
-              className={`flex flex-col sm:w-[200px] sm:shrink-0 ${
-                isKept ? "order-first sm:order-none" : ""
-              }`}
+              className={`flex flex-col ${
+                isWide ? "col-span-2 md:col-span-2" : "col-span-1 md:col-span-1"
+              } ${isHero ? "order-first md:order-none" : ""}`}
             >
               <div className="relative overflow-hidden rounded-lg border border-border bg-surface">
                 <img
@@ -33,28 +40,21 @@ export default function ContactRow({ row }: { row: PrototypingRow }) {
                   height={frame.height}
                   loading="lazy"
                   alt={frame.caption}
-                  className="block h-auto w-full object-cover"
+                  // tall panel crops show their top, so a portrait frame never outweighs its row
+                  className={`block h-auto w-full object-cover object-top ${isWide ? "max-h-[440px]" : "max-h-[300px]"}`}
                 />
                 {frame.mark && (
                   <>
                     <DrawOnce mark={frame.mark} />
-                    <span
-                      className={`absolute left-2 top-2 rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider backdrop-blur-md shadow-xs ${
-                        isKept
-                          ? "border border-teal/40 bg-surface/90 text-teal"
-                          : "border border-border bg-surface/90 text-muted"
-                      }`}
-                    >
-                      {frame.mark}
-                    </span>
+                    <span className="sr-only">{frame.mark}</span>
                   </>
                 )}
               </div>
-              <figcaption className="mt-2 text-xs font-medium leading-snug text-text sm:text-sm">
+              <figcaption className="mt-2 text-label text-text">
                 {frame.caption}
               </figcaption>
               {frame.why && (
-                <p data-why className="mt-1 text-xs leading-snug text-muted sm:text-sm">
+                <p data-why className="mt-1 text-label text-muted">
                   {frame.why}
                 </p>
               )}
@@ -63,8 +63,8 @@ export default function ContactRow({ row }: { row: PrototypingRow }) {
         })}
       </div>
 
-      <p className="mt-4 text-body text-muted">
-        <span className="font-semibold text-text">decided:</span> {row.decided}
+      <p className="mt-4 text-body text-text">
+        {row.decided}
       </p>
     </div>
   );

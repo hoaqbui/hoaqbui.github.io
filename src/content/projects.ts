@@ -18,7 +18,7 @@ export const projects: Project[] = [
     chips: ["Generative video", "Diffusion", "Human-in-the-loop", "Wan", "LTX"],
     // Compo, the app the pipeline runs in, against mocked demo data; the clips are real takes.
     shots: {
-      card: { src: "/projects/intent-to-video/card", width: 1170, height: 741, themed: false, scale: 3, alt: "Compo’s Library: a paper lantern drifting over a lake at night, and waves rolling onto a beach at sunset, both done" },
+      card: { src: "/projects/intent-to-video/card", width: 1170, height: 741, themed: false, scale: 3, alt: "Compo’s chat: the finished take, “A clip: a paper lantern drifting over a lake at night”" },
       clips: [
         { src: "/projects/intent-to-video/lantern", poster: "/projects/intent-to-video/lantern-poster.jpg", width: 704, height: 384, caption: "“A paper lantern drifting over a lake at night”" },
         { src: "/projects/intent-to-video/waves", poster: "/projects/intent-to-video/waves-poster.jpg", width: 704, height: 384, caption: "“Waves rolling onto a beach at sunset”" },
@@ -28,7 +28,6 @@ export const projects: Project[] = [
         { shot: { src: "/projects/intent-to-video/step-1", width: 1170, height: 1683, themed: false, scale: 3, alt: "Compo’s chat with suggested prompts, and “A paper lantern drifting over a lake at night” typed in" }, caption: "Describe the shot in a sentence, or start from a photo." },
         { shot: { src: "/projects/intent-to-video/step-2", width: 1170, height: 785, themed: false, scale: 3, alt: "The guide’s plan: a 6-second 480p clip at 16:9, and Take 1 waiting in the queue" }, caption: "The guide turns it into a plan (clip or still, length, size) and queues the take on the home-lab machines." },
         { shot: { src: "/projects/intent-to-video/step-3", width: 1170, height: 1660, themed: false, scale: 3, alt: "The finished take in the chat: the lantern clip with Keep, Reject, Another take and Download" }, caption: "The take comes back into the chat. Keep it, reject it, or ask for another." },
-        { shot: { src: "/projects/intent-to-video/step-4", width: 1170, height: 1823, themed: false, scale: 3, alt: "The Library: clips of a lantern, waves and a candle, and stills of a red kite and a blue door" }, caption: "Everything lands in the Library, stills and clips, to pick from later." },
       ],
     },
     // Compo, password-gated; the password is given on request, never published.

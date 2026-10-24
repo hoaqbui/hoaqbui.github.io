@@ -486,7 +486,7 @@ test.describe("Parti screenshots (card 69)", () => {
 });
 
 test.describe("Intent-to-video screenshots and clips", () => {
-  test("the page plays two muted looping clips and shows four steps", async ({ page }) => {
+  test("the page plays two muted looping clips and shows three steps", async ({ page }) => {
     await page.goto("/building/intent-to-video/");
     const clips = page.locator("[data-clips] video");
     await expect(clips).toHaveCount(2);
@@ -495,19 +495,30 @@ test.describe("Intent-to-video screenshots and clips", () => {
     }
     await expect.poll(() => clips.first().evaluate((el: HTMLVideoElement) => el.readyState)).toBeGreaterThanOrEqual(2);
     const steps = page.locator("[data-shot-steps] > li");
-    await expect(steps).toHaveCount(4);
-    for (let i = 0; i < 4; i++) {
+    await expect(steps).toHaveCount(3);
+    for (let i = 0; i < 3; i++) {
       const img = steps.nth(i).locator("img");
       await img.scrollIntoViewIfNeeded();
       await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.naturalWidth)).toBeGreaterThan(0);
     }
   });
 
-  test("the card leads with the Library screenshot", async ({ page }) => {
+  test("the card leads with the finished take, not the Library", async ({ page }) => {
     await page.goto("/building/");
     const img = page.locator("#intent-to-video [data-shot] img").first();
     await expect(img).toBeVisible();
     await expect(img).toHaveAttribute("src", "/projects/intent-to-video/card.webp");
+    await expect(img).not.toHaveAttribute("alt", /library/i);
+  });
+
+  // The Library stays private (user, 2026-10-23): no screenshot, alt or caption shows or names it.
+  test("the Compo page shows no Library screen", async ({ page }) => {
+    await page.goto("/building/intent-to-video/");
+    for (const alt of await page.locator("img").evaluateAll((els) => els.map((e) => e.getAttribute("alt") ?? ""))) {
+      expect(alt).not.toMatch(/library/i);
+    }
+    await expect(page.locator("[data-shot-steps]")).not.toContainText(/library/i);
+    await expect(page.locator("img[src*=\"step-4\"]")).toHaveCount(0);
   });
 });
 

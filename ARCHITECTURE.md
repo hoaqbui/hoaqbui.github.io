@@ -67,5 +67,5 @@ flowchart LR
     sections -->|React tree| app
     app -->|static HTML, JS, CSS at build| out[out/]
     public[public/ — WebP photos, résumé PDF, vCard] -->|copied as-is| out
-    out -->|GitHub Actions deploy| pages[GitHub Pages]
+    out -->|scripts/deploy.sh → gh-pages branch| pages[GitHub Pages]
 ```

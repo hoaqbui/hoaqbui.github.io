@@ -24,7 +24,7 @@ else
   git worktree add -q --detach "$pages"
   git -C "$pages" checkout -q --orphan gh-pages
 fi
-git -C "$pages" rm -rq --ignore-unmatch . >/dev/null
+git -C "$pages" rm -rqf --ignore-unmatch . >/dev/null  # -f: a new orphan branch starts with every file staged
 cp -R out/. "$pages"/
 git -C "$pages" add -A
 if git -C "$pages" diff --cached --quiet; then echo "deploy: gh-pages already matches $sha"; exit 0; fi

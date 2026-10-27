@@ -3,27 +3,27 @@
 import { Fragment } from "react";
 import Link from "next/link";
 import { profile } from "@/content/profile";
-import { photos } from "@/content/photos";
+import { projects } from "@/content/projects";
 import { em } from "@/ui/em";
 import { LinkedInIcon } from "@/ui/Icons";
 import HeroShot, { type HeroTake } from "@/ui/HeroShot";
 
-// the hero's take: the Prague weir, whose moving water shows the photo → shot change best
-const weir = photos.find((p) => p.id === "cz-prague-weir")!;
+// the hero's take: Compo's lantern clip from the Intent-to-video page, played from its prompt
+// (user, 2026-10-26; replaces the Prague weir photograph and its shot)
+const lantern = projects.find((p) => p.id === "intent-to-video")!.shots!.clips![0];
+const prompt = lantern.caption.replace(/[“”]/g, "");
 const take: HeroTake = {
-  id: weir.id,
-  src: weir.src,
-  small: `/photos/${weir.id}-800.webp`,
-  width: weir.width,
-  alt: weir.alt,
-  webm: weir.shot!.webm,
-  mp4: weir.shot!.mp4,
+  id: "lantern",
+  poster: lantern.poster,
+  alt: prompt,
+  webm: `${lantern.src}.webm`,
+  mp4: `${lantern.src}.mp4`,
+  prompt,
 };
 
-// The 3-second story: who and what (the strip), the mission, where (the logos), and the
-// Still → Shot frame beside it (user, 2026-10-19; replaces the random network background).
+// The 3-second story: who and what (the strip), what Hoa builds (the headline and the sentence
+// under it), where (the logos), and a sentence becoming a shot beside it (user, 2026-10-26).
 // The proof numbers live in Work; the Latest chip left the hero (user, 2026-10-18).
-// The numbers and their stories live in Work, so they appear once.
 // The landing owns the whole first screen, content centered, nothing of the next section
 // peeking in (user, 2026-10-20: more white space; reverses the Codex "tighter hero" fix).
 export default function Hero() {
@@ -59,6 +59,12 @@ export default function Hero() {
           <h1 className="mt-5 text-balance text-display">
             {em(profile.headline)}
           </h1>
+          {/* the AI work is far down the page; the hero's second sentence points at it */}
+          <p className="mt-5 max-w-[36ch] text-body text-text">
+            <Link href="/building/intent-to-video/" className="hover:text-teal">
+              18 years of film and game pipelines. Now building <span className="font-medium text-teal">Compo</span>, my AI video pipeline on Wan and LTX&nbsp;→
+            </Link>
+          </p>
           <div
             role="list"
             aria-label="Studios"
@@ -80,13 +86,6 @@ export default function Hero() {
               />
             ))}
           </div>
-          {/* the AI work is far down the page; point at it from the first screen (Codex UX pass) */}
-          <Link
-            href="/building/intent-to-video/"
-            className="mt-7 inline-flex min-h-[44px] items-center text-body text-muted hover:text-text"
-          >
-            Now building&nbsp;<span className="font-medium text-teal">Compo</span>, an AI video workflow →
-          </Link>
         </div>
         <HeroShot take={take} />
       </div>

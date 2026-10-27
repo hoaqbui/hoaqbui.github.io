@@ -4,8 +4,8 @@ const linkedin = "https://www.linkedin.com/in/hoaqbui/";
 
 export const profile: Profile = {
   name: "Hoa Bui",
-  roleLine: "Technical Product Manager · Los Angeles",
-  headline: "Empowering **creative teams** to do their **best work**.",
+  roleLine: "Technical Product Manager · AI creative tools · Los Angeles",
+  headline: "I build the pipelines that turn **a sentence** into **a shot**.",
   // studio marks under the headline, drawn in the text colour (height in px, ratio = width / height)
   logos: [
     { name: "Lucasfilm", src: "/logos/lucasfilm.svg", height: 30, ratio: 1000 / 328.8 },
@@ -17,7 +17,7 @@ export const profile: Profile = {
   // the public 2-page Doc: always current, readable on a phone
   resumePath: "https://docs.google.com/document/d/1s-OGEpBgFRViEk3mBTeSgL9CHzl-wdsOQKxoBNQtU7s/view",
   // link-preview card for every page (pages that set their own openGraph must repeat it)
-  ogImage: { url: "/og.png", width: 1200, height: 630, alt: "Hoa Bui — Empowering creative teams to do their best work." },
+  ogImage: { url: "/og.png", width: 1200, height: 630, alt: "Hoa Bui — I build the pipelines that turn a sentence into a shot." },
   vcardPath: "/hoa-bui.vcf",
   openTo: "Open to hands-on technical product manager and producer roles in AI video and creative tools, including forward deployed teams. Los Angeles.",
   // shown under the proof numbers

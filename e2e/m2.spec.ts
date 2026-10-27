@@ -263,22 +263,18 @@ test.describe("Photos page is dark", () => {
   });
 });
 
-test("the hero scans its photograph, then the Compo shot wipes in, plays once and holds", async ({ page }) => {
-  // user, 2026-10-19: Still → Shot hero, replacing the random network background
+test("the hero types its prompt, scans, then the Compo take plays once and holds", async ({ page }) => {
+  // user, 2026-10-26: a sentence → shot hero (the lantern take), replacing the photograph and its shot
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("/");
   const frame = page.locator("[data-hero-frame]");
-  const take = await frame.getAttribute("data-take");
-  expect(take).toBe("cz-prague-weir");
-  await expect(frame.locator("img").first()).toHaveAttribute("src", `/photos/${take}.webp`);
+  await expect(frame).toHaveAttribute("data-take", "lantern");
+  // the poster is the server's first paint and the only image the frame loads
+  await expect(frame.locator("img").first()).toHaveAttribute("src", "/projects/intent-to-video/lantern-poster.jpg");
   await expect(frame).toHaveAttribute("data-hero-frame", "ready", { timeout: 8000 });
-  // the server's photo is the first of the four fetched and the one shown
-  // (the Now section's lazy photos may follow; Chrome loads them early on a fast link)
-  const first = await page.evaluate(() =>
-    performance.getEntriesByType("resource").map((e) => e.name).find((n) => /\/photos\/(cz-34|cz-17|jp-28|cz-prague-weir)(-800)?\.webp/.test(n)),
-  );
-  expect(first).toContain(`/photos/${take}`);
-  expect(await frame.locator("img").first().evaluate((i: HTMLImageElement) => i.currentSrc)).toContain(`/photos/${take}`);
+  // the prompt is fully visible once typed, and was never missing from the DOM
+  await expect(page.locator("#top").getByText("A paper lantern drifting over a lake at night")).toBeVisible();
+  await expect(page.locator("#top .text-transparent")).toHaveCount(0);
   const video = frame.locator("video");
   expect(await video.evaluate((v: HTMLVideoElement) => v.loop || !v.muted)).toBe(false);
   // plays once, holds its last frame; the hero has no pause button
@@ -287,12 +283,8 @@ test("the hero scans its photograph, then the Compo shot wipes in, plays once an
   await video.evaluate((v: HTMLVideoElement) => (v.currentTime = v.duration - 0.4));
   await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.ended), { timeout: 8000 }).toBe(true);
   await expect(page.locator("#top").getByRole("button", { name: /pause/i })).toHaveCount(0);
-  // the wipe moves with the keyboard, and letting go replays the shot
-  const range = frame.getByRole("slider", { name: /compare/i });
-  await range.focus();
-  const v0 = Number(await range.inputValue());
-  await page.keyboard.press("ArrowRight");
-  expect(Number(await range.inputValue())).toBe(v0 + 1);
+  // a tap on the frame replays the take
+  await frame.getByRole("button", { name: "Replay the take" }).click();
   await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.ended)).toBe(false);
 });
 
